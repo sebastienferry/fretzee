@@ -335,12 +335,18 @@ export function calculateFingeringRadius(
 /**
  * Calculate 2D position for a fingering marker on the fretboard
  * 
+ * Centers the marker on the string's visual center, accounting for
+ * per-string thickness variation (thickness = stringThickness × stringNum),
+ * and on the fret's visual center, accounting for fret thickness.
+ * 
  * @param stringNum - 1-based string number (1 = top string / high E)
  * @param fretNum - Fret number (0 = open string, 1..N = fretted position)
  * @param orientation - Layout direction ('horizontal' | 'vertical')
  * @param stringSpacing - Pixel spacing between strings
  * @param fretSpacing - Pixel spacing between frets
  * @param stringCount - Total string count
+ * @param stringThickness - Base string thickness (each string's actual thickness = stringThickness × stringNum)
+ * @param fretThickness - Thickness of fret lines
  * @returns Position - {x, y} coordinates of fingering marker center
  */
 export function getFingeringPosition(
@@ -349,17 +355,24 @@ export function getFingeringPosition(
   orientation: 'horizontal' | 'vertical',
   stringSpacing: number,
   fretSpacing: number,
-  stringCount: number
+  stringCount: number,
+  stringThickness: number = 0,
+  fretThickness: number = 0
 ): Position {
   const stringIndex = stringNum - 1;
+  // Per-string thickness offset to center on the string's visual midline
+  // String line is rendered at position + thickness/2, where thickness = stringThickness * (index + 1)
+  const thicknessOffset = (stringThickness * stringNum) / 2;
+  // Per-fret thickness offset to center between fret lines
+  const fretThicknessOffset = fretThickness / 2;
 
   if (orientation === 'horizontal') {
-    const y = getHorizontalStringY(stringIndex, stringSpacing);
-    const x = fretNum === 0 ? -fretSpacing * 0.35 : (fretNum - 0.5) * fretSpacing;
+    const y = getHorizontalStringY(stringIndex, stringSpacing) + thicknessOffset;
+    const x = fretNum === 0 ? -fretSpacing * 0.35 : (fretNum - 0.5) * fretSpacing + fretThicknessOffset;
     return { x, y };
   } else {
-    const x = getVerticalStringX(stringIndex, stringSpacing, stringCount);
-    const y = fretNum === 0 ? -fretSpacing * 0.35 : (fretNum - 0.5) * fretSpacing;
+    const x = getVerticalStringX(stringIndex, stringSpacing, stringCount) + thicknessOffset;
+    const y = fretNum === 0 ? -fretSpacing * 0.35 : (fretNum - 0.5) * fretSpacing + fretThicknessOffset;
     return { x, y };
   }
 }

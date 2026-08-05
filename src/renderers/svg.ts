@@ -62,11 +62,13 @@ export class SvgRenderer {
     
     // Additional adjustments for inlays
     if (!isHorizontal && this.options.showInlays) {
-      viewBoxX -= inlayOffset; // Extend left for inlays
-      width += inlayOffset; // Space for text
+      const extraThickness = this.options.stringThickness * (this.options.stringCount - 1);
+      viewBoxX -= inlayOffset + extraThickness; // Extend left for inlays + thickness
+      width += inlayOffset + extraThickness; // Space for text
     }
     if (isHorizontal && this.options.showInlays) {
-      height += inlayOffset; // Space for text below
+      const extraThickness = this.options.stringThickness * (this.options.stringCount - 1);
+      height += inlayOffset + extraThickness; // Space for text below + thickness
     }
 
     // Additional adjustments for open string fingerings (fret 0)
@@ -128,9 +130,10 @@ export class SvgRenderer {
     }
     svg.appendChild(fretsGroup);
 
-    // Render inlays (above fretboard)
+    // Render inlays (dots on fretboard neck + text labels below)
     if (this.options.showInlays) {
       const inlaysGroup = this.createGroup(CSS_CLASSES.inlays);
+      this.renderHorizontalInlayDots(inlaysGroup);
       for (const inlay of inlays) {
         this.renderHorizontalInlay(inlay, inlaysGroup);
       }
@@ -179,9 +182,10 @@ export class SvgRenderer {
     }
     svg.appendChild(fretsGroup);
 
-    // Render inlays (left of fretboard)
+    // Render inlays (dots on fretboard neck + text labels left)
     if (this.options.showInlays) {
       const inlaysGroup = this.createGroup(CSS_CLASSES.inlays);
+      this.renderVerticalInlayDots(inlaysGroup);
       for (const inlay of inlays) {
         this.renderVerticalInlay(inlay, inlaysGroup);
       }
@@ -264,6 +268,96 @@ export class SvgRenderer {
     text.setAttribute('font-family', 'sans-serif');
     text.textContent = inlay.label;
     group.appendChild(text);
+  }
+
+  /**
+   * Renders small grey inlay dots on horizontal fretboard neck
+   */
+  private renderHorizontalInlayDots(group: SVGElement): void {
+    const stringHeight = (this.options.stringCount - 1) * this.options.stringSpacing + this.options.stringThickness;
+    const neckCenterY = stringHeight / 2;
+    const dotRadius = 6;
+    const dotColor = '#d1d5db';
+
+    for (const fretNum of this.options.inlayPositions) {
+      if (fretNum > this.options.fretCount) continue;
+      const fretX = (fretNum - 0.5) * this.options.fretSpacing;
+      const isDoubleDot = fretNum % 12 === 0;
+
+      if (isDoubleDot) {
+        const offset = this.options.stringCount >= 6 
+          ? this.options.stringSpacing 
+          : this.options.stringSpacing * 0.75;
+        const circle1 = document.createElementNS(SVG_NS, 'circle');
+        circle1.setAttribute('cx', String(fretX));
+        circle1.setAttribute('cy', String(neckCenterY - offset));
+        circle1.setAttribute('r', String(dotRadius));
+        circle1.setAttribute('fill', dotColor);
+        circle1.setAttribute('class', CSS_CLASSES.inlayDot(fretNum));
+        group.appendChild(circle1);
+
+        const circle2 = document.createElementNS(SVG_NS, 'circle');
+        circle2.setAttribute('cx', String(fretX));
+        circle2.setAttribute('cy', String(neckCenterY + offset));
+        circle2.setAttribute('r', String(dotRadius));
+        circle2.setAttribute('fill', dotColor);
+        circle2.setAttribute('class', CSS_CLASSES.inlayDot(fretNum));
+        group.appendChild(circle2);
+      } else {
+        const circle = document.createElementNS(SVG_NS, 'circle');
+        circle.setAttribute('cx', String(fretX));
+        circle.setAttribute('cy', String(neckCenterY));
+        circle.setAttribute('r', String(dotRadius));
+        circle.setAttribute('fill', dotColor);
+        circle.setAttribute('class', CSS_CLASSES.inlayDot(fretNum));
+        group.appendChild(circle);
+      }
+    }
+  }
+
+  /**
+   * Renders small grey inlay dots on vertical fretboard neck
+   */
+  private renderVerticalInlayDots(group: SVGElement): void {
+    const stringWidth = (this.options.stringCount - 1) * this.options.stringSpacing + this.options.stringThickness;
+    const neckCenterX = stringWidth / 2;
+    const dotRadius = 6;
+    const dotColor = '#d1d5db';
+
+    for (const fretNum of this.options.inlayPositions) {
+      if (fretNum > this.options.fretCount) continue;
+      const fretY = (fretNum - 0.5) * this.options.fretSpacing;
+      const isDoubleDot = fretNum % 12 === 0;
+
+      if (isDoubleDot) {
+        const offset = this.options.stringCount >= 6 
+          ? this.options.stringSpacing 
+          : this.options.stringSpacing * 0.75;
+        const circle1 = document.createElementNS(SVG_NS, 'circle');
+        circle1.setAttribute('cx', String(neckCenterX - offset));
+        circle1.setAttribute('cy', String(fretY));
+        circle1.setAttribute('r', String(dotRadius));
+        circle1.setAttribute('fill', dotColor);
+        circle1.setAttribute('class', CSS_CLASSES.inlayDot(fretNum));
+        group.appendChild(circle1);
+
+        const circle2 = document.createElementNS(SVG_NS, 'circle');
+        circle2.setAttribute('cx', String(neckCenterX + offset));
+        circle2.setAttribute('cy', String(fretY));
+        circle2.setAttribute('r', String(dotRadius));
+        circle2.setAttribute('fill', dotColor);
+        circle2.setAttribute('class', CSS_CLASSES.inlayDot(fretNum));
+        group.appendChild(circle2);
+      } else {
+        const circle = document.createElementNS(SVG_NS, 'circle');
+        circle.setAttribute('cx', String(neckCenterX));
+        circle.setAttribute('cy', String(fretY));
+        circle.setAttribute('r', String(dotRadius));
+        circle.setAttribute('fill', dotColor);
+        circle.setAttribute('class', CSS_CLASSES.inlayDot(fretNum));
+        group.appendChild(circle);
+      }
+    }
   }
 
   /**
@@ -409,7 +503,9 @@ export class SvgRenderer {
       this.options.orientation,
       this.options.stringSpacing,
       this.options.fretSpacing,
-      this.options.stringCount
+      this.options.stringCount,
+      this.options.stringThickness,
+      this.options.fretThickness
     );
 
     const g = this.createGroup(fingering.getCssClass());
