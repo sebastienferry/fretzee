@@ -14,5 +14,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add inlays as small grey dots on standard fretboard positions (#11).
 
 ### Fixed
+- Fixed fingering circles not aligned with string visual center on thicker strings (#13).
 - Fixed UMD global reference (`window.fretly` / `window.Fretly`) in `index.html` and `demo.html` (#9).
 - Restricted GitHub Pages deployment workflow trigger to `main` branch (#7).

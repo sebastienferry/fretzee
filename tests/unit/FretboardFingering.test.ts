@@ -133,4 +133,160 @@ describe('Fretboard Fingering Rendering', () => {
     // viewBoxY must extend significantly into negative territory to contain open string circle
     expect(viewBoxV![1]).toBeLessThan(-30);
   });
+
+  it('should align fingering circle centers with string visual centers in horizontal mode', () => {
+    const stringSpacing = 30;
+    const stringThickness = 1;
+    const fretboard = new Fretboard({
+      stringCount: 6,
+      fretCount: 5,
+      orientation: 'horizontal',
+      stringSpacing,
+      stringThickness,
+      fingerings: [
+        { string: 1, fret: 1, text: '1' },
+        { string: 3, fret: 2, text: '3' },
+        { string: 6, fret: 3, text: '6' }
+      ]
+    });
+
+    const svg = fretboard.render();
+
+    // String visual center = (stringNum - 1) * stringSpacing + (stringThickness * stringNum) / 2
+    // String 1: center = 0 * 30 + (1 * 1) / 2 = 0.5
+    const circle1 = svg.querySelector('.fretly-fingering-s1-f1 circle');
+    expect(parseFloat(circle1!.getAttribute('cy')!)).toBeCloseTo(0 + (stringThickness * 1) / 2);
+
+    // String 3: center = 2 * 30 + (1 * 3) / 2 = 61.5
+    const circle3 = svg.querySelector('.fretly-fingering-s3-f2 circle');
+    expect(parseFloat(circle3!.getAttribute('cy')!)).toBeCloseTo(2 * stringSpacing + (stringThickness * 3) / 2);
+
+    // String 6 (low E, thickest): center = 5 * 30 + (1 * 6) / 2 = 153
+    const circle6 = svg.querySelector('.fretly-fingering-s6-f3 circle');
+    expect(parseFloat(circle6!.getAttribute('cy')!)).toBeCloseTo(5 * stringSpacing + (stringThickness * 6) / 2);
+  });
+
+  it('should align fingering circle centers with string visual centers in vertical mode', () => {
+    const stringSpacing = 30;
+    const stringThickness = 1;
+    const fretboard = new Fretboard({
+      stringCount: 6,
+      fretCount: 5,
+      orientation: 'vertical',
+      stringSpacing,
+      stringThickness,
+      fingerings: [
+        { string: 1, fret: 1, text: '1' },
+        { string: 6, fret: 3, text: '6' }
+      ]
+    });
+
+    const svg = fretboard.render();
+
+    // In vertical mode, string X = (stringCount - 1 - stringIndex) * stringSpacing + thicknessOffset
+    // String 1 (index 0): x = (6 - 1 - 0) * 30 = 150, center = 150 + (1*1)/2 = 150.5
+    const circle1 = svg.querySelector('.fretly-fingering-s1-f1 circle');
+    expect(parseFloat(circle1!.getAttribute('cx')!)).toBeCloseTo(5 * stringSpacing + (stringThickness * 1) / 2);
+
+    // String 6 (index 5): x = (6 - 1 - 5) * 30 = 0, center = 0 + (1*6)/2 = 3
+    const circle6 = svg.querySelector('.fretly-fingering-s6-f3 circle');
+    expect(parseFloat(circle6!.getAttribute('cx')!)).toBeCloseTo(0 * stringSpacing + (stringThickness * 6) / 2);
+  });
+
+  it('should align fingering circle centers between fret lines in horizontal mode', () => {
+    const fretSpacing = 40;
+    const stringSpacing = 30;
+    const stringThickness = 1;
+    const fretThickness = 3; // Default
+    const fretboard = new Fretboard({
+      stringCount: 6,
+      fretCount: 5,
+      orientation: 'horizontal',
+      stringSpacing,
+      stringThickness,
+      fretSpacing,
+      fretThickness,
+      fingerings: [
+        { string: 1, fret: 1, text: '1' },
+        { string: 1, fret: 2, text: '2' },
+        { string: 1, fret: 3, text: '3' }
+      ]
+    });
+
+    const svg = fretboard.render();
+
+    // Fret line positions (horizontal, with fretThickness = 3):
+    // Line 0 (fret 1): x = (1-1)*40 + 3/2 = 1.5
+    // Line 1 (fret 2): x = (2-1)*40 + 3/2 = 41.5
+    // Line 2 (fret 3): x = (3-1)*40 + 3/2 = 81.5
+    // Line 3 (fret 4): x = (4-1)*40 + 3/2 = 121.5
+    // Line 4 (fret 5): x = (5-1)*40 + 3/2 = 161.5
+    // Line 5 (fret 6, end): x = (6-1)*40 + 3/2 = 201.5
+
+    // Fingering positions should be centered between fret lines:
+    // Fret 1: center between line 0 (1.5) and line 1 (41.5) = 21.5
+    // Fret 2: center between line 1 (41.5) and line 2 (81.5) = 61.5
+    // Fret 3: center between line 2 (81.5) and line 3 (121.5) = 101.5
+
+    const circle1 = svg.querySelector('.fretly-fingering-s1-f1 circle');
+    expect(parseFloat(circle1!.getAttribute('cx')!)).toBe(21.5);
+
+    const circle2 = svg.querySelector('.fretly-fingering-s1-f2 circle');
+    expect(parseFloat(circle2!.getAttribute('cx')!)).toBe(61.5);
+
+    const circle3 = svg.querySelector('.fretly-fingering-s1-f3 circle');
+    expect(parseFloat(circle3!.getAttribute('cx')!)).toBe(101.5);
+  });
+
+  it('should align fingering circle centers between fret lines in vertical mode', () => {
+    const fretSpacing = 40;
+    const stringSpacing = 30;
+    const stringThickness = 1;
+    const fretThickness = 3; // Default
+    const fretboard = new Fretboard({
+      stringCount: 6,
+      fretCount: 5,
+      orientation: 'vertical',
+      stringSpacing,
+      stringThickness,
+      fretSpacing,
+      fretThickness,
+      fingerings: [
+        { string: 1, fret: 1, text: '1' },
+        { string: 1, fret: 2, text: '2' },
+        { string: 1, fret: 3, text: '3' }
+      ]
+    });
+
+    const svg = fretboard.render();
+
+    // Get fret lines
+    const fretLines = Array.from(svg.querySelectorAll('.fretly-frets line'));
+    
+    // Fret line positions (with fretThickness = 3):
+    // Line 0 (fret 1): y = (1-1)*40 + 3/2 = 1.5
+    // Line 1 (fret 2): y = (2-1)*40 + 3/2 = 41.5
+    // Line 2 (fret 3): y = (3-1)*40 + 3/2 = 81.5
+    // Line 3 (fret 4): y = (4-1)*40 + 3/2 = 121.5
+    // Line 4 (fret 5): y = (5-1)*40 + 3/2 = 161.5
+    // Line 5 (fret 6, end): y = (6-1)*40 + 3/2 = 201.5
+
+    // Fingering positions should be centered between fret lines:
+    // Fret 1: center between line 0 (1.5) and line 1 (41.5) = 21.5
+    //        = (1 - 0.5) * 40 + 3/2 = 20 + 1.5 = 21.5
+    // Fret 2: center between line 1 (41.5) and line 2 (81.5) = 61.5
+    //        = (2 - 0.5) * 40 + 3/2 = 60 + 1.5 = 61.5
+    // Fret 3: center between line 2 (81.5) and line 3 (121.5) = 101.5
+    //        = (3 - 0.5) * 40 + 3/2 = 100 + 1.5 = 101.5
+
+    const circle1 = svg.querySelector('.fretly-fingering-s1-f1 circle');
+    expect(parseFloat(circle1!.getAttribute('cy')!)).toBe(21.5);
+
+    const circle2 = svg.querySelector('.fretly-fingering-s1-f2 circle');
+    expect(parseFloat(circle2!.getAttribute('cy')!)).toBe(61.5);
+
+    const circle3 = svg.querySelector('.fretly-fingering-s1-f3 circle');
+    expect(parseFloat(circle3!.getAttribute('cy')!)).toBe(101.5);
+  });
 });
+

@@ -62,11 +62,13 @@ export class SvgRenderer {
     
     // Additional adjustments for inlays
     if (!isHorizontal && this.options.showInlays) {
-      viewBoxX -= inlayOffset; // Extend left for inlays
-      width += inlayOffset; // Space for text
+      const extraThickness = this.options.stringThickness * (this.options.stringCount - 1);
+      viewBoxX -= inlayOffset + extraThickness; // Extend left for inlays + thickness
+      width += inlayOffset + extraThickness; // Space for text
     }
     if (isHorizontal && this.options.showInlays) {
-      height += inlayOffset; // Space for text below
+      const extraThickness = this.options.stringThickness * (this.options.stringCount - 1);
+      height += inlayOffset + extraThickness; // Space for text below + thickness
     }
 
     // Additional adjustments for open string fingerings (fret 0)
@@ -501,7 +503,9 @@ export class SvgRenderer {
       this.options.orientation,
       this.options.stringSpacing,
       this.options.fretSpacing,
-      this.options.stringCount
+      this.options.stringCount,
+      this.options.stringThickness,
+      this.options.fretThickness
     );
 
     const g = this.createGroup(fingering.getCssClass());

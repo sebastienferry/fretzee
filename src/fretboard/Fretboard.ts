@@ -199,25 +199,33 @@ export class Fretboard {
   private initializeInlays(): void {
     this.inlays = [];
     const isHorizontal = this.options.orientation === 'horizontal';
-    const inlayOffset = 20; // Space for inlay numbers
+    const inlayOffset = 20; // Base space for inlay numbers
 
     for (const fretNumber of this.options.inlayPositions) {
       if (fretNumber > this.options.fretCount) continue;
 
       if (isHorizontal) {
-        // Horizontal: inlays below the fretboard, centered on the fret
-        const x = getHorizontalFretX(fretNumber, this.options.fretSpacing) + 
+        // Horizontal: inlays below the fretboard, centered between fret lines
+        // Position between fret lines, same as fingerings
+        const x = (fretNumber - 0.5) * this.options.fretSpacing + 
                   this.options.fretThickness / 2;
         const height = calculateHorizontalHeight(
           this.options.stringCount,
           this.options.stringSpacing,
           this.options.stringThickness
         );
-        const y = height + inlayOffset;
-        this.inlays.push(new Inlay(fretNumber, x + this.options.fretSpacing/2, y, 'below'));
+        // Account for the extra thickness of the bottom string (varying thickness)
+        // The bottom string has thickness = stringThickness * stringCount, but
+        // calculateHorizontalHeight only uses base stringThickness
+        const bottomStringExtraThickness = this.options.stringThickness * (this.options.stringCount - 1);
+        const y = height + bottomStringExtraThickness + inlayOffset;
+        this.inlays.push(new Inlay(fretNumber, x, y, 'below'));
       } else {
-        const x = -inlayOffset;
-        const y = getVerticalFretY(fretNumber, this.options.fretSpacing) + 
+        // Account for the extra thickness of the leftmost string in vertical mode
+        const leftStringExtraThickness = this.options.stringThickness * (this.options.stringCount - 1);
+        const x = -(inlayOffset + leftStringExtraThickness);
+        // Position inlay between fret lines, same as fingerings
+        const y = (fretNumber - 0.5) * this.options.fretSpacing + 
                   this.options.fretThickness / 2;
         this.inlays.push(new Inlay(fretNumber, x, y, 'left'));
       }
