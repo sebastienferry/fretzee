@@ -504,7 +504,8 @@ export class SvgRenderer {
       this.options.stringSpacing,
       this.options.fretSpacing,
       this.options.stringCount,
-      this.options.stringThickness
+      this.options.stringThickness,
+      this.options.fretThickness
     );
 
     const g = this.createGroup(fingering.getCssClass());
