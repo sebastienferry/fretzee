@@ -28,7 +28,7 @@ Represents the deployment workflow triggered on default branch pushes.
 
 - **Name**: `Deploy GitHub Pages`
 - **Triggers**:
-  - `push` (branches: `[ main, 001-fretboard-renderer ]`)
+  - `push` (branches: `[ main ]`)
   - `workflow_dispatch` (manual run)
 - **Permissions**:
   - `contents: read`
