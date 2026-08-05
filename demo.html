@@ -275,10 +275,11 @@
   <script src="./dist/index.umd.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      if (typeof Fretly === 'undefined' || !Fretly.Fretboard) return;
+      const fretlyLib = window.fretly || window.Fretly;
+      if (!fretlyLib || !fretlyLib.Fretboard) return;
 
       // 1. Horizontal Guitar
-      const guitar = new Fretly.Fretboard({
+      const guitar = new fretlyLib.Fretboard({
         stringCount: 6,
         fretCount: 12,
         orientation: 'horizontal',
@@ -294,7 +295,7 @@
       document.getElementById('demo-horizontal-guitar').appendChild(guitar.render());
 
       // 2. Chord C Major
-      const chordC = new Fretly.Fretboard({
+      const chordC = new fretlyLib.Fretboard({
         stringCount: 6,
         fretCount: 4,
         orientation: 'vertical',
@@ -309,7 +310,7 @@
       document.getElementById('demo-chord-c').appendChild(chordC.render());
 
       // 2. Chord G Major
-      const chordG = new Fretly.Fretboard({
+      const chordG = new fretlyLib.Fretboard({
         stringCount: 6,
         fretCount: 4,
         orientation: 'vertical',
@@ -325,7 +326,7 @@
       document.getElementById('demo-chord-g').appendChild(chordG.render());
 
       // 2. Chord A Minor
-      const chordAm = new Fretly.Fretboard({
+      const chordAm = new fretlyLib.Fretboard({
         stringCount: 6,
         fretCount: 4,
         orientation: 'vertical',
@@ -340,7 +341,7 @@
       document.getElementById('demo-chord-am').appendChild(chordAm.render());
 
       // 3. Bass Guitar
-      const bass = new Fretly.Fretboard({
+      const bass = new fretlyLib.Fretboard({
         stringCount: 4,
         fretCount: 12,
         orientation: 'horizontal',
