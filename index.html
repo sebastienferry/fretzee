@@ -1,15 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Fretly - A zero-dependency TypeScript library for rendering guitar & bass fretboard SVG graphics.">
+  <meta name="description"
+    content="Fretly - A zero-dependency TypeScript library for rendering guitar & bass fretboard SVG graphics.">
   <title>Fretly - SVG Guitar & Bass Fretboard Generator</title>
-  
+
   <!-- Google Fonts: Inter & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
 
   <style>
     :root {
@@ -182,7 +186,7 @@
       border: 1px solid var(--panel-border);
       border-radius: 16px;
       overflow: hidden;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
     }
 
     .preview-header {
@@ -204,9 +208,18 @@
       height: 10px;
       border-radius: 50%;
     }
-    .dot-red { background: #ef4444; }
-    .dot-yellow { background: #f59e0b; }
-    .dot-green { background: #10b981; }
+
+    .dot-red {
+      background: #ef4444;
+    }
+
+    .dot-yellow {
+      background: #f59e0b;
+    }
+
+    .dot-green {
+      background: #10b981;
+    }
 
     .preview-title {
       font-size: 13px;
@@ -274,6 +287,7 @@
     }
   </style>
 </head>
+
 <body>
 
   <header>
@@ -290,7 +304,8 @@
   <main>
     <section class="hero">
       <h1 class="hero-title">Customizable Guitar & Bass Fretboard SVG Generator</h1>
-      <p class="hero-subtitle">A zero-dependency TypeScript library and interactive web app for rendering guitar, bass, and custom instrument neck diagrams.</p>
+      <p class="hero-subtitle">A zero-dependency TypeScript library and interactive web app for rendering guitar, bass,
+        and custom instrument neck diagrams.</p>
       <div class="hero-cta">
         <a href="editor.html" class="cta-btn cta-primary">Launch Live Editor</a>
         <a href="demo.html" class="cta-btn cta-secondary">Explore Examples</a>
@@ -318,25 +333,29 @@
       <div class="feature-card">
         <div class="feature-icon">⚡</div>
         <h3 class="feature-title">Zero Dependencies</h3>
-        <p class="feature-desc">Lightweight library compiled to standard ESM and UMD bundles with zero external runtime dependencies.</p>
+        <p class="feature-desc">Lightweight library compiled to standard ESM and UMD bundles with zero external runtime
+          dependencies.</p>
       </div>
 
       <div class="feature-card">
         <div class="feature-icon">🎸</div>
         <h3 class="feature-title">Horizontal & Vertical</h3>
-        <p class="feature-desc">Full support for both horizontal neck layouts and vertical chord diagram orientations.</p>
+        <p class="feature-desc">Full support for both horizontal neck layouts and vertical chord diagram orientations.
+        </p>
       </div>
 
       <div class="feature-card">
         <div class="feature-icon">🎨</div>
         <h3 class="feature-title">Custom Fingering & Colors</h3>
-        <p class="feature-desc">Configurable fret markers, string counts, inlays, open strings, note labels, and background colors.</p>
+        <p class="feature-desc">Configurable fret markers, string counts, inlays, open strings, note labels, and
+          background colors.</p>
       </div>
     </section>
   </main>
 
   <footer>
-    <p>Released under the MIT License • View on <a href="https://github.com/sebastienferry/fretly" target="_blank" rel="noopener">GitHub</a></p>
+    <p>Released under the MIT License • View on <a href="https://github.com/sebastienferry/fretly" target="_blank"
+        rel="noopener">GitHub</a></p>
   </footer>
 
   <!-- Include Fretly UMD Library Bundle -->
@@ -344,8 +363,9 @@
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const container = document.getElementById('fretboard-sample');
-      if (typeof Fretly !== 'undefined' && Fretly.Fretboard) {
-        const fretboard = new Fretly.Fretboard({
+      const fretlyLib = window.fretly || window.Fretly;
+      if (fretlyLib && fretlyLib.Fretboard) {
+        const fretboard = new fretlyLib.Fretboard({
           stringCount: 6,
           fretCount: 5,
           orientation: 'horizontal',
@@ -362,4 +382,5 @@
     });
   </script>
 </body>
+
 </html>

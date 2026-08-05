@@ -13,6 +13,7 @@ export default [
         file: 'dist/index.umd.js',
         format: 'umd',
         name: 'fretly',
+        footer: 'if (typeof window !== "undefined" && window.fretly && !window.Fretly) { window.Fretly = window.fretly; }',
         sourcemap: true,
         globals: {}
       }
