@@ -261,7 +261,7 @@ export function getVerticalMarkerPosition(
 export function getHorizontalFretPosition(
   fretIndex: number,
   fretSpacing: number,
-  height: number
+  _height: number
 ): Position {
   // Fret spans full height of fretboard
   return {
@@ -276,7 +276,7 @@ export function getHorizontalFretPosition(
 export function getVerticalFretPosition(
   fretIndex: number,
   fretSpacing: number,
-  width: number
+  _width: number
 ): Position {
   // Fret spans full width of fretboard
   return {
@@ -291,7 +291,7 @@ export function getVerticalFretPosition(
 export function getHorizontalStringPosition(
   stringIndex: number,
   stringSpacing: number,
-  width: number
+  _width: number
 ): Position {
   // String spans full width of fretboard
   return {

@@ -216,12 +216,6 @@ export class Fretboard {
         const y = height + inlayOffset;
         this.inlays.push(new Inlay(fretNumber, x + this.options.fretSpacing/2, y, 'below'));
       } else {
-        // Vertical: inlays left of the fretboard, centered on the fret
-        const width = calculateVerticalWidth(
-          this.options.stringCount,
-          this.options.stringSpacing,
-          this.options.stringThickness
-        );
         const x = -inlayOffset;
         const y = getVerticalFretY(fretNumber, this.options.fretSpacing) + 
                   this.options.fretThickness / 2;

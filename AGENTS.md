@@ -1,7 +1,7 @@
 <!-- SPECKIT START -->
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan:
-[specs/002-fretboard-fingering/plan.md](file:///Users/sferry/Sources/fretly/specs/002-fretboard-fingering/plan.md)
+[specs/003-github-cicd-release/plan.md](file:///Users/sferry/Sources/fretly/specs/003-github-cicd-release/plan.md)
 <!-- SPECKIT END -->
 
 # Role & Context

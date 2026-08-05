@@ -1,5 +1,7 @@
 # Fretly
 
+[![CI](https://github.com/sebastienferry/fretly/actions/workflows/ci.yml/badge.svg)](https://github.com/sebastienferry/fretly/actions/workflows/ci.yml)
+
 A zero-dependency TypeScript library for rendering customizable guitar and bass fretboards as SVG graphics. Supports both horizontal and vertical orientations, position markers, inlays, and fingering diagrams.
 
 ## 🚀 Interactive Live Editor
@@ -61,6 +63,20 @@ document.body.appendChild(fretboard.render());
 | `text` | `string` | `""` | Optional label displayed inside marker circle |
 | `color` | `string` | `'#000000'` | Optional HTML/CSS background fill color |
 | `textColor` | `string` | `'#ffffff'` | Optional HTML/CSS font color for text |
+
+## Development & Releases
+
+```bash
+# Install dependencies
+npm ci
+
+# Run build, lint, and test suite
+npm run build
+npm run lint
+npm test
+```
+
+Releases are automatically published to GitHub Releases and NPM whenever a maintainer pushes a version tag (e.g. `v1.0.0`).
 
 ## License
 

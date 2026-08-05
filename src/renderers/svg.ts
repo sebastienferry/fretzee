@@ -2,13 +2,12 @@
  * SVG renderer for Fretboard Renderer Library
  */
 
-import type { FretboardOptions, Position, Marker as MarkerInterface } from '../fretboard/types';
+import type { FretboardOptions, Marker as MarkerInterface } from '../fretboard/types';
 import { SVG_NS, CSS_CLASSES } from '../fretboard/constants';
 import { String as GuitarString } from '../fretboard/String';
 import { Fret } from '../fretboard/Fret';
 import { Inlay } from '../fretboard/Inlay';
 import { Fingering } from '../fretboard/Fingering';
-import type { Marker } from '../fretboard/Marker';
 import {
   calculateHorizontalWidth,
   calculateHorizontalHeight,
@@ -113,7 +112,7 @@ export class SvgRenderer {
     fingerings: Fingering[],
     svg: SVGSVGElement,
     width: number,
-    height: number
+    _height: number
   ): void {
     // Render strings (horizontal lines spanning fretboard width)
     const stringsGroup = this.createGroup(CSS_CLASSES.strings);
