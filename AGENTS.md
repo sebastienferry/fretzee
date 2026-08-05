@@ -1,7 +1,7 @@
 <!-- SPECKIT START -->
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan:
-[specs/003-github-cicd-release/plan.md](file:///Users/sferry/Sources/fretly/specs/003-github-cicd-release/plan.md)
+[specs/004-github-pages-site/plan.md](specs/004-github-pages-site/plan.md)
 <!-- SPECKIT END -->
 
 # Role & Context
