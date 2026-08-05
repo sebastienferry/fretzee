@@ -274,8 +274,8 @@ export class SvgRenderer {
   private renderHorizontalInlayDots(group: SVGElement): void {
     const stringHeight = (this.options.stringCount - 1) * this.options.stringSpacing + this.options.stringThickness;
     const neckCenterY = stringHeight / 2;
-    const dotRadius = 4;
-    const dotColor = '#a0aec0';
+    const dotRadius = 6;
+    const dotColor = '#d1d5db';
 
     for (const fretNum of this.options.inlayPositions) {
       if (fretNum > this.options.fretCount) continue;
@@ -283,7 +283,9 @@ export class SvgRenderer {
       const isDoubleDot = fretNum % 12 === 0;
 
       if (isDoubleDot) {
-        const offset = stringHeight / 4;
+        const offset = this.options.stringCount >= 6 
+          ? this.options.stringSpacing 
+          : this.options.stringSpacing * 0.75;
         const circle1 = document.createElementNS(SVG_NS, 'circle');
         circle1.setAttribute('cx', String(fretX));
         circle1.setAttribute('cy', String(neckCenterY - offset));
@@ -317,8 +319,8 @@ export class SvgRenderer {
   private renderVerticalInlayDots(group: SVGElement): void {
     const stringWidth = (this.options.stringCount - 1) * this.options.stringSpacing + this.options.stringThickness;
     const neckCenterX = stringWidth / 2;
-    const dotRadius = 4;
-    const dotColor = '#a0aec0';
+    const dotRadius = 6;
+    const dotColor = '#d1d5db';
 
     for (const fretNum of this.options.inlayPositions) {
       if (fretNum > this.options.fretCount) continue;
@@ -326,7 +328,9 @@ export class SvgRenderer {
       const isDoubleDot = fretNum % 12 === 0;
 
       if (isDoubleDot) {
-        const offset = stringWidth / 4;
+        const offset = this.options.stringCount >= 6 
+          ? this.options.stringSpacing 
+          : this.options.stringSpacing * 0.75;
         const circle1 = document.createElementNS(SVG_NS, 'circle');
         circle1.setAttribute('cx', String(neckCenterX - offset));
         circle1.setAttribute('cy', String(fretY));
