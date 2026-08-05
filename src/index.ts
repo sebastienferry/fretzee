@@ -6,3 +6,8 @@
  */
 
 export { Fretboard, type FretboardOptions } from './fretboard/Fretboard';
+export { Fingering } from './fretboard/Fingering';
+export type { Fingering as FingeringOptions } from './fretboard/types';
+export type { Fingering as FingeringInterface } from './fretboard/types';
+export type { Fingering as IFingering } from './fretboard/types';
+export type { Position, MarkerOptions, Marker } from './fretboard/types';

@@ -59,6 +59,8 @@ Thumbs.db
 
 # Spec Kit
 .specify/
+.agents/skills/speckit-*
 
 # Vibe
 .vibe/
+

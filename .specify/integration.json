@@ -2,14 +2,14 @@
   "version": "0.8.6.dev0",
   "integration_state_schema": 1,
   "installed_integrations": [
-    "vibe"
+    "agy"
   ],
   "integration_settings": {
-    "vibe": {
+    "agy": {
       "script": "sh",
       "invoke_separator": "-"
     }
   },
-  "integration": "vibe",
-  "default_integration": "vibe"
+  "integration": "agy",
+  "default_integration": "agy"
 }

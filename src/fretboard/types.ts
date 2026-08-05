@@ -32,6 +32,29 @@ export interface FretboardOptions {
   
   /** Whether to display inlay numbers */
   showInlays?: boolean;
+
+  /** Fingering markers to render on the fretboard */
+  fingerings?: Fingering[];
+}
+
+/**
+ * Representation of a fingering marker on the fretboard
+ */
+export interface Fingering {
+  /** String index (1-based, 1 = top string) */
+  string: number;
+
+  /** Fret number (0 = open string, 1..N = fretted position) */
+  fret: number;
+
+  /** Optional text to display inside the marker circle */
+  text?: string;
+
+  /** Optional HTML/CSS background fill color for the circle (default: 'black') */
+  color?: string;
+
+  /** Optional HTML/CSS font color for text inside the circle (default: 'white') */
+  textColor?: string;
 }
 
 /**

@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Fretly Live Interactive Editor - Live JS/JSON fretboard generator with custom fingerings, colors, and orientation.">
+  <title>Fretly Live Editor - Guitar & Bass Fretboard Generator</title>
+
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-dark: #0f172a;
+      --panel-bg: #1e293b;
+      --panel-border: #334155;
+      --accent-blue: #38bdf8;
+      --accent-indigo: #6366f1;
+      --accent-green: #22c55e;
+      --accent-red: #ef4444;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --editor-bg: #090d16;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Header */
+    header {
+      background: rgba(30, 41, 59, 0.8);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--panel-border);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 60px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo {
+      font-size: 24px;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-indigo));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .brand-tagline {
+      font-size: 13px;
+      color: var(--text-muted);
+      border-left: 1px solid var(--panel-border);
+      padding-left: 12px;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+
+    .btn-secondary {
+      background: var(--panel-bg);
+      color: var(--text-main);
+      border-color: var(--panel-border);
+    }
+
+    .btn-secondary:hover {
+      background: #283548;
+      border-color: var(--accent-blue);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-indigo));
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(56, 189, 248, 0.25);
+    }
+
+    .btn-primary:hover {
+      opacity: 0.95;
+      transform: translateY(-1px);
+    }
+
+    /* Preset Bar */
+    .preset-bar {
+      background: #111827;
+      border-bottom: 1px solid var(--panel-border);
+      padding: 8px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      overflow-x: auto;
+      font-size: 13px;
+    }
+
+    .preset-label {
+      color: var(--text-muted);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .preset-chip {
+      background: var(--panel-bg);
+      color: var(--text-main);
+      border: 1px solid var(--panel-border);
+      padding: 4px 12px;
+      border-radius: 20px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+      font-size: 12px;
+    }
+
+    .preset-chip:hover, .preset-chip.active {
+      background: rgba(56, 189, 248, 0.15);
+      border-color: var(--accent-blue);
+      color: var(--accent-blue);
+    }
+
+    /* Main Workspace Split */
+    .workspace {
+      display: flex;
+      flex: 1;
+      height: calc(100vh - 104px);
+      overflow: hidden;
+    }
+
+    .editor-pane {
+      width: 48%;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid var(--panel-border);
+      background: var(--editor-bg);
+    }
+
+    .pane-header {
+      background: var(--panel-bg);
+      padding: 8px 16px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--panel-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .editor-wrapper {
+      flex: 1;
+      position: relative;
+      display: flex;
+    }
+
+    .line-numbers {
+      width: 40px;
+      background: #0d131f;
+      color: #475569;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      padding: 16px 0;
+      text-align: right;
+      user-select: none;
+      border-right: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .line-numbers div {
+      padding-right: 10px;
+    }
+
+    textarea#code-input {
+      flex: 1;
+      background: transparent;
+      color: #e2e8f0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      padding: 16px;
+      border: none;
+      outline: none;
+      resize: none;
+      white-space: pre;
+      tab-size: 2;
+    }
+
+    /* Error Banner */
+    .error-banner {
+      background: rgba(239, 68, 68, 0.15);
+      border-top: 1px solid var(--accent-red);
+      color: #fca5a5;
+      padding: 10px 16px;
+      font-size: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      display: none;
+      max-height: 80px;
+      overflow-y: auto;
+    }
+
+    .error-banner.active {
+      display: block;
+    }
+
+    /* Preview Pane */
+    .preview-pane {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: #0f172a;
+    }
+
+    .preview-canvas {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px;
+      overflow: auto;
+      background-image: 
+        radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+
+    .svg-container {
+      background: #ffffff;
+      padding: 32px;
+      border-radius: 12px;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+      display: inline-block;
+      transition: all 0.2s ease;
+    }
+
+    .svg-container svg {
+      display: block;
+    }
+
+    /* Footer Status Bar */
+    .status-bar {
+      background: var(--panel-bg);
+      border-top: 1px solid var(--panel-border);
+      padding: 6px 16px;
+      font-size: 11px;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .status-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent-green);
+    }
+
+    .status-dot.error {
+      background: var(--accent-red);
+    }
+
+    @media (max-width: 900px) {
+      .workspace {
+        flex-direction: column;
+        height: auto;
+        overflow: auto;
+      }
+      .editor-pane, .preview-pane {
+        width: 100%;
+        height: 500px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="brand">
+      <div class="brand-logo">🎸 Fretly</div>
+      <div class="brand-tagline">Direct Fretboard Editor & Playground</div>
+    </div>
+    <div class="header-actions">
+      <a href="demo.html" class="btn btn-secondary">Documentation & Demos</a>
+      <button class="btn btn-primary" onclick="copySvgCode()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
+        Copy SVG
+      </button>
+    </div>
+  </header>
+
+  <!-- Presets -->
+  <div class="preset-bar">
+    <span class="preset-label">Presets:</span>
+    <button class="preset-chip active" onclick="loadPreset('c-major')">C Major (4 Frets, Horizontal)</button>
+    <button class="preset-chip" onclick="loadPreset('g-major-vertical')">G Major (Vertical)</button>
+    <button class="preset-chip" onclick="loadPreset('a-minor-pentatonic')">A Minor Pentatonic</button>
+    <button class="preset-chip" onclick="loadPreset('bass-4string')">4-String Bass (A Minor)</button>
+    <button class="preset-chip" onclick="loadPreset('7string-metal')">7-String Drop A</button>
+  </div>
+
+  <!-- Workspace -->
+  <main class="workspace">
+    <!-- Editor Pane -->
+    <div class="editor-pane">
+      <div class="pane-header">
+        <span>JavaScript / JSON Configuration</span>
+        <button class="btn btn-secondary" style="padding: 2px 8px; font-size: 11px;" onclick="resetEditor()">Reset</button>
+      </div>
+      <div class="editor-wrapper">
+        <div class="line-numbers" id="line-numbers"></div>
+        <textarea id="code-input" spellcheck="false" autocomplete="off" placeholder="Enter configuration object..."></textarea>
+      </div>
+      <div class="error-banner" id="error-banner"></div>
+    </div>
+
+    <!-- Preview Pane -->
+    <div class="preview-pane">
+      <div class="pane-header">
+        <span>Live Fretboard Preview</span>
+        <span id="dimensions-badge" style="color: var(--accent-blue); font-family: 'JetBrains Mono', monospace;"></span>
+      </div>
+      <div class="preview-canvas">
+        <div class="svg-container" id="svg-output"></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Status Bar -->
+  <footer class="status-bar">
+    <div class="status-item">
+      <div class="status-dot" id="status-dot"></div>
+      <span id="status-text">Live Render Active</span>
+    </div>
+    <div>Fretly v0.1.0 • Modern TypeScript SVG Engine</div>
+  </footer>
+
+  <!-- Library Scripts -->
+  <script src="./dist/index.umd.js"></script>
+
+  <script>
+    // Presets Definition
+    const PRESETS = {
+      'c-major': `{
+  stringCount: 6,
+  fretCount: 4,
+  orientation: 'horizontal',
+  stringSpacing: 30,
+  fretSpacing: 60,
+  fingerings: [
+    { string: 1, fret: 0, text: 'O' },
+    { string: 2, fret: 1, text: '1' },
+    { string: 3, fret: 0, text: 'O' },
+    { string: 4, fret: 2, text: '2' },
+    { string: 5, fret: 3, text: '3', color: '#e74c3c', textColor: '#ffffff' }
+  ]
+}`,
+      'g-major-vertical': `{
+  stringCount: 6,
+  fretCount: 4,
+  orientation: 'vertical',
+  stringSpacing: 30,
+  fretSpacing: 55,
+  fingerings: [
+    { string: 6, fret: 3, text: '3', color: '#e74c3c' },
+    { string: 5, fret: 2, text: '2' },
+    { string: 4, fret: 0, text: 'O' },
+    { string: 3, fret: 0, text: 'O' },
+    { string: 2, fret: 0, text: 'O' },
+    { string: 1, fret: 3, text: '4', color: '#e74c3c' }
+  ]
+}`,
+      'a-minor-pentatonic': `{
+  stringCount: 6,
+  fretCount: 6,
+  orientation: 'horizontal',
+  stringSpacing: 28,
+  fretSpacing: 50,
+  fingerings: [
+    { string: 6, fret: 5, text: 'R', color: '#e74c3c' },
+    { string: 5, fret: 5, text: '4', color: '#3498db' },
+    { string: 4, fret: 5, text: 'b7', color: '#f39c12' },
+    { string: 3, fret: 5, text: 'b3', color: '#2ecc71' },
+    { string: 2, fret: 5, text: '5', color: '#9b59b6' },
+    { string: 1, fret: 5, text: 'R', color: '#e74c3c' }
+  ]
+}`,
+      'bass-4string': `{
+  stringCount: 4,
+  fretCount: 5,
+  orientation: 'horizontal',
+  stringSpacing: 32,
+  fretSpacing: 60,
+  stringThickness: 2.5,
+  fingerings: [
+    { string: 4, fret: 5, text: 'A', color: '#e74c3c' },
+    { string: 3, fret: 2, text: 'E', color: '#3498db' },
+    { string: 2, fret: 2, text: 'A', color: '#e74c3c' },
+    { string: 1, fret: 2, text: 'C#', color: '#2ecc71' }
+  ]
+}`,
+      '7string-metal': `{
+  stringCount: 7,
+  fretCount: 5,
+  orientation: 'vertical',
+  stringSpacing: 26,
+  fretSpacing: 50,
+  fingerings: [
+    { string: 7, fret: 0, text: 'A', color: '#e74c3c' },
+    { string: 6, fret: 0, text: 'E', color: '#3498db' },
+    { string: 5, fret: 0, text: 'A', color: '#e74c3c' }
+  ]
+}`
+    };
+
+    const codeInput = document.getElementById('code-input');
+    const lineNumbers = document.getElementById('line-numbers');
+    const svgOutput = document.getElementById('svg-output');
+    const errorBanner = document.getElementById('error-banner');
+    const statusDot = document.getElementById('status-dot');
+    const statusText = document.getElementById('status-text');
+    const dimensionsBadge = document.getElementById('dimensions-badge');
+
+    let currentPreset = 'c-major';
+
+    // Update Line Numbers
+    function updateLineNumbers() {
+      const lines = codeInput.value.split('\n').length;
+      lineNumbers.innerHTML = Array.from({ length: lines }, (_, i) => `<div>${i + 1}</div>`).join('');
+    }
+
+    // Render Fretboard
+    function updateFretboard() {
+      updateLineNumbers();
+      const code = codeInput.value;
+
+      try {
+        // Safe evaluation of the JS configuration object
+        const optionsFunc = new Function(`return (${code});`);
+        const options = optionsFunc();
+
+        if (typeof fretly === 'undefined' || !fretly.Fretboard) {
+          throw new Error('Fretly library not loaded');
+        }
+
+        const fretboard = new fretly.Fretboard(options);
+        const svg = fretboard.render();
+
+        svgOutput.innerHTML = '';
+        svgOutput.appendChild(svg);
+
+        // Update status & dimensions
+        errorBanner.classList.remove('active');
+        statusDot.classList.remove('error');
+        statusText.textContent = 'Live Render Active';
+        dimensionsBadge.textContent = `${svg.getAttribute('width')}px × ${svg.getAttribute('height')}px`;
+
+      } catch (err) {
+        errorBanner.textContent = `Error: ${err.message}`;
+        errorBanner.classList.add('active');
+        statusDot.classList.add('error');
+        statusText.textContent = 'Syntax Error';
+      }
+    }
+
+    function loadPreset(key) {
+      if (!PRESETS[key]) return;
+      currentPreset = key;
+      codeInput.value = PRESETS[key];
+
+      document.querySelectorAll('.preset-chip').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+
+      updateFretboard();
+    }
+
+    function resetEditor() {
+      loadPreset('c-major');
+    }
+
+    function copySvgCode() {
+      const svg = svgOutput.querySelector('svg');
+      if (!svg) return;
+      navigator.clipboard.writeText(svg.outerHTML).then(() => {
+        alert('SVG code copied to clipboard!');
+      });
+    }
+
+    // Tab key support in textarea
+    codeInput.addEventListener('keydown', function(e) {
+      if (e.key === 'Tab') {
+        e.preventDefault();
+        const start = this.selectionStart;
+        const end = this.selectionEnd;
+        this.value = this.value.substring(0, start) + '  ' + this.value.substring(end);
+        this.selectionStart = this.selectionEnd = start + 2;
+        updateFretboard();
+      }
+    });
+
+    codeInput.addEventListener('input', updateFretboard);
+
+    // Initial Load
+    codeInput.value = PRESETS['c-major'];
+    updateFretboard();
+  </script>
+</body>
+</html>

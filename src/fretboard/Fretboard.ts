@@ -26,6 +26,7 @@ import { Marker } from './Marker';
 import { String } from './String';
 import { Fret } from './Fret';
 import { Inlay } from './Inlay';
+import { Fingering } from './Fingering';
 import { SvgRenderer } from '../renderers/svg';
 import {
   DEFAULT_FRET_COUNT,
@@ -84,6 +85,9 @@ export class Fretboard {
   /** Custom marker objects added by users */
   private markers: Marker[] = [];
 
+  /** Fingering markers added by users */
+  private fingerings: Fingering[] = [];
+
   /** Cached SVG element to avoid re-rendering */
   private svgCache?: SVGSVGElement;
 
@@ -92,21 +96,6 @@ export class Fretboard {
    * 
    * @param options - Partial configuration options. Missing values use library defaults.
    * @throws RangeError if any option value is outside valid ranges
-   * 
-   * @example
-   * ```typescript
-   * // Default 6-string guitar with 12 frets
-   * const fretboard = new Fretboard();
-   * 
-   * // Custom configuration
-   * const customFretboard = new Fretboard({
-   *   fretCount: 24,
-   *   stringCount: 7,
-   *   orientation: 'vertical',
-   *   stringSpacing: 25,
-   *   fretSpacing: 40
-   * });
-   * ```
    */
   constructor(options: Partial<FretboardOptions> = {}) {
     // Merge options with defaults
@@ -120,11 +109,15 @@ export class Fretboard {
       fretThickness: DEFAULT_FRET_THICKNESS,
       inlayPositions: [...DEFAULT_INLAY_POSITIONS],
       showInlays: DEFAULT_SHOW_INLAYS,
+      fingerings: [],
       ...options
     };
 
     // Validate all provided options
     validateOptions(options);
+
+    // Initialize fingerings
+    this.fingerings = (this.options.fingerings || []).map(f => new Fingering(f));
 
     // Initialize renderer
     this.renderer = new SvgRenderer(this.options);
@@ -223,12 +216,6 @@ export class Fretboard {
         const y = height + inlayOffset;
         this.inlays.push(new Inlay(fretNumber, x + this.options.fretSpacing/2, y, 'below'));
       } else {
-        // Vertical: inlays left of the fretboard, centered on the fret
-        const width = calculateVerticalWidth(
-          this.options.stringCount,
-          this.options.stringSpacing,
-          this.options.stringThickness
-        );
         const x = -inlayOffset;
         const y = getVerticalFretY(fretNumber, this.options.fretSpacing) + 
                   this.options.fretThickness / 2;
@@ -262,7 +249,8 @@ export class Fretboard {
       this.strings,
       this.frets,
       this.inlays,
-      this.markers
+      this.markers,
+      this.fingerings
     );
 
     return this.svgCache;
@@ -494,6 +482,15 @@ export class Fretboard {
    */
   getMarkers(): Marker[] {
     return [...this.markers];
+  }
+
+  /**
+   * Returns all fingering markers on the fretboard
+   * 
+   * @returns Fingering[] - Array of all fingering instances
+   */
+  getFingerings(): Fingering[] {
+    return [...this.fingerings];
   }
 
   /**
