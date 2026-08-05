@@ -1,12 +1,13 @@
 # Fretly
 
 [![CI](https://github.com/sebastienferry/fretly/actions/workflows/ci.yml/badge.svg)](https://github.com/sebastienferry/fretly/actions/workflows/ci.yml)
+[![GitHub Pages](https://github.com/sebastienferry/fretly/actions/workflows/deploy-pages.yml/badge.svg)](https://sebastienferry.github.io/fretly/)
 
 A zero-dependency TypeScript library for rendering customizable guitar and bass fretboards as SVG graphics. Supports both horizontal and vertical orientations, position markers, inlays, and fingering diagrams.
 
-## 🚀 Interactive Live Editor
+## 🚀 Interactive Live Editor & Web Site
 
-Try the direct live code editor online or open [`editor.html`](file:///Users/sferry/Sources/fretly/editor.html) locally to edit JSON/JS configurations and preview SVG diagrams in real-time!
+Try the live online configurator on [GitHub Pages](https://sebastienferry.github.io/fretly/) or open [`editor.html`](editor.html) locally to edit JSON/JS configurations and preview SVG diagrams in real-time!
 
 ## Installation
 
