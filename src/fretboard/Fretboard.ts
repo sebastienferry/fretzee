@@ -199,7 +199,7 @@ export class Fretboard {
   private initializeInlays(): void {
     this.inlays = [];
     const isHorizontal = this.options.orientation === 'horizontal';
-    const inlayOffset = 20; // Space for inlay numbers
+    const inlayOffset = 20; // Base space for inlay numbers
 
     for (const fretNumber of this.options.inlayPositions) {
       if (fretNumber > this.options.fretCount) continue;
@@ -213,10 +213,16 @@ export class Fretboard {
           this.options.stringSpacing,
           this.options.stringThickness
         );
-        const y = height + inlayOffset;
+        // Account for the extra thickness of the bottom string (varying thickness)
+        // The bottom string has thickness = stringThickness * stringCount, but
+        // calculateHorizontalHeight only uses base stringThickness
+        const bottomStringExtraThickness = this.options.stringThickness * (this.options.stringCount - 1);
+        const y = height + bottomStringExtraThickness + inlayOffset;
         this.inlays.push(new Inlay(fretNumber, x + this.options.fretSpacing/2, y, 'below'));
       } else {
-        const x = -inlayOffset;
+        // Account for the extra thickness of the leftmost string in vertical mode
+        const leftStringExtraThickness = this.options.stringThickness * (this.options.stringCount - 1);
+        const x = -(inlayOffset + leftStringExtraThickness);
         const y = getVerticalFretY(fretNumber, this.options.fretSpacing) + 
                   this.options.fretThickness / 2;
         this.inlays.push(new Inlay(fretNumber, x, y, 'left'));
