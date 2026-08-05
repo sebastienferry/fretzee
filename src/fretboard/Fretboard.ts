@@ -205,8 +205,9 @@ export class Fretboard {
       if (fretNumber > this.options.fretCount) continue;
 
       if (isHorizontal) {
-        // Horizontal: inlays below the fretboard, centered on the fret
-        const x = getHorizontalFretX(fretNumber, this.options.fretSpacing) + 
+        // Horizontal: inlays below the fretboard, centered between fret lines
+        // Position between fret lines, same as fingerings
+        const x = (fretNumber - 0.5) * this.options.fretSpacing + 
                   this.options.fretThickness / 2;
         const height = calculateHorizontalHeight(
           this.options.stringCount,
@@ -218,12 +219,13 @@ export class Fretboard {
         // calculateHorizontalHeight only uses base stringThickness
         const bottomStringExtraThickness = this.options.stringThickness * (this.options.stringCount - 1);
         const y = height + bottomStringExtraThickness + inlayOffset;
-        this.inlays.push(new Inlay(fretNumber, x + this.options.fretSpacing/2, y, 'below'));
+        this.inlays.push(new Inlay(fretNumber, x, y, 'below'));
       } else {
         // Account for the extra thickness of the leftmost string in vertical mode
         const leftStringExtraThickness = this.options.stringThickness * (this.options.stringCount - 1);
         const x = -(inlayOffset + leftStringExtraThickness);
-        const y = getVerticalFretY(fretNumber, this.options.fretSpacing) + 
+        // Position inlay between fret lines, same as fingerings
+        const y = (fretNumber - 0.5) * this.options.fretSpacing + 
                   this.options.fretThickness / 2;
         this.inlays.push(new Inlay(fretNumber, x, y, 'left'));
       }
