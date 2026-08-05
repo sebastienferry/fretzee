@@ -107,7 +107,10 @@
 </head>
 <body>
   <h1>🎸 Fretly Demo</h1>
-  <p style="text-align: center; color: #666;">Guitar Fretboard Renderer Library</p>
+  <p style="text-align: center; color: #666; margin-bottom: 15px;">Guitar Fretboard Renderer Library</p>
+  <div style="text-align: center; margin-bottom: 25px;">
+    <a href="editor.html" style="background: #007bff; color: white; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-weight: 600;">⚡ Open Direct Live Editor</a>
+  </div>
 
   <!-- Demo 1: Default Fretboard -->
   <div class="demo-section">
@@ -229,6 +232,35 @@ fretboard.addMarker(5, 2, { color: 'red', size: 8 });</pre>
       </div>
     </div>
     <pre>new Fretboard({ showInlays: false });</pre>
+  </div>
+
+  <!-- Demo 7: Fingering Markers -->
+  <div class="demo-section">
+    <h2>🖐️ Fingering Diagrams</h2>
+    <p>Display finger numbers, open strings, and custom root note colors on the fretboard.</p>
+    <div class="fretboard-container">
+      <div class="fretboard-wrapper">
+        <h3>C Major Chord (Vertical)</h3>
+        <div id="fretboard-fingering-c-major"></div>
+      </div>
+      <div class="fretboard-wrapper">
+        <h3>Scale Degrees with Custom Colors (Horizontal)</h3>
+        <div id="fretboard-fingering-colors"></div>
+      </div>
+    </div>
+    <pre>// C Major Chord
+new Fretboard({
+  stringCount: 6,
+  fretCount: 4,
+  orientation: 'vertical',
+  fingerings: [
+    { string: 1, fret: 0, text: 'O' },
+    { string: 2, fret: 1, text: '1' },
+    { string: 3, fret: 0, text: 'O' },
+    { string: 4, fret: 2, text: '2' },
+    { string: 5, fret: 3, text: '3', color: '#e74c3c', textColor: '#ffffff' }
+  ]
+});</pre>
   </div>
 
   <!-- Load library - try UMD first, fall back to ESM with dynamic import -->
@@ -378,6 +410,34 @@ fretboard.addMarker(5, 2, { color: 'red', size: 8 });</pre>
       showInlays: false
     });
     document.getElementById('fretboard-no-inlays').appendChild(noInlaysFretboard.render());
+
+    // Demo 7: Fingering Diagrams
+    const cMajorFretboard = new Fretboard({
+      stringCount: 6,
+      fretCount: 4,
+      orientation: 'vertical',
+      fingerings: [
+        { string: 1, fret: 0, text: 'O' },
+        { string: 2, fret: 1, text: '1' },
+        { string: 3, fret: 0, text: 'O' },
+        { string: 4, fret: 2, text: '2' },
+        { string: 5, fret: 3, text: '3', color: '#e74c3c', textColor: '#ffffff' }
+      ]
+    });
+    document.getElementById('fretboard-fingering-c-major').appendChild(cMajorFretboard.render());
+
+    const scaleColorsFretboard = new Fretboard({
+      stringCount: 6,
+      fretCount: 5,
+      orientation: 'horizontal',
+      fingerings: [
+        { string: 6, fret: 3, text: 'R', color: '#e74c3c' },
+        { string: 5, fret: 2, text: '3', color: '#3498db' },
+        { string: 5, fret: 5, text: '4', color: '#2ecc71' },
+        { string: 4, fret: 2, text: '5', color: '#f39c12' }
+      ]
+    });
+    document.getElementById('fretboard-fingering-colors').appendChild(scaleColorsFretboard.render());
 
     // Log library info
     console.log('%c🎸 Fretly Demo Loaded', 'color: #007bff; font-size: 16px; font-weight: bold;');

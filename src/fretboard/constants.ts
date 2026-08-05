@@ -15,6 +15,10 @@ export const DEFAULT_SHOW_INLAYS = true;
 // Standard guitar inlay positions
 export const DEFAULT_INLAY_POSITIONS = [3, 5, 7, 9, 12, 15, 17, 19, 21, 24];
 
+// Default fingering styling
+export const DEFAULT_FINGERING_COLOR = '#000000';
+export const DEFAULT_FINGERING_TEXT_COLOR = '#ffffff';
+
 // Validation ranges
 export const MIN_FRET_COUNT = 4;
 export const MAX_FRET_COUNT = 16;
@@ -34,9 +38,13 @@ export const CSS_CLASSES = {
   strings: 'fretly-strings',
   inlays: 'fretly-inlays',
   markers: 'fretly-markers',
+  fingerings: 'fretly-fingerings',
   fret: (index: number) => `fretly-fret ${CSS_CLASSES.frets} fretly-fret-${index}`,
   string: (index: number) => `fretly-string ${CSS_CLASSES.strings} fretly-string-${index}`,
-  inlay: (fretNumber: number) => `fretly-inlay ${CSS_CLASSES.inlays} fretly-inlay-${fretNumber}`
+  inlay: (fretNumber: number) => `fretly-inlay ${CSS_CLASSES.inlays} fretly-inlay-${fretNumber}`,
+  fingering: (stringNum: number, fretNum: number) => `fretly-fingering ${CSS_CLASSES.fingerings} fretly-fingering-s${stringNum}-f${fretNum}`,
+  fingeringCircle: 'fretly-fingering-circle',
+  fingeringText: 'fretly-fingering-text'
 };
 
 // Error messages

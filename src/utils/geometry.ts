@@ -3,6 +3,7 @@
  */
 
 import type { Position } from '../fretboard/types';
+import { DEFAULT_FRET_SPACING } from '../fretboard/constants';
 
 /**
  * Calculate total width of fretboard in horizontal orientation
@@ -314,3 +315,52 @@ export function getVerticalStringPosition(
     y: 0
   };
 }
+
+/**
+ * Calculate dynamic radius for fingering markers ensuring no overlap between adjacent strings
+ * 
+ * @param stringSpacing - Pixel spacing between strings
+ * @param fretSpacing - Pixel spacing between frets (optional)
+ * @returns number - Marker radius in pixels
+ */
+export function calculateFingeringRadius(
+  stringSpacing: number,
+  fretSpacing: number = DEFAULT_FRET_SPACING
+): number {
+  const maxRadiusFromStrings = stringSpacing * 0.4;
+  const maxRadiusFromFrets = fretSpacing * 0.4;
+  return Math.min(maxRadiusFromStrings, maxRadiusFromFrets);
+}
+
+/**
+ * Calculate 2D position for a fingering marker on the fretboard
+ * 
+ * @param stringNum - 1-based string number (1 = top string / high E)
+ * @param fretNum - Fret number (0 = open string, 1..N = fretted position)
+ * @param orientation - Layout direction ('horizontal' | 'vertical')
+ * @param stringSpacing - Pixel spacing between strings
+ * @param fretSpacing - Pixel spacing between frets
+ * @param stringCount - Total string count
+ * @returns Position - {x, y} coordinates of fingering marker center
+ */
+export function getFingeringPosition(
+  stringNum: number,
+  fretNum: number,
+  orientation: 'horizontal' | 'vertical',
+  stringSpacing: number,
+  fretSpacing: number,
+  stringCount: number
+): Position {
+  const stringIndex = stringNum - 1;
+
+  if (orientation === 'horizontal') {
+    const y = getHorizontalStringY(stringIndex, stringSpacing);
+    const x = fretNum === 0 ? -fretSpacing * 0.35 : (fretNum - 0.5) * fretSpacing;
+    return { x, y };
+  } else {
+    const x = getVerticalStringX(stringIndex, stringSpacing, stringCount);
+    const y = fretNum === 0 ? -fretSpacing * 0.35 : (fretNum - 0.5) * fretSpacing;
+    return { x, y };
+  }
+}
+

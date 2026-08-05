@@ -7,12 +7,15 @@ import { SVG_NS, CSS_CLASSES } from '../fretboard/constants';
 import { String as GuitarString } from '../fretboard/String';
 import { Fret } from '../fretboard/Fret';
 import { Inlay } from '../fretboard/Inlay';
+import { Fingering } from '../fretboard/Fingering';
 import type { Marker } from '../fretboard/Marker';
 import {
   calculateHorizontalWidth,
   calculateHorizontalHeight,
   calculateVerticalWidth,
-  calculateVerticalHeight
+  calculateVerticalHeight,
+  calculateFingeringRadius,
+  getFingeringPosition
 } from '../utils/geometry';
 
 /**
@@ -32,7 +35,8 @@ export class SvgRenderer {
     strings: GuitarString[],
     frets: Fret[],
     inlays: Inlay[],
-    markers: MarkerInterface[] = []
+    markers: MarkerInterface[] = [],
+    fingerings: Fingering[] = []
   ): SVGSVGElement {
     const isHorizontal = this.options.orientation === 'horizontal';
     const inlayOffset = 20; // Space for inlay numbers
@@ -66,6 +70,20 @@ export class SvgRenderer {
       height += inlayOffset; // Space for text below
     }
 
+    // Additional adjustments for open string fingerings (fret 0)
+    const hasOpenStrings = fingerings.some(f => f.fret === 0);
+    if (hasOpenStrings) {
+      const radius = calculateFingeringRadius(this.options.stringSpacing, this.options.fretSpacing);
+      const openOffset = (this.options.fretSpacing * 0.35) + radius + 5;
+      if (isHorizontal) {
+        viewBoxX -= openOffset;
+        width += openOffset;
+      } else {
+        viewBoxY -= openOffset;
+        height += openOffset;
+      }
+    }
+
     // Create SVG element with adjusted viewBox
     const svg = document.createElementNS(SVG_NS, 'svg');
     svg.setAttribute('viewBox', `${viewBoxX} ${viewBoxY} ${width} ${height}`);
@@ -76,9 +94,9 @@ export class SvgRenderer {
 
     // Render components
     if (isHorizontal) {
-      this.renderHorizontal(strings, frets, inlays, markers, svg, width, height);
+      this.renderHorizontal(strings, frets, inlays, markers, fingerings, svg, width, height);
     } else {
-      this.renderVertical(strings, frets, inlays, markers, svg, width, height);
+      this.renderVertical(strings, frets, inlays, markers, fingerings, svg, width, height);
     }
 
     return svg;
@@ -92,6 +110,7 @@ export class SvgRenderer {
     frets: Fret[],
     inlays: Inlay[],
     markers: MarkerInterface[],
+    fingerings: Fingering[],
     svg: SVGSVGElement,
     width: number,
     height: number
@@ -127,6 +146,11 @@ export class SvgRenderer {
       }
       svg.appendChild(markersGroup);
     }
+
+    // Render fingerings
+    if (fingerings.length > 0) {
+      this.renderFingeringsGroup(fingerings, svg);
+    }
   }
 
   /**
@@ -137,6 +161,7 @@ export class SvgRenderer {
     frets: Fret[],
     inlays: Inlay[],
     markers: MarkerInterface[],
+    fingerings: Fingering[],
     svg: SVGSVGElement,
     width: number,
     height: number
@@ -171,6 +196,11 @@ export class SvgRenderer {
         this.renderMarker(marker, markersGroup);
       }
       svg.appendChild(markersGroup);
+    }
+
+    // Render fingerings
+    if (fingerings.length > 0) {
+      this.renderFingeringsGroup(fingerings, svg);
     }
   }
 
@@ -354,5 +384,60 @@ export class SvgRenderer {
     line.setAttribute('class', CSS_CLASSES.fret(fret.index));
     
     return line;
+  }
+
+  /**
+   * Renders group of fingering markers
+   */
+  private renderFingeringsGroup(fingerings: Fingering[], svg: SVGSVGElement): void {
+    const fingeringsGroup = this.createGroup(CSS_CLASSES.fingerings);
+    const radius = calculateFingeringRadius(this.options.stringSpacing, this.options.fretSpacing);
+
+    for (const fingering of fingerings) {
+      this.renderFingering(fingering, radius, fingeringsGroup);
+    }
+
+    svg.appendChild(fingeringsGroup);
+  }
+
+  /**
+   * Renders an individual fingering marker
+   */
+  private renderFingering(fingering: Fingering, radius: number, group: SVGElement): void {
+    const pos = getFingeringPosition(
+      fingering.string,
+      fingering.fret,
+      this.options.orientation,
+      this.options.stringSpacing,
+      this.options.fretSpacing,
+      this.options.stringCount
+    );
+
+    const g = this.createGroup(fingering.getCssClass());
+
+    const circle = document.createElementNS(SVG_NS, 'circle');
+    circle.setAttribute('cx', String(pos.x));
+    circle.setAttribute('cy', String(pos.y));
+    circle.setAttribute('r', String(radius));
+    circle.setAttribute('fill', fingering.color);
+    circle.setAttribute('class', CSS_CLASSES.fingeringCircle);
+    g.appendChild(circle);
+
+    if (fingering.text) {
+      const text = document.createElementNS(SVG_NS, 'text');
+      text.setAttribute('x', String(pos.x));
+      text.setAttribute('y', String(pos.y));
+      text.setAttribute('fill', fingering.textColor);
+      text.setAttribute('text-anchor', 'middle');
+      text.setAttribute('dominant-baseline', 'central');
+      text.setAttribute('font-size', String(Math.round(radius * 1.2)));
+      text.setAttribute('font-family', 'sans-serif');
+      text.setAttribute('font-weight', 'bold');
+      text.setAttribute('class', CSS_CLASSES.fingeringText);
+      text.textContent = fingering.text;
+      g.appendChild(text);
+    }
+
+    group.appendChild(g);
   }
 }
