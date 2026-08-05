@@ -133,4 +133,64 @@ describe('Fretboard Fingering Rendering', () => {
     // viewBoxY must extend significantly into negative territory to contain open string circle
     expect(viewBoxV![1]).toBeLessThan(-30);
   });
+
+  it('should align fingering circle centers with string visual centers in horizontal mode', () => {
+    const stringSpacing = 30;
+    const stringThickness = 1;
+    const fretboard = new Fretboard({
+      stringCount: 6,
+      fretCount: 5,
+      orientation: 'horizontal',
+      stringSpacing,
+      stringThickness,
+      fingerings: [
+        { string: 1, fret: 1, text: '1' },
+        { string: 3, fret: 2, text: '3' },
+        { string: 6, fret: 3, text: '6' }
+      ]
+    });
+
+    const svg = fretboard.render();
+
+    // String visual center = (stringNum - 1) * stringSpacing + (stringThickness * stringNum) / 2
+    // String 1: center = 0 * 30 + (1 * 1) / 2 = 0.5
+    const circle1 = svg.querySelector('.fretly-fingering-s1-f1 circle');
+    expect(parseFloat(circle1!.getAttribute('cy')!)).toBeCloseTo(0 + (stringThickness * 1) / 2);
+
+    // String 3: center = 2 * 30 + (1 * 3) / 2 = 61.5
+    const circle3 = svg.querySelector('.fretly-fingering-s3-f2 circle');
+    expect(parseFloat(circle3!.getAttribute('cy')!)).toBeCloseTo(2 * stringSpacing + (stringThickness * 3) / 2);
+
+    // String 6 (low E, thickest): center = 5 * 30 + (1 * 6) / 2 = 153
+    const circle6 = svg.querySelector('.fretly-fingering-s6-f3 circle');
+    expect(parseFloat(circle6!.getAttribute('cy')!)).toBeCloseTo(5 * stringSpacing + (stringThickness * 6) / 2);
+  });
+
+  it('should align fingering circle centers with string visual centers in vertical mode', () => {
+    const stringSpacing = 30;
+    const stringThickness = 1;
+    const fretboard = new Fretboard({
+      stringCount: 6,
+      fretCount: 5,
+      orientation: 'vertical',
+      stringSpacing,
+      stringThickness,
+      fingerings: [
+        { string: 1, fret: 1, text: '1' },
+        { string: 6, fret: 3, text: '6' }
+      ]
+    });
+
+    const svg = fretboard.render();
+
+    // In vertical mode, string X = (stringCount - 1 - stringIndex) * stringSpacing + thicknessOffset
+    // String 1 (index 0): x = (6 - 1 - 0) * 30 = 150, center = 150 + (1*1)/2 = 150.5
+    const circle1 = svg.querySelector('.fretly-fingering-s1-f1 circle');
+    expect(parseFloat(circle1!.getAttribute('cx')!)).toBeCloseTo(5 * stringSpacing + (stringThickness * 1) / 2);
+
+    // String 6 (index 5): x = (6 - 1 - 5) * 30 = 0, center = 0 + (1*6)/2 = 3
+    const circle6 = svg.querySelector('.fretly-fingering-s6-f3 circle');
+    expect(parseFloat(circle6!.getAttribute('cx')!)).toBeCloseTo(0 * stringSpacing + (stringThickness * 6) / 2);
+  });
 });
+
