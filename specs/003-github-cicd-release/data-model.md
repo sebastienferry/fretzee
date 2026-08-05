@@ -19,7 +19,7 @@ Represents the Continuous Integration quality gate triggered on code changes.
     - **Runner**: `ubuntu-latest`
     - **Steps**:
       1. Checkout repository (`actions/checkout@v4`)
-      2. Setup Node.js 20.x with npm cache (`actions/setup-node@v4`)
+      2. Setup Node.js 24.x with npm cache (`actions/setup-node@v4`)
       3. Install dependencies (`npm ci`)
       4. Verify code formatting / linting (`npm run lint`)
       5. Compile package bundles (`npm run build`)
@@ -40,7 +40,7 @@ Represents the Release automation pipeline triggered when a maintainer pushes a 
     - **Permissions**: `contents: write`, `id-token: write`
     - **Steps**:
       1. Checkout repository (`actions/checkout@v4`)
-      2. Setup Node.js 20.x with npm registry context (`actions/setup-node@v4`)
+      2. Setup Node.js 24.x with npm registry context (`actions/setup-node@v4`)
       3. Install dependencies (`npm ci`)
       4. Verify linting & run tests (`npm run lint`, `npm test`)
       5. Compile production build (`npm run build`)

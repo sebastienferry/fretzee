@@ -9,7 +9,7 @@ Add a minimal, automated GitHub Actions CI/CD configuration to **Fretly**. The s
 
 ## Technical Context
 
-**Language/Version**: TypeScript 5.x / Node.js 20.x LTS  
+**Language/Version**: TypeScript 5.x / Node.js 24.x  
 **Primary Dependencies**: None (Zero runtime dependencies). Tooling: Rollup, Jest, JSDOM, ESLint  
 **Storage**: N/A  
 **Testing**: Jest + JSDOM (`npm test`)  
