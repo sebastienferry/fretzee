@@ -53,7 +53,7 @@ export interface Fingering {
   /** String index (1-based, 1 = top string) */
   string: number;
 
-  /** Fret number (0 = open string, 1..N = fretted position) */
+  /** Fret number (-1 = muted/unplayed string 'X', 0 = open string, 1..N = fretted position) */
   fret: number;
 
   /** Optional text to display inside the marker circle */

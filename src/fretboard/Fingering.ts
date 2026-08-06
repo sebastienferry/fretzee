@@ -32,9 +32,10 @@ export class Fingering implements FingeringInterface {
   constructor(options: FingeringInterface) {
     this.string = options.string;
     this.fret = options.fret;
-    this.text = options.text ?? '';
+    this.text = options.text ?? (options.fret === -1 ? 'X' : (options.fret === 0 ? 'O' : ''));
     this.color = options.color && options.color.trim() !== '' ? options.color : DEFAULT_FINGERING_COLOR;
-    this.textColor = options.textColor && options.textColor.trim() !== '' ? options.textColor : DEFAULT_FINGERING_TEXT_COLOR;
+    const defaultTextColor = options.fret === -1 ? '#000000' : DEFAULT_FINGERING_TEXT_COLOR;
+    this.textColor = options.textColor && options.textColor.trim() !== '' ? options.textColor : defaultTextColor;
   }
 
   /**

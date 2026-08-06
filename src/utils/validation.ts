@@ -95,7 +95,7 @@ export function validateNonNegative(value: number, field: string): number {
  * Validates fret index is within range
  */
 export function validateFretIndex(value: number, max: number): number {
-  if (!Number.isInteger(value) || value < 1 || value > max) {
+  if (!Number.isInteger(value) || value < -1 || value > max) {
     throw new RangeError(ERROR_MESSAGES.FRET_INDEX_RANGE(value, max));
   }
   return value;

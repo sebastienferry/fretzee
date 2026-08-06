@@ -99,8 +99,8 @@ document.body.appendChild(fretboard.render());
 | Parameter | Type | Default | Description |
 | --- | --- | --- | --- |
 | `string` | `number` | Required | 1-based string index (1 = top string / high E) |
-| `fret` | `number` | Required | Fret number (0 = open string, 1..N = fretted position) |
-| `text` | `string` | `""` | Optional label displayed inside marker circle |
+| `fret` | `number` | Required | Fret number (-1 = muted string 'X', 0 = open string, 1..N = fretted position) |
+| `text` | `string` | `""` (or `'X'` if `fret: -1`) | Optional label displayed inside marker circle |
 | `color` | `string` | `'#000000'` | Optional HTML/CSS background fill color |
 | `textColor` | `string` | `'#ffffff'` | Optional HTML/CSS font color for text |
 
