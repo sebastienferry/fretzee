@@ -49,7 +49,7 @@ This skill acts as a product owner agent responsible for creating specifications
    ```
 
 2. **Filter and Select Target Issue**:
-   - Filter items matching `status == "Todo"` AND having label `"to-specify"`
+   - Filter items matching `status == "Todo"` AND having label `"to-specify"` OR `"clarified"`
    - Select the **first matching item** (oldest first)
    - Extract: `ISSUE_NUM`, `ISSUE_TITLE`, `ISSUE_BODY`, `ISSUE_LABELS`, `ITEM_ID`, and `NODE_ID`
 
@@ -58,7 +58,7 @@ This skill acts as a product owner agent responsible for creating specifications
    ```bash
    gh issue list --owner sebastienferry --repo fretly --state open --json number,title,body,labels,projectItems
    ```
-   - Filter issues with label `"to-specify"` and project board status `"Todo"`
+   - Filter issues with label `"to-specify"` OR `"clarified"` and project board status `"Todo"`
    - Select the first matching issue
 
 ---
@@ -93,17 +93,23 @@ This skill acts as a product owner agent responsible for creating specifications
 
 ### Step 4: Transition Issue Labels
 
-1. **Add "to-implement" Label**:
+1. **Handle "clarified" Label**:
+   - If the issue has "clarified" label, remove it:
+   ```bash
+   gh issue edit <ISSUE_NUM> --remove-label "clarified"
+   ```
+
+2. **Add "to-implement" Label**:
    ```bash
    gh issue edit <ISSUE_NUM> --add-label "to-implement"
    ```
 
-2. **Remove "to-specify" Label**:
+3. **Remove "to-specify" Label**:
    ```bash
    gh issue edit <ISSUE_NUM> --remove-label "to-specify"
    ```
 
-3. **Update Project Board Status** (if ITEM_ID available):
+4. **Update Project Board Status** (if ITEM_ID available):
    Update status from `Todo` to `In Progress`:
    ```bash
    gh project item-edit --id "<ITEM_ID>" --project-id 3 --field-id "<STATUS_FIELD_ID>" --single-select-option-id "<IN_PROGRESS_OPTION_ID>"
@@ -141,9 +147,10 @@ If the specification is ready for review:
 ## Error Handling
 
 1. **No Issues Found**:
-   - If no issues with status "Todo" and label "to-specify" are found, report:
-     > "No issues found with status 'Todo' and label 'to-specify' in project board 3."
-   - Suggest checking the board manually or creating a new issue with the appropriate label.
+   - If no issues with status "Todo" and label "to-specify" or "clarified" are found, report:
+     > "No issues found with status 'Todo' and label 'to-specify' or 'clarified' in project board 3."
+   - Suggest checking for issues with "to-clarify" label that might need clarification first
+   - Suggest running `/clarify-issue` to start the clarification process
 
 2. **Authentication Failed**:
    - If `gh` CLI authentication fails, prompt user to run:
@@ -198,5 +205,6 @@ Agent responds with:
 
 - This agent focuses only on specification creation, not implementation
 - It works as a product owner, creating clear specifications for developers
-- The agent transitions issues from "to-specify" to "to-implement" to hand off to development agents
+- The agent transitions issues from "to-specify"/"clarified" to "to-implement" to hand off to development agents
 - All specifications are created from the main branch to ensure clean starting points
+- The agent supports the clarification workflow: issues with "clarified" label are processed the same as "to-specify"

@@ -105,7 +105,8 @@ Fretly uses a **modular agent system** for automated issue processing, with clea
 
 | Agent | Command | Role | Input Label | Output Label | Primary Function |
 |-------|---------|------|-------------|---------------|------------------|
-| **Specification Agent** | `/spec-issue` | Product Owner | `to-specify` | `to-implement` | Creates feature specifications |
+| **Clarification Agent** | `/clarify-issue` | Clarification | None (Todo status) | `to-clarify` | Asks clarifying questions in comments |
+| **Specification Agent** | `/spec-issue` | Product Owner | `to-specify` or `clarified` | `to-implement` | Creates feature specifications |
 | **Implementation Agent** | `/code-issue` | Developer | `to-implement` | `implemented` | Implements code from specs |
 | **Orchestrator Agent** | `/pick-issue` | Smart Router | Any | Depends | Intelligently delegates based on labels |
 
@@ -123,14 +124,23 @@ graph LR
 
 ### 📋 Agent Details
 
+#### `/clarify-issue` - Clarification Agent
+- **Location**: `.agents/skills/clarify-issue/SKILL.md`
+- **Responsibilities**:
+  - Picks next issue with status "Todo" without workflow labels
+  - Analyzes issue content and generates targeted clarifying questions
+  - Posts questions as comments on the GitHub issue
+  - **Label Transition**: Adds "to-clarify"
+  - **Project Status**: Remains "Todo" until user changes label to "clarified"
+
 #### `/spec-issue` - Product Owner Agent
 - **Location**: `.agents/skills/spec-issue/SKILL.md`
 - **Responsibilities**:
-  - Picks next issue with status "Todo" and label "to-specify"
+  - Picks next issue with status "Todo" and label "to-specify" or "clarified"
   - Creates specification using Speckit workflow (`/speckit-specify`, `/speckit-plan`, `/speckit-tasks`)
   - Creates dedicated feature branch from main
   - Commits specification files
-  - **Label Transition**: Removes "to-specify", adds "to-implement"
+  - **Label Transition**: Removes "to-specify"/"clarified", adds "to-implement"
   - **Project Status**: Updates to "In Progress"
 
 #### `/code-issue` - Developer Agent
@@ -149,9 +159,11 @@ graph LR
 - **Location**: `.agents/skills/pick-issue/SKILL.md`
 - **Responsibilities**:
   - Intelligently delegates based on issue labels
+  - If issue has no workflow labels: delegates to `/clarify-issue`
+  - If issue has "to-clarify": waits for user to change to "clarified"
+  - If issue has "clarified": delegates to `/spec-issue`
   - If issue has "to-specify": delegates to `/spec-issue`
   - If issue has "to-implement": handles implementation directly
-  - If issue has neither: can handle full workflow
   - Maintains backward compatibility
 
 ## Usage Patterns
@@ -160,6 +172,9 @@ graph LR
 For maximum control and separation of concerns:
 
 ```bash
+# Clarification agent asks questions first
+/clarify-issue
+
 # Product Owner creates specifications
 /spec-issue
 
@@ -180,6 +195,7 @@ Use direct agents for most work, with `/pick-issue` as fallback:
 
 ```bash
 # Most issues: use direct agents
+/clarify-issue  # For issues needing clarification
 /spec-issue    # For new features needing specs
 /code-issue    # For issues ready for implementation
 

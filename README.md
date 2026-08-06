@@ -85,6 +85,8 @@ document.body.appendChild(fretboard.render());
 
 | Parameter | Type | Default | Description |
 | --- | --- | --- | --- |
+| `title` | `string` | `undefined` | Optional title text header displayed above diagram |
+| `titleAlignment` | `'center' \| 'left'` | `'center'` | Title alignment relative to fretboard width |
 | `fretCount` | `number` | `12` | Number of frets to display (4–16) |
 | `stringCount` | `number` | `6` | Number of strings (4–8) |
 | `startFret` | `number` | `1` | Starting fret number to display (0–24, 0 treated as 1) |

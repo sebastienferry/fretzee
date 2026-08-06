@@ -3,7 +3,7 @@
  */
 
 import type { FretboardOptions, Marker as MarkerInterface } from '../fretboard/types';
-import { SVG_NS, CSS_CLASSES } from '../fretboard/constants';
+import { SVG_NS, CSS_CLASSES, TITLE_FONT_SIZE, TITLE_PADDING } from '../fretboard/constants';
 import { String as GuitarString } from '../fretboard/String';
 import { Fret } from '../fretboard/Fret';
 import { Inlay } from '../fretboard/Inlay';
@@ -59,6 +59,14 @@ export class SvgRenderer {
     viewBoxY = -padding;
     width += padding * 2;
     height += padding * 2;
+
+    // Additional adjustment for title
+    const hasTitle = Boolean(this.options.title && this.options.title.trim().length > 0);
+    const titleSpace = TITLE_FONT_SIZE + TITLE_PADDING;
+    if (hasTitle) {
+      viewBoxY -= titleSpace;
+      height += titleSpace;
+    }
     
     // Additional adjustments for inlays
     if (!isHorizontal && this.options.showInlays) {
@@ -116,6 +124,11 @@ export class SvgRenderer {
     width: number,
     _height: number
   ): void {
+    // Render title if specified
+    if (this.options.title && this.options.title.trim().length > 0) {
+      this.renderTitle(svg, true);
+    }
+
     // Render strings (horizontal lines spanning fretboard width)
     const stringsGroup = this.createGroup(CSS_CLASSES.strings);
     for (const str of strings) {
@@ -168,6 +181,11 @@ export class SvgRenderer {
     width: number,
     height: number
   ): void {
+    // Render title if specified
+    if (this.options.title && this.options.title.trim().length > 0) {
+      this.renderTitle(svg, false);
+    }
+
     // Render strings (vertical lines spanning fretboard height)
     const stringsGroup = this.createGroup(CSS_CLASSES.strings);
     for (const str of strings) {
@@ -214,6 +232,43 @@ export class SvgRenderer {
     const g = document.createElementNS(SVG_NS, 'g');
     g.setAttribute('class', className);
     return g;
+  }
+
+  /**
+   * Renders the diagram title text above the fretboard
+   */
+  private renderTitle(svg: SVGSVGElement, isHorizontal: boolean): void {
+    const text = document.createElementNS(SVG_NS, 'text');
+    text.setAttribute('class', CSS_CLASSES.title);
+    text.setAttribute('fill', '#000000');
+    text.setAttribute('font-size', String(TITLE_FONT_SIZE));
+    text.setAttribute('font-family', 'sans-serif');
+    text.setAttribute('font-weight', 'bold');
+    text.setAttribute('dominant-baseline', 'auto');
+
+    const alignment = this.options.titleAlignment || 'center';
+    let xPosition = 0;
+
+    if (alignment === 'left') {
+      text.setAttribute('text-anchor', 'start');
+      xPosition = 0;
+    } else {
+      text.setAttribute('text-anchor', 'middle');
+      if (isHorizontal) {
+        xPosition = calculateHorizontalWidth(this.options.fretCount, this.options.fretSpacing) / 2;
+      } else {
+        xPosition = calculateVerticalWidth(this.options.stringCount, this.options.stringSpacing, this.options.stringThickness) / 2;
+      }
+    }
+
+    // Y position is above the fretboard area
+    const yPosition = -(TITLE_PADDING);
+
+    text.setAttribute('x', String(xPosition));
+    text.setAttribute('y', String(yPosition));
+    text.textContent = this.options.title;
+
+    svg.appendChild(text);
   }
 
   /**

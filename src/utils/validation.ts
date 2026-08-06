@@ -62,6 +62,16 @@ export function validateOrientation(value: string): 'horizontal' | 'vertical' {
 }
 
 /**
+ * Validates titleAlignment value
+ */
+export function validateTitleAlignment(value: string): 'center' | 'left' {
+  if (value !== 'center' && value !== 'left') {
+    throw new TypeError(ERROR_MESSAGES.INVALID_TITLE_ALIGNMENT(value));
+  }
+  return value;
+}
+
+/**
  * Validates positive number
  */
 export function validatePositive(value: number, field: string): number {
@@ -119,6 +129,7 @@ export function validateOptions({
   stringCount,
   startFret,
   orientation,
+  titleAlignment,
   stringSpacing,
   stringThickness,
   fretSpacing,
@@ -128,6 +139,7 @@ export function validateOptions({
   stringCount?: number;
   startFret?: number;
   orientation?: string;
+  titleAlignment?: string;
   stringSpacing?: number;
   stringThickness?: number;
   fretSpacing?: number;
@@ -137,6 +149,7 @@ export function validateOptions({
   if (stringCount !== undefined) validateStringCount(stringCount);
   if (startFret !== undefined) validateStartFret(startFret);
   if (orientation !== undefined) validateOrientation(orientation);
+  if (titleAlignment !== undefined) validateTitleAlignment(titleAlignment);
   if (stringSpacing !== undefined) validatePositive(stringSpacing, 'stringSpacing');
   if (stringThickness !== undefined) validateNonNegative(stringThickness, 'stringThickness');
   if (fretSpacing !== undefined) validatePositive(fretSpacing, 'fretSpacing');
