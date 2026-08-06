@@ -206,23 +206,27 @@ Use direct agents for most work, with `/pick-issue` as fallback:
 ## Label-Based Workflow
 
 ### Issue Lifecycle
-1. **Backlog**: Issue created with label `to-specify`
-2. **Specification**: `/spec-issue` processes it → label becomes `to-implement`
-3. **Implementation**: `/code-issue` processes it → label becomes `implemented`
-4. **Review**: PR created and reviewed
-5. **Complete**: PR merged, issue closed
+1. **Backlog**: Issue created (no workflow labels)
+2. **Clarification**: `/clarify-issue` processes it → label becomes `to-clarify`
+3. **User Clarifies**: User answers questions and changes label to `clarified`
+4. **Specification**: `/spec-issue` processes it → label becomes `to-implement`
+5. **Implementation**: `/code-issue` processes it → label becomes `implemented`
+6. **Review**: PR created and reviewed
+7. **Complete**: PR merged, issue closed
 
 ### Label Transitions
 ```
-to-specify     --[/spec-issue]-->  to-implement
-to-implement   --[/code-issue]-->  implemented
+None          --[/clarify-issue]-->  to-clarify
+to-clarify    --[user action]-->    clarified
+clarified     --[/spec-issue]-->    to-implement
+to-implement  --[/code-issue]-->    implemented
 ```
 
 ## Project Board Integration
 
 - **Board**: `https://github.com/users/sebastienferry/projects/3`
 - **Status Field**: Issues move from "Todo" → "In Progress" → "Done"
-- **Label Field**: Issues transition through `to-specify` → `to-implement` → `implemented`
+- **Label Field**: Issues transition through `to-clarify` → `clarified` → `to-specify` → `to-implement` → `implemented`
 
 ## Error Handling & Fallbacks
 
@@ -233,11 +237,12 @@ to-implement   --[/code-issue]-->  implemented
 
 ## Best Practices
 
-1. **Use direct agents** (`/spec-issue`, `/code-issue`) for most workflows
+1. **Use direct agents** (`/clarify-issue`, `/spec-issue`, `/code-issue`) for most workflows
 2. **Maintain label discipline** - ensure issues have correct labels before processing
 3. **Start from main branch** - all agents ensure clean starting state
 4. **Verify specifications exist** before running `/code-issue`
 5. **Use `/pick-issue` for orchestration** when unsure of issue state
+6. **Clarification first** - use `/clarify-issue` for issues that need more information before specification
 
 ---
 
