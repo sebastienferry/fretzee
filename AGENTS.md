@@ -103,23 +103,22 @@ Fretly uses a **modular agent system** for automated issue processing, with clea
 
 ### 🎯 Available Agents
 
-| Agent | Command | Role | Input Label | Output Label | Primary Function |
-|-------|---------|------|-------------|---------------|------------------|
-| **Clarification Agent** | `/clarify-issue` | Clarification | None (Todo status) | `to-clarify` | Asks clarifying questions in comments |
-| **Specification Agent** | `/spec-issue` | Product Owner | `to-specify` or `clarified` | `to-implement` | Creates feature specifications |
-| **Implementation Agent** | `/code-issue` | Developer | `to-implement` | `implemented` | Implements code from specs |
+| Agent | Command | Role | Input Label / Column | Output Label | Primary Function |
+|-------|---------|------|----------------------|---------------|------------------|
+| **Clarification Agent** | `/clarify-issue` | Clarification | `selected` (Clarification) | `to-clarify` | Asks clarifying questions in comments |
+| **Specification Agent** | `/spec-issue` | Product Owner | `clarified` (Specification) | `specified` | Creates feature specifications |
+| **Implementation Agent** | `/code-issue` | Developer | `specified` (Code) | `validate` / `validated` | Implements code from specs |
 | **Orchestrator Agent** | `/pick-issue` | Smart Router | Any | Depends | Intelligently delegates based on labels |
 
 ### 🔄 Complete Workflow Chain
 
 ```mermaid
 graph LR
-    A[GitHub Issue: Todo, to-specify] -->|/spec-issue| B[Create Spec + Plan + Tasks]
-    B --> C[Issue: Todo, to-implement]
-    C -->|/code-issue| D[Implement Code + Verify + PR]
-    D --> E[Issue: Done, implemented]
-    
-    C -->|/pick-issue| D
+    A[Idea: selected] -->|/clarify-issue| B[Clarification: to-clarify]
+    B -->|User Feedback| C[Specification: clarified]
+    C -->|/spec-issue| D[Code: specified]
+    D -->|/code-issue| E[Code: validate + PR]
+    E -->|User Approval| F[Done: validated]
 ```
 
 ### 📋 Agent Details
@@ -127,44 +126,40 @@ graph LR
 #### `/clarify-issue` - Clarification Agent
 - **Location**: `.agents/skills/clarify-issue/SKILL.md`
 - **Responsibilities**:
-  - Picks next issue with status "Todo" without workflow labels
+  - Picks next issue with status/label "selected" or in Clarification column
   - Analyzes issue content and generates targeted clarifying questions
   - Posts questions as comments on the GitHub issue
   - **Label Transition**: Adds "to-clarify"
-  - **Project Status**: Remains "Todo" until user changes label to "clarified"
+  - **Project Status**: Remains in Clarification until user responds and changes label to "clarified"
 
 #### `/spec-issue` - Product Owner Agent
 - **Location**: `.agents/skills/spec-issue/SKILL.md`
 - **Responsibilities**:
-  - Picks next issue with status "Todo" and label "to-specify" or "clarified"
+  - Picks next issue in Specification column with label "clarified"
   - Creates specification using Speckit workflow (`/speckit-specify`, `/speckit-plan`, `/speckit-tasks`)
   - Creates dedicated feature branch from main
   - Commits specification files
-  - **Label Transition**: Removes "to-specify"/"clarified", adds "to-implement"
-  - **Project Status**: Updates to "In Progress"
+  - **Label Transition**: Removes "clarified", adds "specified"
+  - **Project Status**: Updates column to Code
 
 #### `/code-issue` - Developer Agent
 - **Location**: `.agents/skills/code-issue/SKILL.md`
 - **Responsibilities**:
-  - Picks next issue with status "Todo" and label "to-implement"
+  - Picks next issue in Code column with label "specified"
   - Verifies specification exists (warns if missing)
   - Executes implementation using `/speckit-implement`
   - Runs automated verification (build, lint, test)
   - Creates pull request using `/create-pr`
   - Updates changelog
-  - **Label Transition**: Removes "to-implement", adds "implemented"
-  - **Project Status**: Updates to "Done"
+  - **Label Transition**: Updates label to "validate" (and "validated" upon approval)
+  - **Project Status**: Updates column to Done
 
 #### `/pick-issue` - Orchestrator Agent
 - **Location**: `.agents/skills/pick-issue/SKILL.md`
 - **Responsibilities**:
-  - Intelligently delegates based on issue labels
-  - If issue has no workflow labels: delegates to `/clarify-issue`
-  - If issue has "to-clarify": waits for user to change to "clarified"
-  - If issue has "clarified": delegates to `/spec-issue`
-  - If issue has "to-specify": delegates to `/spec-issue`
-  - If issue has "to-implement": handles implementation directly
-  - Maintains backward compatibility
+  - Accepts an optional issue URL or number argument (e.g. `/pick-issue https://github.com/sebastienferry/fretly/issues/27`)
+  - Intelligently delegates based on issue labels and stage columns
+  - Manages complete lifecycle through `selected` → `clarified` → `specified` → `validate` → `validated`
 
 ## Usage Patterns
 
@@ -186,8 +181,8 @@ For maximum control and separation of concerns:
 For end-to-end automation:
 
 ```bash
-# Handles both specification and implementation based on labels
-/pick-issue
+# Handles specific issue or board items based on stage labels
+/pick-issue https://github.com/sebastienferry/fretly/issues/27
 ```
 
 ### 3. Mixed Approach
@@ -205,28 +200,20 @@ Use direct agents for most work, with `/pick-issue` as fallback:
 
 ## Label-Based Workflow
 
-### Issue Lifecycle
-1. **Backlog**: Issue created (no workflow labels)
-2. **Clarification**: `/clarify-issue` processes it → label becomes `to-clarify`
-3. **User Clarifies**: User answers questions and changes label to `clarified`
-4. **Specification**: `/spec-issue` processes it → label becomes `to-implement`
-5. **Implementation**: `/code-issue` processes it → label becomes `implemented`
-6. **Review**: PR created and reviewed
-7. **Complete**: PR merged, issue closed
-
-### Label Transitions
+### Stage Columns & Label Transitions
 ```
-None          --[/clarify-issue]-->  to-clarify
-to-clarify    --[user action]-->    clarified
-clarified     --[/spec-issue]-->    to-implement
-to-implement  --[/code-issue]-->    implemented
+selected    --[/clarify-issue]-->  to-clarify
+to-clarify  --[user feedback]-->   clarified
+clarified   --[/spec-issue]-->     specified
+specified   --[/code-issue]-->     validate
+validate    --[user approval]-->   validated (Done)
 ```
 
 ## Project Board Integration
 
 - **Board**: `https://github.com/users/sebastienferry/projects/3`
-- **Status Field**: Issues move from "Todo" → "In Progress" → "Done"
-- **Label Field**: Issues transition through `to-clarify` → `clarified` → `to-specify` → `to-implement` → `implemented`
+- **Columns**: Idea → Clarification → Specification → Code → Done
+- **Label Progression**: `selected` → `clarified` → `specified` → `validate` → `validated`
 
 ## Error Handling & Fallbacks
 

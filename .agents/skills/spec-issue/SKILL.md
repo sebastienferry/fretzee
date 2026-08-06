@@ -99,20 +99,15 @@ This skill acts as a product owner agent responsible for creating specifications
    gh issue edit <ISSUE_NUM> --remove-label "clarified"
    ```
 
-2. **Add "to-implement" Label**:
+2. **Add "specified" Label**:
    ```bash
-   gh issue edit <ISSUE_NUM> --add-label "to-implement"
+   gh issue edit <ISSUE_NUM> --add-label "specified"
    ```
 
-3. **Remove "to-specify" Label**:
+3. **Update Project Board Status** (if ITEM_ID available):
+   Update column from `Specification` to `Code`:
    ```bash
-   gh issue edit <ISSUE_NUM> --remove-label "to-specify"
-   ```
-
-4. **Update Project Board Status** (if ITEM_ID available):
-   Update status from `Todo` to `In Progress`:
-   ```bash
-   gh project item-edit --id "<ITEM_ID>" --project-id 3 --field-id "<STATUS_FIELD_ID>" --single-select-option-id "<IN_PROGRESS_OPTION_ID>"
+   gh project item-edit --id "<ITEM_ID>" --project-id 3 --field-id "<STATUS_FIELD_ID>" --single-select-option-id "<CODE_OPTION_ID>"
    ```
 
 ---

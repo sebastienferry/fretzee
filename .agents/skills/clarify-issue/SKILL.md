@@ -210,7 +210,7 @@ The complete workflow becomes:
 ```
 /clarify-issue   → Asks questions, transitions to "to-clarify"
 [User answers]   → User provides clarification in comments
-[User action]    → User changes label to "clarified"
+[User action]   
 /spec-issue     → Detects "clarified", transitions to "to-specify", starts specification
 /code-issue     → Implements code, transitions "to-implement" → "implemented"
 ```
@@ -219,11 +219,11 @@ The complete workflow becomes:
 
 ## Agent Responsibilities
 
-| Agent | Role | Input Label | Output Label | Primary Command |
-|-------|------|-------------|---------------|-----------------|
-| `/clarify-issue` | Clarification | None (Todo status) | `to-clarify` | Ask questions in comments |
-| `/spec-issue` | Product Owner | `clarified` or `to-specify` | `to-implement` | `/speckit-specify` |
-| `/code-issue` | Developer | `to-implement` | `implemented` | `/speckit-implement` |
+| Agent | Role | Input Label / Column | Output Label | Primary Command |
+|-------|------|----------------------|---------------|-----------------|
+| `/clarify-issue` | Clarification | `selected` (Clarification column) | `to-clarify` | Ask questions in comments |
+| `/spec-issue` | Product Owner | `clarified` (Specification column) | `specified` | `/speckit-specify` |
+| `/code-issue` | Developer | `specified` (Code column) | `validate` / `validated` | `/speckit-implement` |
 | `/pick-issue` | Orchestrator | Any | Depends on input | Delegates as needed |
 
 ---
