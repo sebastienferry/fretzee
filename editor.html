@@ -81,6 +81,41 @@
       gap: 12px;
     }
 
+    .nav-links {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .nav-btn {
+      color: var(--text-main);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 8px 16px;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+    }
+
+    .nav-btn:hover {
+      border-color: var(--accent-blue);
+      color: var(--accent-blue);
+    }
+
+    .nav-btn-primary {
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-indigo));
+      color: white;
+      border: none;
+      font-weight: 600;
+    }
+
+    .nav-btn-primary:hover {
+      opacity: 0.9;
+      color: white;
+    }
+
     .btn {
       display: inline-flex;
       align-items: center;
@@ -317,12 +352,17 @@
 
   <!-- Header -->
   <header>
-    <div class="brand">
-      <div class="brand-logo">🎸 Fretly</div>
-      <div class="brand-tagline">Direct Fretboard Editor & Playground</div>
-    </div>
+    <a href="index.html" class="brand" style="text-decoration: none;">
+      <span class="brand-logo">Fretly</span>
+    </a>
+    <nav class="nav-links">
+      <a href="index.html" class="nav-btn">Home</a>
+      <a href="editor.html" class="nav-btn nav-btn-primary">Editor</a>
+      <a href="studio.html" class="nav-btn">Studio</a>
+      <a href="demo.html" class="nav-btn">Demos</a>
+      <a href="https://github.com/sebastienferry/fretly" target="_blank" rel="noopener" class="nav-btn">GitHub</a>
+    </nav>
     <div class="header-actions">
-      <a href="demo.html" class="btn btn-secondary">Documentation & Demos</a>
       <button class="btn btn-primary" onclick="copySvgCode()">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
         Copy SVG
@@ -335,6 +375,7 @@
     <span class="preset-label">Presets:</span>
     <button class="preset-chip active" onclick="loadPreset('c-major')">C Major (4 Frets, Horizontal)</button>
     <button class="preset-chip" onclick="loadPreset('g-major-vertical')">G Major (Vertical)</button>
+    <button class="preset-chip" onclick="loadPreset('barre-fret5')">Am Barre (Fret 5)</button>
     <button class="preset-chip" onclick="loadPreset('a-minor-pentatonic')">A Minor Pentatonic</button>
     <button class="preset-chip" onclick="loadPreset('bass-4string')">4-String Bass (A Minor)</button>
     <button class="preset-chip" onclick="loadPreset('7string-metal')">7-String Drop A</button>
@@ -409,6 +450,22 @@
     { string: 3, fret: 0, text: 'O' },
     { string: 2, fret: 0, text: 'O' },
     { string: 1, fret: 3, text: '4', color: '#e74c3c' }
+  ]
+}`,
+      'barre-fret5': `{
+  stringCount: 6,
+  fretCount: 4,
+  startFret: 5,
+  orientation: 'vertical',
+  stringSpacing: 30,
+  fretSpacing: 55,
+  fingerings: [
+    { string: 1, fret: 5, text: '1' },
+    { string: 2, fret: 5, text: '1' },
+    { string: 3, fret: 5, text: '1' },
+    { string: 4, fret: 7, text: '3' },
+    { string: 5, fret: 7, text: '2', color: '#e74c3c' },
+    { string: 6, fret: 5, text: '1' }
   ]
 }`,
       'a-minor-pentatonic': `{

@@ -33,6 +33,9 @@ export interface FretboardOptions {
   /** Whether to display inlay numbers */
   showInlays?: boolean;
 
+  /** Starting fret number to display (0-24, default: 1). 0 is treated as 1. */
+  startFret?: number;
+
   /** Fingering markers to render on the fretboard */
   fingerings?: Fingering[];
 }

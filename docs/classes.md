@@ -9,10 +9,13 @@ Main class for managing and rendering fretboard diagrams.
 new Fretboard(options?: Partial<FretboardOptions>)
 ```
 
-### Methods
+### Methods & Getters
 - `render(): SVGSVGElement` - Returns rendered SVG element.
 - `getFingerings(): Fingering[]` - Returns array of fingering markers.
 - `getOptions(): Required<FretboardOptions>` - Returns complete configuration.
+- `startFret: number` - Returns configured starting fret number.
+- `fretCount: number` - Returns configured fret count.
+- `stringCount: number` - Returns configured string count.
 
 ## `Fingering`
 

@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+    content="Fretly Studio - Generate customizable chord and scale fretboard diagrams with copy-paste JavaScript code.">
+  <title>Fretly Studio - Chords & Scales Generator</title>
+
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-dark: #0f172a;
+      --panel-bg: #1e293b;
+      --panel-border: #334155;
+      --accent-blue: #38bdf8;
+      --accent-indigo: #6366f1;
+      --accent-purple: #a855f7;
+      --accent-green: #22c55e;
+      --accent-red: #ef4444;
+      --accent-orange: #f97316;
+      --accent-yellow: #eab308;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --editor-bg: #090d16;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.6;
+    }
+
+    /* Header */
+    header {
+      background: rgba(30, 41, 59, 0.8);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--panel-border);
+      padding: 16px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .brand-logo {
+      font-size: 26px;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-indigo));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .nav-btn {
+      color: var(--text-main);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 8px 16px;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+    }
+
+    .nav-btn:hover {
+      border-color: var(--accent-blue);
+      color: var(--accent-blue);
+    }
+
+    .nav-btn-primary {
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-indigo));
+      color: white;
+      border: none;
+      font-weight: 600;
+    }
+
+    .nav-btn-primary:hover {
+      opacity: 0.9;
+      color: white;
+    }
+
+    /* Main Container */
+    .main-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 40px 24px;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 32px;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+      border-radius: 16px;
+      padding: 24px;
+      height: fit-content;
+      position: sticky;
+      top: 80px;
+    }
+
+    .sidebar-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      color: var(--accent-blue);
+    }
+
+    .form-section {
+      margin-bottom: 24px;
+    }
+
+    .form-section-title {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    .select-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .select-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-main);
+    }
+
+    select, input[type="number"] {
+      background: var(--editor-bg);
+      border: 1px solid var(--panel-border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      color: var(--text-main);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      width: 100%;
+    }
+
+    select:hover, select:focus,
+    input[type="number"]:hover, input[type="number"]:focus {
+      border-color: var(--accent-blue);
+      outline: none;
+    }
+
+    select option {
+      background: var(--panel-bg);
+      color: var(--text-main);
+    }
+
+    .radio-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .radio-option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      background: var(--editor-bg);
+      border: 1px solid var(--panel-border);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .radio-option:hover {
+      border-color: var(--accent-blue);
+    }
+
+    .radio-option input[type="radio"] {
+      accent-color: var(--accent-blue);
+      width: 18px;
+      height: 18px;
+    }
+
+    .radio-option label {
+      font-size: 14px;
+      cursor: pointer;
+      color: var(--text-main);
+    }
+
+    .radio-option input[type="radio"]:checked + label {
+      color: var(--accent-blue);
+    }
+
+    .btn-generate {
+      width: 100%;
+      padding: 14px 24px;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-indigo));
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-top: 8px;
+    }
+
+    .btn-generate:hover {
+      opacity: 0.95;
+      transform: translateY(-1px);
+    }
+
+    .btn-generate:active {
+      transform: translateY(0);
+    }
+
+    /* Main Content */
+    .content-area {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .page-title {
+      font-size: 36px;
+      font-weight: 800;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, #ffffff, #94a3b8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .page-subtitle {
+      color: var(--text-muted);
+      font-size: 16px;
+      margin-bottom: 24px;
+    }
+
+    /* Preview Section */
+    .preview-section {
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .preview-header {
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--panel-border);
+      background: rgba(15, 23, 42, 0.4);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .preview-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .preview-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-icon {
+      padding: 6px 12px;
+      background: var(--editor-bg);
+      border: 1px solid var(--panel-border);
+      border-radius: 6px;
+      color: var(--text-main);
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-icon:hover {
+      border-color: var(--accent-blue);
+      color: var(--accent-blue);
+    }
+
+    .preview-canvas {
+      background: #ffffff;
+      padding: 40px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 300px;
+    }
+
+    .svg-container {
+      display: inline-block;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .svg-container svg {
+      display: block;
+    }
+
+    /* Code Section */
+    .code-section {
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .code-header {
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--panel-border);
+      background: rgba(15, 23, 42, 0.4);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .code-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .code-wrapper {
+      position: relative;
+      display: flex;
+    }
+
+    .line-numbers {
+      width: 48px;
+      background: var(--editor-bg);
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      padding: 16px 0;
+      text-align: right;
+      user-select: none;
+      border-right: 1px solid var(--panel-border);
+    }
+
+    .line-numbers div {
+      padding-right: 12px;
+    }
+
+    .code-input {
+      flex: 1;
+      background: var(--editor-bg);
+      color: #e2e8f0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      padding: 16px;
+      border: none;
+      outline: none;
+      resize: none;
+      white-space: pre;
+      tab-size: 2;
+      width: 100%;
+      min-height: 200px;
+    }
+
+    /* Info Section */
+    .info-section {
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+      border-radius: 16px;
+      padding: 24px;
+    }
+
+    .info-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-bottom: 16px;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+    }
+
+    .info-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .info-label {
+      font-size: 12px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+    }
+
+    .info-value {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--accent-blue);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+      border-radius: 8px;
+      padding: 16px 24px;
+      color: var(--text-main);
+      font-size: 14px;
+      font-weight: 500;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s ease;
+      z-index: 1000;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .toast.success {
+      border-color: var(--accent-green);
+      color: var(--accent-green);
+    }
+
+    .toast.error {
+      border-color: var(--accent-red);
+      color: var(--accent-red);
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .main-container {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: static;
+      }
+
+      .preview-canvas {
+        min-height: 250px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .main-container {
+        padding: 24px 16px;
+      }
+
+      .page-title {
+        font-size: 28px;
+      }
+
+      .preview-canvas {
+        padding: 24px;
+      }
+
+      .code-wrapper {
+        flex-direction: column;
+      }
+
+      .line-numbers {
+        width: 100%;
+        padding: 8px 16px;
+        border-right: none;
+        border-bottom: 1px solid var(--panel-border);
+      }
+
+      .line-numbers div {
+        display: inline-block;
+        padding-right: 8px;
+        margin-right: 8px;
+      }
+
+      .code-input {
+        min-height: 150px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Header -->
+  <header>
+    <a href="index.html" class="brand">
+      <span class="brand-logo">Fretly Studio</span>
+    </a>
+    <nav class="nav-links">
+      <a href="index.html" class="nav-btn">Home</a>
+      <a href="editor.html" class="nav-btn">Editor</a>
+      <a href="studio.html" class="nav-btn nav-btn-primary">Studio</a>
+      <a href="demo.html" class="nav-btn">Demos</a>
+      <a href="https://github.com/sebastienferry/fretly" target="_blank" rel="noopener" class="nav-btn">GitHub</a>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <h2 class="sidebar-title">Studio Generator</h2>
+
+      <div class="form-section">
+        <h3 class="form-section-title">Type</h3>
+        <div class="radio-group">
+          <label class="radio-option">
+            <input type="radio" name="type" value="chord" checked onchange="updatePreview()">
+            <span>Chord</span>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="type" value="scale" onchange="updatePreview()">
+            <span>Scale</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3 class="form-section-title">Category</h3>
+        <div class="select-wrapper">
+          <label class="select-label">Chord/Scale Category</label>
+          <select id="category" onchange="updatePreview()">
+            <option value="major">Major</option>
+            <option value="minor">Minor</option>
+            <option value="pentatonic">Pentatonic</option>
+            <option value="blues">Blues</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3 class="form-section-title">Root Note</h3>
+        <div class="select-wrapper">
+          <label class="select-label">Root</label>
+          <select id="rootNote" onchange="updatePreview()">
+            <option value="C">C</option>
+            <option value="C#">C#</option>
+            <option value="D">D</option>
+            <option value="D#">D#</option>
+            <option value="E">E</option>
+            <option value="F">F</option>
+            <option value="F#">F#</option>
+            <option value="G">G</option>
+            <option value="G#">G#</option>
+            <option value="A">A</option>
+            <option value="A#">A#</option>
+            <option value="B">B</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3 class="form-section-title">Orientation</h3>
+        <div class="radio-group">
+          <label class="radio-option">
+            <input type="radio" name="orientation" value="vertical" onchange="updatePreview()">
+            <span>Vertical</span>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="orientation" value="horizontal" checked onchange="updatePreview()">
+            <span>Horizontal</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3 class="form-section-title">Starting Fret</h3>
+        <div class="select-wrapper">
+          <label class="select-label">Start Fret Position (1-24)</label>
+          <select id="startFret" onchange="updatePreview()">
+            <option value="1" selected>1 (Nut / Open)</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="12">12 (Octave)</option>
+            <option value="15">15</option>
+            <option value="17">17</option>
+            <option value="19">19</option>
+            <option value="21">21</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3 class="form-section-title">Fret Count</h3>
+        <div class="select-wrapper">
+          <label class="select-label">Frets to Display</label>
+          <select id="fretCount" onchange="updatePreview()">
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="8">8</option>
+            <option value="10">10</option>
+            <option value="12" selected>12</option>
+            <option value="15">15</option>
+            <option value="16">16</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3 class="form-section-title">String Count</h3>
+        <div class="select-wrapper">
+          <label class="select-label">Number of Strings</label>
+          <select id="stringCount" onchange="updatePreview()">
+            <option value="4">4 (Bass)</option>
+            <option value="5">5</option>
+            <option value="6" selected>6 (Guitar)</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3 class="form-section-title">Thickness</h3>
+        <div class="select-wrapper">
+          <label class="select-label">String & Fret Thickness</label>
+          <select id="thickness" onchange="updatePreview()">
+            <option value="1" selected>1</option>
+            <option value="2">2</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3 class="form-section-title">Fret Width</h3>
+        <div class="select-wrapper">
+          <label class="select-label">Fret Spacing</label>
+          <select id="fretWidth" onchange="updatePreview()">
+            <option value="40">40</option>
+            <option value="50" selected>50</option>
+            <option value="60">60</option>
+            <option value="70">70</option>
+          </select>
+        </div>
+      </div>
+
+      <button class="btn-generate" onclick="copyCode()">
+        Copy JavaScript Code
+      </button>
+      <button class="btn-generate" onclick="copySvg()" style="margin-top: 8px; background: linear-gradient(135deg, var(--accent-green), var(--accent-indigo));">
+        Copy SVG
+      </button>
+    </aside>
+
+    <!-- Content Area -->
+    <div class="content-area">
+      <h1 class="page-title">Fretly Studio Generator</h1>
+      <p class="page-subtitle">
+        Browse, configure, and generate fretboard diagrams for chords and scales at any neck position.
+        Select your options from the sidebar to preview and copy generated code.
+      </p>
+
+      <!-- Preview Section -->
+      <section class="preview-section">
+        <div class="preview-header">
+          <h3 class="preview-title">Live Preview</h3>
+          <div class="preview-actions">
+            <button class="btn-icon" onclick="downloadSvg()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="7 10 12 15 17 10"/>
+                <line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+              Download SVG
+            </button>
+          </div>
+        </div>
+        <div class="preview-canvas" id="preview-canvas">
+          <div class="svg-container" id="svg-output"></div>
+        </div>
+      </section>
+
+      <!-- Code Section -->
+      <section class="code-section">
+        <div class="code-header">
+          <h3 class="code-title">Generated JavaScript Code</h3>
+          <div class="preview-actions">
+            <button class="btn-icon" onclick="copyCode()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+                <rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
+              </svg>
+              Copy Code
+            </button>
+          </div>
+        </div>
+        <div class="code-wrapper">
+          <div class="line-numbers" id="line-numbers"></div>
+          <textarea class="code-input" id="code-output" readonly spellcheck="false"></textarea>
+        </div>
+      </section>
+
+      <!-- Info Section -->
+      <section class="info-section">
+        <h3 class="info-title">Configuration Details</h3>
+        <div class="info-grid" id="info-grid">
+          <div class="info-item">
+            <span class="info-label">Type</span>
+            <span class="info-value" id="info-type">Chord</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Category</span>
+            <span class="info-value" id="info-category">Major</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Root Note</span>
+            <span class="info-value" id="info-root">C</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Start Fret</span>
+            <span class="info-value" id="info-startfret">1</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Orientation</span>
+            <span class="info-value" id="info-orientation">Horizontal</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Strings</span>
+            <span class="info-value" id="info-strings">6</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Frets</span>
+            <span class="info-value" id="info-frets">12</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Thickness</span>
+            <span class="info-value" id="info-thickness">1</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Fret Width</span>
+            <span class="info-value" id="info-fretwidth">50</span>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast"></div>
+
+  <!-- Library Script -->
+  <script src="./dist/index.umd.js"></script>
+
+  <script>
+    // Music theory data for chords and scales
+    const MUSIC_THEORY = {
+      guitarTuning: ['E', 'B', 'G', 'D', 'A', 'E'],
+      bassTuning: ['G', 'D', 'A', 'E'],
+      
+      noteToMidi: {
+        'C': 48, 'C#': 49, 'D': 50, 'D#': 51, 'E': 52, 'F': 53, 'F#': 54, 
+        'G': 55, 'G#': 56, 'A': 57, 'A#': 58, 'B': 59
+      },
+      
+      chords: {
+        major: [0, 4, 7],           // Root, Major 3rd, Perfect 5th
+        minor: [0, 3, 7],           // Root, Minor 3rd, Perfect 5th
+        '7': [0, 4, 7, 10],         // Dominant 7th
+        'm7': [0, 3, 7, 10],        // Minor 7th
+        'maj7': [0, 4, 7, 11],      // Major 7th
+        'sus2': [0, 2, 7],          // Suspended 2nd
+        'sus4': [0, 5, 7],          // Suspended 4th
+        'add9': [0, 4, 7, 14],      // Added 9th
+        'dim': [0, 3, 6],           // Diminished
+        'aug': [0, 4, 8]            // Augmented
+      },
+      
+      scales: {
+        major: [0, 2, 4, 5, 7, 9, 11],                    // Major scale
+        minor: [0, 2, 3, 5, 7, 8, 10],                   // Natural minor
+        pentatonic: [0, 2, 4, 7, 9],                     // Major pentatonic
+        'minor-pentatonic': [0, 3, 5, 7, 10],            // Minor pentatonic
+        blues: [0, 3, 5, 6, 7, 10],                      // Blues scale
+        dorian: [0, 2, 3, 5, 7, 9, 10],                 // Dorian mode
+        phrygian: [0, 1, 3, 5, 7, 8, 10],               // Phrygian mode
+        lydian: [0, 2, 4, 6, 7, 9, 11],                 // Lydian mode
+        mixolydian: [0, 2, 4, 5, 7, 9, 10]              // Mixolydian mode
+      }
+    };
+
+    const COLORS = {
+      root: '#ef4444',      // Red for root notes
+      third: '#38bdf8',     // Blue for 3rds
+      fifth: '#22c55e',     // Green for 5ths
+      seventh: '#a855f7',   // Purple for 7ths
+      ninth: '#f97316',     // Orange for 9ths
+      eleventh: '#eab308',  // Yellow for 11ths
+      thirteenth: '#ec4899', // Pink for 13ths
+      default: '#94a3b8'    // Gray for other notes
+    };
+
+    // DOM Elements
+    const svgOutput = document.getElementById('svg-output');
+    const codeOutput = document.getElementById('code-output');
+    const lineNumbers = document.getElementById('line-numbers');
+    const toast = document.getElementById('toast');
+    
+    // Info elements
+    const infoType = document.getElementById('info-type');
+    const infoCategory = document.getElementById('info-category');
+    const infoRoot = document.getElementById('info-root');
+    const infoStartFret = document.getElementById('info-startfret');
+    const infoOrientation = document.getElementById('info-orientation');
+    const infoStrings = document.getElementById('info-strings');
+    const infoFrets = document.getElementById('info-frets');
+    const infoThickness = document.getElementById('info-thickness');
+    const infoFretWidth = document.getElementById('info-fretwidth');
+
+    // Current state
+    let currentConfig = {
+      type: 'chord',
+      category: 'major',
+      rootNote: 'C',
+      startFret: 1,
+      orientation: 'horizontal',
+      fretCount: 12,
+      stringCount: 6,
+      thickness: 1,
+      fretWidth: 50
+    };
+
+    // Initialize
+    function init() {
+      updatePreview();
+    }
+
+    // Update preview based on current configuration
+    function updatePreview() {
+      const type = document.querySelector('input[name="type"]:checked').value;
+      const category = document.getElementById('category').value;
+      const rootNote = document.getElementById('rootNote').value;
+      const startFret = Number(document.getElementById('startFret').value);
+      const orientation = document.querySelector('input[name="orientation"]:checked').value;
+      const fretCount = Number(document.getElementById('fretCount').value);
+      const stringCount = Number(document.getElementById('stringCount').value);
+      const thickness = Number(document.getElementById('thickness').value);
+      const fretWidth = Number(document.getElementById('fretWidth').value);
+
+      currentConfig = {
+        type,
+        category,
+        rootNote,
+        startFret,
+        orientation,
+        fretCount,
+        stringCount,
+        thickness,
+        fretWidth
+      };
+
+      // Update info display
+      infoType.textContent = type.charAt(0).toUpperCase() + type.slice(1);
+      infoCategory.textContent = category.charAt(0).toUpperCase() + category.slice(1);
+      infoRoot.textContent = rootNote;
+      infoStartFret.textContent = startFret;
+      infoOrientation.textContent = orientation.charAt(0).toUpperCase() + orientation.slice(1);
+      infoStrings.textContent = stringCount;
+      infoFrets.textContent = fretCount;
+      infoThickness.textContent = thickness;
+      infoFretWidth.textContent = fretWidth;
+
+      // Generate and render fretboard
+      const fretboardConfig = generateFretboardConfig();
+      renderFretboard(fretboardConfig);
+      
+      // Generate and display code
+      const code = generateCode(fretboardConfig);
+      displayCode(code);
+    }
+
+    // Generate fretboard configuration based on current settings
+    function generateFretboardConfig() {
+      const { type, category, rootNote, startFret, orientation, fretCount, stringCount, thickness, fretWidth } = currentConfig;
+      
+      let tuning;
+      if (stringCount === 4) {
+        tuning = MUSIC_THEORY.bassTuning;
+      } else if (stringCount === 7) {
+        tuning = ['B', 'E', 'G', 'D', 'A', 'E', 'B'];
+      } else if (stringCount === 8) {
+        tuning = ['F#', 'B', 'E', 'G', 'D', 'A', 'E', 'B'];
+      } else {
+        tuning = MUSIC_THEORY.guitarTuning.slice(0, stringCount);
+      }
+      
+      let formula;
+      if (type === 'chord') {
+        formula = MUSIC_THEORY.chords[category] || MUSIC_THEORY.chords.major;
+      } else {
+        const scaleKey = category === 'minor' ? 'minor' : 
+                        category === 'pentatonic' ? 'major-pentatonic' :
+                        category === 'blues' ? 'blues' : 'major';
+        formula = MUSIC_THEORY.scales[scaleKey] || MUSIC_THEORY.scales.major;
+      }
+
+      const rootMidi = MUSIC_THEORY.noteToMidi[rootNote];
+      const fingerings = generateFingerings(tuning, formula, rootMidi, fretCount, stringCount, startFret);
+
+      return {
+        stringCount,
+        fretCount,
+        startFret,
+        orientation,
+        fingerings,
+        stringSpacing: orientation === 'vertical' ? 30 : 28,
+        fretSpacing: fretWidth,
+        stringThickness: thickness,
+        fretThickness: thickness,
+        showInlays: true,
+        inlayPositions: [3, 5, 7, 9, 12, 15, 17, 19, 21, 24]
+      };
+    }
+
+    // Generate fingerings for the given tuning and formula
+    function generateFingerings(tuning, formula, rootMidi, fretCount, stringCount, startFret) {
+      const fingerings = [];
+      const maxFret = startFret + fretCount - 1;
+      
+      for (let stringIndex = 0; stringIndex < stringCount; stringIndex++) {
+        const stringNote = tuning[stringIndex];
+        const stringMidi = MUSIC_THEORY.noteToMidi[stringNote];
+        
+        for (const interval of formula) {
+          const targetMidi = rootMidi + interval;
+          let fret = targetMidi - stringMidi;
+          while (fret < (startFret > 1 ? startFret : 0)) {
+            fret += 12;
+          }
+          
+          if ((fret === 0 && startFret <= 1) || (fret >= startFret && fret <= maxFret)) {
+            const intervalNames = {
+              0: 'R', 1: 'b2', 2: '2', 3: 'b3', 4: '3', 5: '4',
+              6: 'b5', 7: '5', 8: 'b6', 9: '6', 10: 'b7', 11: '7'
+            };
+            
+            const intervalName = intervalNames[interval % 12] || interval.toString();
+            let color = COLORS.default;
+            if (interval % 12 === 0) color = COLORS.root;
+            else if (interval % 12 === 4 || interval % 12 === 3) color = COLORS.third;
+            else if (interval % 12 === 7) color = COLORS.fifth;
+            else if (interval % 12 === 10 || interval % 12 === 11) color = COLORS.seventh;
+            
+            fingerings.push({
+              string: stringIndex + 1,
+              fret: fret,
+              text: intervalName,
+              color: color,
+              textColor: '#ffffff'
+            });
+          }
+        }
+      }
+
+      fingerings.sort((a, b) => {
+        if (a.string !== b.string) return a.string - b.string;
+        return a.fret - b.fret;
+      });
+
+      return fingerings;
+    }
+
+    function renderFretboard(config) {
+      const fretlyLib = window.fretly || window.Fretly;
+      if (!fretlyLib || !fretlyLib.Fretboard) {
+        showToast('Fretly library not loaded', 'error');
+        return;
+      }
+
+      try {
+        const fretboard = new fretlyLib.Fretboard(config);
+        const svg = fretboard.render();
+        
+        svgOutput.innerHTML = '';
+        svgOutput.appendChild(svg);
+      } catch (err) {
+        showToast('Error rendering fretboard: ' + err.message, 'error');
+      }
+    }
+
+    function generateCode(config) {
+      const code = `// Fretly ${currentConfig.type} configuration
+// Generated by Fretly Studio
+
+const fretboard = new Fretboard({
+  stringCount: ${config.stringCount},
+  fretCount: ${config.fretCount},
+  startFret: ${config.startFret},
+  orientation: '${config.orientation}',
+  stringSpacing: ${config.stringSpacing},
+  fretSpacing: ${config.fretSpacing},
+  stringThickness: ${config.stringThickness},
+  fretThickness: ${config.fretThickness},
+  showInlays: ${config.showInlays},
+  fingerings: [
+${config.fingerings.map(f => `    { string: ${f.string}, fret: ${f.fret}, text: '${f.text}', color: '${f.color}', textColor: '${f.textColor}' }`).join(',\n')}
+  ]
+});
+
+// Render and display
+document.body.appendChild(fretboard.render());`;
+
+      return code;
+    }
+
+    function displayCode(code) {
+      codeOutput.value = code;
+      const lines = code.split('\n').length;
+      lineNumbers.innerHTML = Array.from({ length: lines }, (_, i) => `<div>${i + 1}</div>`).join('');
+    }
+
+    function copyCode() {
+      const code = codeOutput.value;
+      if (!code) {
+        showToast('No code to copy', 'error');
+        return;
+      }
+      navigator.clipboard.writeText(code).then(() => {
+        showToast('JavaScript code copied to clipboard!', 'success');
+      }).catch(() => {
+        showToast('Failed to copy code', 'error');
+      });
+    }
+
+    function copySvg() {
+      const svg = svgOutput.querySelector('svg');
+      if (!svg) {
+        showToast('No SVG to copy', 'error');
+        return;
+      }
+      navigator.clipboard.writeText(svg.outerHTML).then(() => {
+        showToast('SVG copied to clipboard!', 'success');
+      }).catch(() => {
+        showToast('Failed to copy SVG', 'error');
+      });
+    }
+
+    function downloadSvg() {
+      const svg = svgOutput.querySelector('svg');
+      if (!svg) {
+        showToast('No SVG to download', 'error');
+        return;
+      }
+
+      const svgHtml = svg.outerHTML;
+      const blob = new Blob([svgHtml], { type: 'image/svg+xml' });
+      const url = URL.createObjectURL(blob);
+      
+      const rootNote = currentConfig.rootNote.replace('#', 's');
+      const type = currentConfig.type;
+      const category = currentConfig.category;
+      const filename = `${rootNote}-${type}-${category}-fretboard.svg`;
+      
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      
+      showToast(`Downloaded ${filename}`, 'success');
+    }
+
+    function showToast(message, type = 'success') {
+      toast.textContent = message;
+      toast.className = `toast ${type} show`;
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+
+</html>

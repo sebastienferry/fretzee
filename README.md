@@ -55,6 +55,43 @@ const fretboard = new Fretboard({
 document.body.appendChild(fretboard.render());
 ```
 
+### Configurable Starting Fret
+
+Render chord diagrams at higher neck positions using the `startFret` option (1-based fret number, range 0–24):
+
+```typescript
+import { Fretboard } from 'fretly';
+
+// A Minor Barre Chord at 5th Fret
+const fretboard = new Fretboard({
+  stringCount: 6,
+  fretCount: 4,
+  startFret: 5,
+  orientation: 'vertical',
+  fingerings: [
+    { string: 1, fret: 5, text: '1' },
+    { string: 2, fret: 5, text: '1' },
+    { string: 3, fret: 5, text: '1' },
+    { string: 4, fret: 7, text: '3' },
+    { string: 5, fret: 7, text: '2', color: '#e74c3c' },
+    { string: 6, fret: 5, text: '1' }
+  ]
+});
+
+document.body.appendChild(fretboard.render());
+```
+
+### Configuration Options
+
+| Parameter | Type | Default | Description |
+| --- | --- | --- | --- |
+| `fretCount` | `number` | `12` | Number of frets to display (4–16) |
+| `stringCount` | `number` | `6` | Number of strings (4–8) |
+| `startFret` | `number` | `1` | Starting fret number to display (0–24, 0 treated as 1) |
+| `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` | Layout direction |
+| `showInlays` | `boolean` | `true` | Display fret position numbers/inlays |
+| `inlayPositions` | `number[]` | `[3, 5, 7, 9, 12, ...]` | Fret positions for inlays |
+
 ### Fingering Options
 
 | Parameter | Type | Default | Description |

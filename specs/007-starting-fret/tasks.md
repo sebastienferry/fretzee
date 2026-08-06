@@ -19,9 +19,9 @@
 
 **Purpose**: Add the `startFret` option to types, constants, and validation
 
-- [ ] T001 [P] Add `startFret` to `FretboardOptions` interface and `DEFAULT_START_FRET`, `MIN_START_FRET`, `MAX_START_FRET` constants in `src/fretboard/types.ts` and `src/fretboard/constants.ts`
-- [ ] T002 [P] Add `validateStartFret()` function and integrate into `validateOptions()` in `src/utils/validation.ts`
-- [ ] T003 Wire `startFret` option into `Fretboard` constructor defaults and validation in `src/fretboard/Fretboard.ts`
+- [x] T001 [P] Add `startFret` to `FretboardOptions` interface and `DEFAULT_START_FRET`, `MIN_START_FRET`, `MAX_START_FRET` constants in `src/fretboard/types.ts` and `src/fretboard/constants.ts`
+- [x] T002 [P] Add `validateStartFret()` function and integrate into `validateOptions()` in `src/utils/validation.ts`
+- [x] T003 Wire `startFret` option into `Fretboard` constructor defaults and validation in `src/fretboard/Fretboard.ts`
 
 ---
 
@@ -31,9 +31,9 @@
 
 **⚠️ CRITICAL**: No user story rendering work can begin until this phase is complete
 
-- [ ] T004 Update `initializeInlays()` in `src/fretboard/Fretboard.ts` to filter `inlayPositions` to only those in range `[startFret, startFret + fretCount - 1]`, use absolute fret numbers as labels, and compute relative visual positions
-- [ ] T005 Update `initializeFrets()` in `src/fretboard/Fretboard.ts` to assign fret indices starting from `startFret` (for CSS class naming and identification)
-- [ ] T006 Update inlay dot rendering in `renderHorizontalInlayDots()` and `renderVerticalInlayDots()` in `src/renderers/svg.ts` to filter and position dots using the `startFret` offset
+- [x] T004 Update `initializeInlays()` in `src/fretboard/Fretboard.ts` to filter `inlayPositions` to only those in range `[startFret, startFret + fretCount - 1]`, use absolute fret numbers as labels, and compute relative visual positions
+- [x] T005 Update `initializeFrets()` in `src/fretboard/Fretboard.ts` to assign fret indices starting from `startFret` (for CSS class naming and identification)
+- [x] T006 Update inlay dot rendering in `renderHorizontalInlayDots()` and `renderVerticalInlayDots()` in `src/renderers/svg.ts` to filter and position dots using the `startFret` offset
 
 **Checkpoint**: Foundation ready — inlays and frets render with correct absolute numbering for any startFret value
 
@@ -47,15 +47,15 @@
 
 ### Tests for User Story 1
 
-- [ ] T007 [P] [US1] Write unit tests for `startFret` option defaults and validation in `tests/unit/StartingFret.test.ts`
-- [ ] T008 [P] [US1] Write unit tests for inlay filtering and absolute numbering with various `startFret` values in `tests/unit/StartingFret.test.ts`
+- [x] T007 [P] [US1] Write unit tests for `startFret` option defaults and validation in `tests/unit/StartingFret.test.ts`
+- [x] T008 [P] [US1] Write unit tests for inlay filtering and absolute numbering with various `startFret` values in `tests/unit/StartingFret.test.ts`
 
 ### Implementation for User Story 1
 
-- [ ] T009 [US1] Update `getFingeringPosition()` in `src/utils/geometry.ts` to accept `startFret` parameter and map absolute fret numbers to relative visual positions
-- [ ] T010 [US1] Update fingering rendering in `renderFingering()` in `src/renderers/svg.ts` to pass `startFret` to `getFingeringPosition()` and skip fingerings outside visible range
-- [ ] T011 [US1] Update open string fingering viewBox adjustment in `render()` in `src/renderers/svg.ts` to only apply when `startFret <= 1`
-- [ ] T012 [US1] Ensure backward compatibility: verify `Fretboard()` with no `startFret` (or `startFret: 0` / `startFret: 1`) renders identically to current behavior in `tests/unit/StartingFret.test.ts`
+- [x] T009 [US1] Update `getFingeringPosition()` in `src/utils/geometry.ts` to accept `startFret` parameter and map absolute fret numbers to relative visual positions
+- [x] T010 [US1] Update fingering rendering in `renderFingering()` in `src/renderers/svg.ts` to pass `startFret` to `getFingeringPosition()` and skip fingerings outside visible range
+- [x] T011 [US1] Update open string fingering viewBox adjustment in `render()` in `src/renderers/svg.ts` to only apply when `startFret <= 1`
+- [x] T012 [US1] Ensure backward compatibility: verify `Fretboard()` with no `startFret` (or `startFret: 0` / `startFret: 1`) renders identically to current behavior in `tests/unit/StartingFret.test.ts`
 
 **Checkpoint**: Fretboard renders correctly with any `startFret` value, fingerings are positioned correctly
 
@@ -69,13 +69,13 @@
 
 ### Tests for User Story 2
 
-- [ ] T013 [P] [US2] Write unit tests verifying inlay text content matches absolute fret numbers in `tests/unit/StartingFret.test.ts`
+- [x] T013 [P] [US2] Write unit tests verifying inlay text content matches absolute fret numbers in `tests/unit/StartingFret.test.ts`
 
 ### Implementation for User Story 2
 
 (Already implemented in Phase 2 T004 — inlay labels use absolute fret numbers. This phase validates correctness.)
 
-- [ ] T014 [US2] Verify and fix inlay label rendering for edge cases (startFret at 12, 24, and ranges with no standard inlay positions) in `src/fretboard/Fretboard.ts`
+- [x] T014 [US2] Verify and fix inlay label rendering for edge cases (startFret at 12, 24, and ranges with no standard inlay positions) in `src/fretboard/Fretboard.ts`
 
 **Checkpoint**: Inlay numbers correctly show absolute fret positions for all startFret values
 
@@ -89,14 +89,14 @@
 
 ### Tests for User Story 3
 
-- [ ] T015 [P] [US3] Write unit tests for starting fret indicator presence/absence and positioning in `tests/unit/StartingFret.test.ts`
+- [x] T015 [P] [US3] Write unit tests for starting fret indicator presence/absence and positioning in `tests/unit/StartingFret.test.ts`
 
 ### Implementation for User Story 3
 
-- [ ] T016 [P] [US3] Add `startFretIndicator` CSS class to `CSS_CLASSES` in `src/fretboard/constants.ts`
-- [ ] T017 [US3] Implement `renderStartFretIndicator()` method in `src/renderers/svg.ts` for horizontal orientation (text label left of first fret line)
-- [ ] T018 [US3] Implement `renderStartFretIndicator()` method in `src/renderers/svg.ts` for vertical orientation (text label above first fret line)
-- [ ] T019 [US3] Call `renderStartFretIndicator()` from `renderHorizontal()` and `renderVertical()` when `startFret > 1`, and adjust viewBox to accommodate the label in `src/renderers/svg.ts`
+- [x] T016 [P] [US3] Add `startFretIndicator` CSS class to `CSS_CLASSES` in `src/fretboard/constants.ts`
+- [x] T017 [US3] Implement `renderStartFretIndicator()` method in `src/renderers/svg.ts` for horizontal orientation (text label left of first fret line)
+- [x] T018 [US3] Implement `renderStartFretIndicator()` method in `src/renderers/svg.ts` for vertical orientation (text label above first fret line)
+- [x] T019 [US3] Call `renderStartFretIndicator()` from `renderHorizontal()` and `renderVertical()` when `startFret > 1`, and adjust viewBox to accommodate the label in `src/renderers/svg.ts`
 
 **Checkpoint**: Starting fret indicator displays correctly in both orientations when startFret > 1
 
@@ -106,12 +106,12 @@
 
 **Purpose**: Documentation, demo updates, and final validation
 
-- [ ] T020 [P] Update `README.md` with `startFret` option documentation and usage examples
-- [ ] T021 [P] Update `docs/design.md` and `docs/classes.md` with `startFret` design decisions and API changes
-- [ ] T022 [P] Add starting fret examples to `demo.html` (chord diagrams at various positions)
-- [ ] T023 [P] Add starting fret controls to `editor.html` (slider/input for startFret value)
-- [ ] T024 Run `npm run build`, `npm run lint`, and `npm test` to validate all changes
-- [ ] T025 Run quickstart.md validation — verify all code samples work correctly
+- [x] T020 [P] Update `README.md` with `startFret` option documentation and usage examples
+- [x] T021 [P] Update `docs/design.md` and `docs/classes.md` with `startFret` design decisions and API changes
+- [x] T022 [P] Add starting fret examples to `demo.html` (chord diagrams at various positions)
+- [x] T023 [P] Add starting fret controls to `editor.html` (slider/input for startFret value)
+- [x] T024 Run `npm run build`, `npm run lint`, and `npm test` to validate all changes
+- [x] T025 Run quickstart.md validation — verify all code samples work correctly
 
 ---
 
