@@ -287,6 +287,26 @@
         </div>
       </div>
     </div>
+
+    <!-- Example 5: Diagram Titles -->
+    <div class="demo-card">
+      <div class="demo-card-header">
+        <h2 class="demo-card-title">5. Diagram Titles</h2>
+        <p class="demo-card-desc">Render custom title text headers above fretboard diagrams with configurable alignment (center or left).</p>
+      </div>
+      <div class="demo-card-body">
+        <div class="vertical-grid">
+          <div class="vertical-card">
+            <span class="vertical-card-title">Centered Title</span>
+            <div id="demo-title-centered"></div>
+          </div>
+          <div class="vertical-card">
+            <span class="vertical-card-title">Left-Aligned Title</span>
+            <div id="demo-title-left"></div>
+          </div>
+        </div>
+      </div>
+    </div>
   </main>
 
   <footer>
@@ -406,6 +426,36 @@
         ]
       });
       document.getElementById('demo-starting-fret-bm').appendChild(startingFretBm.render());
+
+      // 5. Titled Fretboards
+      const titleCentered = new fretlyLib.Fretboard({
+        title: 'Am Chord',
+        titleAlignment: 'center',
+        stringCount: 6,
+        fretCount: 4,
+        orientation: 'vertical',
+        fingerings: [
+          { string: 1, fret: 0, text: 'E' },
+          { string: 2, fret: 1, text: 'C' },
+          { string: 3, fret: 2, text: 'A', color: '#ef4444', textColor: '#ffffff' },
+          { string: 4, fret: 2, text: 'E' },
+          { string: 5, fret: 0, text: 'A', color: '#ef4444', textColor: '#ffffff' }
+        ]
+      });
+      document.getElementById('demo-title-centered').appendChild(titleCentered.render());
+
+      const titleLeft = new fretlyLib.Fretboard({
+        title: 'C Pentatonic',
+        titleAlignment: 'left',
+        stringCount: 6,
+        fretCount: 4,
+        orientation: 'horizontal',
+        fingerings: [
+          { string: 6, fret: 3, text: 'C', color: '#ef4444', textColor: '#ffffff' },
+          { string: 5, fret: 3, text: 'C', color: '#ef4444', textColor: '#ffffff' }
+        ]
+      });
+      document.getElementById('demo-title-left').appendChild(titleLeft.render());
     });
   </script>
 </body>

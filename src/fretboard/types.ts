@@ -36,6 +36,12 @@ export interface FretboardOptions {
   /** Starting fret number to display (0-24, default: 1). 0 is treated as 1. */
   startFret?: number;
 
+  /** Optional diagram title displayed above the fretboard */
+  title?: string;
+
+  /** Title alignment: 'center' or 'left' (default: 'center') */
+  titleAlignment?: 'center' | 'left';
+
   /** Fingering markers to render on the fretboard */
   fingerings?: Fingering[];
 }

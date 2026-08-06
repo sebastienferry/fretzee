@@ -9,6 +9,14 @@ Main class for managing and rendering fretboard diagrams.
 new Fretboard(options?: Partial<FretboardOptions>)
 ```
 
+### FretboardOptions
+- `title?: string` - Optional title text rendered above the fretboard.
+- `titleAlignment?: 'center' | 'left'` - Alignment of title text (default: `'center'`).
+- `startFret?: number` - Starting fret position (0-24).
+- `fretCount?: number` - Number of frets (4-16).
+- `stringCount?: number` - Number of strings (4-8).
+- `orientation?: 'horizontal' | 'vertical'` - Fretboard orientation.
+
 ### Methods & Getters
 - `render(): SVGSVGElement` - Returns rendered SVG element.
 - `getFingerings(): Fingering[]` - Returns array of fingering markers.

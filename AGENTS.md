@@ -1,7 +1,7 @@
 <!-- SPECKIT START -->
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan:
-[specs/007-starting-fret/plan.md](specs/007-starting-fret/plan.md)
+[specs/008-diagram-title/plan.md](specs/008-diagram-title/plan.md)
 <!-- SPECKIT END -->
 
 # Role & Context
@@ -105,7 +105,8 @@ Fretly uses a **modular agent system** for automated issue processing, with clea
 
 | Agent | Command | Role | Input Label | Output Label | Primary Function |
 |-------|---------|------|-------------|---------------|------------------|
-| **Specification Agent** | `/spec-issue` | Product Owner | `to-specify` | `to-implement` | Creates feature specifications |
+| **Clarification Agent** | `/clarify-issue` | Clarification | None (Todo status) | `to-clarify` | Asks clarifying questions in comments |
+| **Specification Agent** | `/spec-issue` | Product Owner | `to-specify` or `clarified` | `to-implement` | Creates feature specifications |
 | **Implementation Agent** | `/code-issue` | Developer | `to-implement` | `implemented` | Implements code from specs |
 | **Orchestrator Agent** | `/pick-issue` | Smart Router | Any | Depends | Intelligently delegates based on labels |
 
@@ -123,14 +124,23 @@ graph LR
 
 ### 📋 Agent Details
 
+#### `/clarify-issue` - Clarification Agent
+- **Location**: `.agents/skills/clarify-issue/SKILL.md`
+- **Responsibilities**:
+  - Picks next issue with status "Todo" without workflow labels
+  - Analyzes issue content and generates targeted clarifying questions
+  - Posts questions as comments on the GitHub issue
+  - **Label Transition**: Adds "to-clarify"
+  - **Project Status**: Remains "Todo" until user changes label to "clarified"
+
 #### `/spec-issue` - Product Owner Agent
 - **Location**: `.agents/skills/spec-issue/SKILL.md`
 - **Responsibilities**:
-  - Picks next issue with status "Todo" and label "to-specify"
+  - Picks next issue with status "Todo" and label "to-specify" or "clarified"
   - Creates specification using Speckit workflow (`/speckit-specify`, `/speckit-plan`, `/speckit-tasks`)
   - Creates dedicated feature branch from main
   - Commits specification files
-  - **Label Transition**: Removes "to-specify", adds "to-implement"
+  - **Label Transition**: Removes "to-specify"/"clarified", adds "to-implement"
   - **Project Status**: Updates to "In Progress"
 
 #### `/code-issue` - Developer Agent
@@ -149,9 +159,11 @@ graph LR
 - **Location**: `.agents/skills/pick-issue/SKILL.md`
 - **Responsibilities**:
   - Intelligently delegates based on issue labels
+  - If issue has no workflow labels: delegates to `/clarify-issue`
+  - If issue has "to-clarify": waits for user to change to "clarified"
+  - If issue has "clarified": delegates to `/spec-issue`
   - If issue has "to-specify": delegates to `/spec-issue`
   - If issue has "to-implement": handles implementation directly
-  - If issue has neither: can handle full workflow
   - Maintains backward compatibility
 
 ## Usage Patterns
@@ -160,6 +172,9 @@ graph LR
 For maximum control and separation of concerns:
 
 ```bash
+# Clarification agent asks questions first
+/clarify-issue
+
 # Product Owner creates specifications
 /spec-issue
 
@@ -180,6 +195,7 @@ Use direct agents for most work, with `/pick-issue` as fallback:
 
 ```bash
 # Most issues: use direct agents
+/clarify-issue  # For issues needing clarification
 /spec-issue    # For new features needing specs
 /code-issue    # For issues ready for implementation
 
@@ -190,23 +206,27 @@ Use direct agents for most work, with `/pick-issue` as fallback:
 ## Label-Based Workflow
 
 ### Issue Lifecycle
-1. **Backlog**: Issue created with label `to-specify`
-2. **Specification**: `/spec-issue` processes it → label becomes `to-implement`
-3. **Implementation**: `/code-issue` processes it → label becomes `implemented`
-4. **Review**: PR created and reviewed
-5. **Complete**: PR merged, issue closed
+1. **Backlog**: Issue created (no workflow labels)
+2. **Clarification**: `/clarify-issue` processes it → label becomes `to-clarify`
+3. **User Clarifies**: User answers questions and changes label to `clarified`
+4. **Specification**: `/spec-issue` processes it → label becomes `to-implement`
+5. **Implementation**: `/code-issue` processes it → label becomes `implemented`
+6. **Review**: PR created and reviewed
+7. **Complete**: PR merged, issue closed
 
 ### Label Transitions
 ```
-to-specify     --[/spec-issue]-->  to-implement
-to-implement   --[/code-issue]-->  implemented
+None          --[/clarify-issue]-->  to-clarify
+to-clarify    --[user action]-->    clarified
+clarified     --[/spec-issue]-->    to-implement
+to-implement  --[/code-issue]-->    implemented
 ```
 
 ## Project Board Integration
 
 - **Board**: `https://github.com/users/sebastienferry/projects/3`
 - **Status Field**: Issues move from "Todo" → "In Progress" → "Done"
-- **Label Field**: Issues transition through `to-specify` → `to-implement` → `implemented`
+- **Label Field**: Issues transition through `to-clarify` → `clarified` → `to-specify` → `to-implement` → `implemented`
 
 ## Error Handling & Fallbacks
 
@@ -217,11 +237,12 @@ to-implement   --[/code-issue]-->  implemented
 
 ## Best Practices
 
-1. **Use direct agents** (`/spec-issue`, `/code-issue`) for most workflows
+1. **Use direct agents** (`/clarify-issue`, `/spec-issue`, `/code-issue`) for most workflows
 2. **Maintain label discipline** - ensure issues have correct labels before processing
 3. **Start from main branch** - all agents ensure clean starting state
 4. **Verify specifications exist** before running `/code-issue`
 5. **Use `/pick-issue` for orchestration** when unsure of issue state
+6. **Clarification first** - use `/clarify-issue` for issues that need more information before specification
 
 ---
 

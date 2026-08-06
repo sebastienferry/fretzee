@@ -38,7 +38,8 @@ import {
   DEFAULT_FRET_THICKNESS,
   DEFAULT_SHOW_INLAYS,
   DEFAULT_INLAY_POSITIONS,
-  DEFAULT_START_FRET
+  DEFAULT_START_FRET,
+  DEFAULT_TITLE_ALIGNMENT
 } from './constants';
 import { validateOptions } from '../utils/validation';
 import {
@@ -111,6 +112,8 @@ export class Fretboard {
       fretThickness: DEFAULT_FRET_THICKNESS,
       inlayPositions: [...DEFAULT_INLAY_POSITIONS],
       showInlays: DEFAULT_SHOW_INLAYS,
+      title: undefined as any,
+      titleAlignment: DEFAULT_TITLE_ALIGNMENT,
       fingerings: [],
       ...options,
       startFret: effectiveStartFret

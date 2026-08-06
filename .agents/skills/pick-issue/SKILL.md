@@ -57,7 +57,7 @@ $ARGUMENTS
 3. **Select Target Issue**:
    - Filter items matching `status == "Todo"`.
    - If `$ARGUMENTS` is provided (e.g., `bug`), select the first Todo item with label/type matching `$ARGUMENTS`.
-   - If `$ARGUMENTS` is empty, select the **first Todo item**.
+   - If `$ARGUMENTS` is empty, select the **first Todo item** that doesn't have workflow labels.
    - Extract: `ISSUE_NUM`, `ISSUE_TITLE`, `ISSUE_BODY`, `ISSUE_LABELS`, and `ITEM_ID`.
 
 4. **Update Project Status**:
@@ -68,7 +68,21 @@ $ARGUMENTS
 
 ---
 
-### Step 2: Speckit Design Workflow
+### Step 2: Check for Clarification Needs
+
+1. **Check for Issues Needing Clarification**:
+   - If the issue doesn't have any workflow labels (`to-clarify`, `clarified`, `to-specify`, `to-implement`, `implemented`)
+   - Run the clarification workflow:
+   ```bash
+   /clarify-issue
+   ```
+   *This will post clarifying questions and add the "to-clarify" label*
+
+2. **Check for Clarified Issues**:
+   - If the issue has "clarified" label, proceed to specification
+   - Remove "clarified" label as part of the specification process
+
+### Step 3: Speckit Design Workflow
 
 Run the standard Speckit specification & planning pipeline:
 
@@ -158,16 +172,26 @@ Run the standard Speckit specification & planning pipeline:
 
 When running with subagents or multi-agent delegation:
 
+### For Issues Needing Clarification:
+- **Clarification Subagent** (`/clarify-issue`): Posts clarifying questions and adds "to-clarify" label
+- **Lead Agent**: Waits for user to provide answers and change label to "clarified"
+
+### For "clarified" Issues:
+- **Specification Subagent** (`/spec-issue`): Detects "clarified" label, removes it, adds "to-specify", and executes specification creation
+- **Implementation Subagent**: Executes Step 4-6 (planning, implementation, validation, finalization)
+- **Lead Agent**: Coordinates the handoff between specification and implementation phases
+
 ### For "to-specify" Issues:
 - **Specification Subagent** (`/spec-issue`): Executes specification creation and label transition
-- **Implementation Subagent**: Executes Step 3-6 (planning, implementation, validation, finalization)
+- **Implementation Subagent**: Executes Step 4-6 (planning, implementation, validation, finalization)
 - **Lead Agent**: Coordinates the handoff between specification and implementation phases
 
 ### For "to-implement" Issues:
-- **Implementation Subagent**: Executes Step 3-6 directly
+- **Implementation Subagent**: Executes Step 4-6 directly
 - **Lead Agent**: Manages user validation and finalization
 
 ### For Unlabeled Issues:
+- **Clarification Subagent**: Executes Step 2 (posts clarifying questions)
 - **Design Subagent**: Executes Step 3 (Speckit planning and tasks)
 - **Implementation Subagent**: Executes Step 4 (`speckit-implement`) in an isolated feature branch
 - **Lead Agent**: Coordinates Step 5 user validation and Step 6 CHANGELOG / PR finalization
@@ -178,47 +202,61 @@ When running with subagents or multi-agent delegation:
 
 ```mermaid
 graph TD
-    A[Start: Pick Issue] --> B{Has 'to-specify' label?}
-    B -->|Yes| C[Delegate to /spec-issue]
-    B -->|No| D{Has 'to-implement' label?}
-    C --> E[Specification Created]
-    E --> D
-    D -->|Yes| F[Implementation Workflow]
-    D -->|No| G[Full Workflow: Spec + Implementation]
-    F --> H[User Validation]
+    A[Start: Pick Issue] --> B{Has workflow label?}
+    B -->|No| C[Delegate to /clarify-issue]
+    B -->|Yes| D{Has 'to-clarify' label?}
+    D -->|Yes| E[Wait for user to change to 'clarified']
+    D -->|No| F{Has 'clarified' label?}
+    F -->|Yes| G[Remove 'clarified', add 'to-specify']
+    F -->|No| H{Has 'to-specify' label?}
     G --> H
-    H --> I[Finalization: CHANGELOG + PR]
+    H -->|Yes| I[Delegate to /spec-issue]
+    H -->|No| J{Has 'to-implement' label?}
+    I --> K[Specification Created]
+    K --> J
+    J -->|Yes| L[Implementation Workflow]
+    J -->|No| M[Full Workflow: Spec + Implementation]
+    L --> N[User Validation]
+    M --> N
+    N --> O[Finalization: CHANGELOG + PR]
+    E --> D
 ```
 
 ## Alternative: Direct Agent Usage
 
 For more granular control, users can invoke agents directly:
 
-1. **Specification Only**:
+1. **Clarification Only**:
    ```
-   /spec-issue    # Creates spec, transitions "to-specify" → "to-implement"
+   /clarify-issue    # Asks questions, transitions to "to-clarify"
    ```
 
-2. **Implementation Only**:
+2. **Specification Only**:
+   ```
+   /spec-issue    # Creates spec, transitions "to-specify"/"clarified" → "to-implement"
+   ```
+
+3. **Implementation Only**:
    ```
    /code-issue    # Implements code, transitions "to-implement" → "implemented"
    ```
 
-3. **Full Workflow** (legacy):
+4. **Full Workflow** (legacy):
    ```
-   /pick-issue    # Handles both spec and implementation based on labels
+   /pick-issue    # Handles clarification, spec and implementation based on labels
    ```
 
 ## Agent Responsibilities
 
 | Agent | Role | Input Label | Output Label | Primary Command |
 |-------|------|-------------|---------------|-----------------|
-| `/spec-issue` | Product Owner | `to-specify` | `to-implement` | `/speckit-specify` |
+| `/clarify-issue` | Clarification | None (Todo status) | `to-clarify` | Ask questions in comments |
+| `/spec-issue` | Product Owner | `to-specify` or `clarified` | `to-implement` | `/speckit-specify` |
 | `/code-issue` | Developer | `to-implement` | `implemented` | `/speckit-implement` |
 | `/pick-issue` | Orchestrator | Any | Depends on input | Delegates as needed |
 
 This modular approach allows:
-- **Separation of concerns**: Product owner (`spec-issue`) vs Developer (`code-issue`)
+- **Separation of concerns**: Clarification (`clarify-issue`) vs Product owner (`spec-issue`) vs Developer (`code-issue`)
 - **Reusability**: Each agent can be used independently
 - **Flexibility**: `pick-issue` remains backward compatible and can handle all issue types
-- **Clear handoffs**: Issues transition from "to-specify" → "to-implement" → "implemented"
+- **Clear handoffs**: Issues transition from "to-clarify" → "clarified" → "to-specify" → "to-implement" → "implemented"
