@@ -11,6 +11,7 @@ export const DEFAULT_STRING_THICKNESS = 1;
 export const DEFAULT_FRET_SPACING = 60;
 export const DEFAULT_FRET_THICKNESS = 3;
 export const DEFAULT_SHOW_INLAYS = true;
+export const DEFAULT_START_FRET = 1;
 
 // Standard guitar inlay positions
 export const DEFAULT_INLAY_POSITIONS = [3, 5, 7, 9, 12, 15, 17, 19, 21, 24];
@@ -24,6 +25,8 @@ export const MIN_FRET_COUNT = 4;
 export const MAX_FRET_COUNT = 16;
 export const MIN_STRING_COUNT = 4;
 export const MAX_STRING_COUNT = 8;
+export const MIN_START_FRET = 0;
+export const MAX_START_FRET = 24;
 
 // Standard guitar tuning (high E to low E)
 export const STANDARD_TUNING = ['E', 'B', 'G', 'D', 'A', 'E'];
@@ -39,6 +42,7 @@ export const CSS_CLASSES = {
   inlays: 'fretly-inlays',
   markers: 'fretly-markers',
   fingerings: 'fretly-fingerings',
+  startFretIndicator: 'fretly-start-fret',
   fret: (index: number) => `fretly-fret ${CSS_CLASSES.frets} fretly-fret-${index}`,
   string: (index: number) => `fretly-string ${CSS_CLASSES.strings} fretly-string-${index}`,
   inlay: (fretNumber: number) => `fretly-inlay ${CSS_CLASSES.inlays} fretly-inlay-${fretNumber}`,
@@ -54,6 +58,8 @@ export const ERROR_MESSAGES = {
     `fretCount must be between ${MIN_FRET_COUNT} and ${MAX_FRET_COUNT}, got ${value}`,
   STRING_COUNT_RANGE: (value: number) => 
     `stringCount must be between ${MIN_STRING_COUNT} and ${MAX_STRING_COUNT}, got ${value}`,
+  START_FRET_RANGE: (value: number) =>
+    `startFret must be between ${MIN_START_FRET} and ${MAX_START_FRET}, got ${value}`,
   INVALID_ORIENTATION: (value: string) => 
     `orientation must be 'horizontal' or 'vertical', got '${value}'`,
   POSITIVE_REQUIRED: (field: string) => `${field} must be a positive number`,

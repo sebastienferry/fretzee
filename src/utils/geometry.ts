@@ -357,7 +357,8 @@ export function getFingeringPosition(
   fretSpacing: number,
   stringCount: number,
   stringThickness: number = 0,
-  fretThickness: number = 0
+  fretThickness: number = 0,
+  startFret: number = 1
 ): Position {
   const stringIndex = stringNum - 1;
   // Per-string thickness offset to center on the string's visual midline
@@ -366,13 +367,16 @@ export function getFingeringPosition(
   // Per-fret thickness offset to center between fret lines
   const fretThicknessOffset = fretThickness / 2;
 
+  // Map absolute fret number to relative position on the displayed fretboard
+  const relativeFret = fretNum === 0 ? 0 : fretNum - startFret + 1;
+
   if (orientation === 'horizontal') {
     const y = getHorizontalStringY(stringIndex, stringSpacing) + thicknessOffset;
-    const x = fretNum === 0 ? -fretSpacing * 0.35 : (fretNum - 0.5) * fretSpacing + fretThicknessOffset;
+    const x = relativeFret === 0 ? -fretSpacing * 0.35 : (relativeFret - 0.5) * fretSpacing + fretThicknessOffset;
     return { x, y };
   } else {
     const x = getVerticalStringX(stringIndex, stringSpacing, stringCount) + thicknessOffset;
-    const y = fretNum === 0 ? -fretSpacing * 0.35 : (fretNum - 0.5) * fretSpacing + fretThicknessOffset;
+    const y = relativeFret === 0 ? -fretSpacing * 0.35 : (relativeFret - 0.5) * fretSpacing + fretThicknessOffset;
     return { x, y };
   }
 }

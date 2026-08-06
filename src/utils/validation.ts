@@ -7,6 +7,8 @@ import {
   MAX_FRET_COUNT,
   MIN_STRING_COUNT,
   MAX_STRING_COUNT,
+  MIN_START_FRET,
+  MAX_START_FRET,
   ERROR_MESSAGES
 } from '../fretboard/constants';
 
@@ -32,6 +34,19 @@ export function validateStringCount(value: number): number {
   }
   if (value < MIN_STRING_COUNT || value > MAX_STRING_COUNT) {
     throw new RangeError(ERROR_MESSAGES.STRING_COUNT_RANGE(value));
+  }
+  return value;
+}
+
+/**
+ * Validates startFret value
+ */
+export function validateStartFret(value: number): number {
+  if (!Number.isInteger(value)) {
+    throw new TypeError(ERROR_MESSAGES.START_FRET_RANGE(value));
+  }
+  if (value < MIN_START_FRET || value > MAX_START_FRET) {
+    throw new RangeError(ERROR_MESSAGES.START_FRET_RANGE(value));
   }
   return value;
 }
@@ -102,6 +117,7 @@ export function validateInlayPositions(
 export function validateOptions({
   fretCount,
   stringCount,
+  startFret,
   orientation,
   stringSpacing,
   stringThickness,
@@ -110,6 +126,7 @@ export function validateOptions({
 }: {
   fretCount?: number;
   stringCount?: number;
+  startFret?: number;
   orientation?: string;
   stringSpacing?: number;
   stringThickness?: number;
@@ -118,6 +135,7 @@ export function validateOptions({
 }): void {
   if (fretCount !== undefined) validateFretCount(fretCount);
   if (stringCount !== undefined) validateStringCount(stringCount);
+  if (startFret !== undefined) validateStartFret(startFret);
   if (orientation !== undefined) validateOrientation(orientation);
   if (stringSpacing !== undefined) validatePositive(stringSpacing, 'stringSpacing');
   if (stringThickness !== undefined) validateNonNegative(stringThickness, 'stringThickness');

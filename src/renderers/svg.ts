@@ -72,7 +72,7 @@ export class SvgRenderer {
     }
 
     // Additional adjustments for open string fingerings (fret 0)
-    const hasOpenStrings = fingerings.some(f => f.fret === 0);
+    const hasOpenStrings = (this.options.startFret <= 1) && fingerings.some(f => f.fret === 0);
     if (hasOpenStrings) {
       const radius = calculateFingeringRadius(this.options.stringSpacing, this.options.fretSpacing);
       const openOffset = (this.options.fretSpacing * 0.35) + radius + 5;
@@ -220,8 +220,10 @@ export class SvgRenderer {
    * Renders a string in horizontal orientation
    */
   private renderHorizontalString(str: GuitarString, width: number, group: SVGElement): void {
+    const overlap = 10;
+    const x1 = this.options.startFret > 1 ? -overlap : 0;
     const line = document.createElementNS(SVG_NS, 'line');
-    line.setAttribute('x1', '0');
+    line.setAttribute('x1', String(x1));
     line.setAttribute('y1', String(str.y + str.thickness / 2));
     line.setAttribute('x2', String(width));
     line.setAttribute('y2', String(str.y + str.thickness / 2));
@@ -278,10 +280,13 @@ export class SvgRenderer {
     const neckCenterY = stringHeight / 2;
     const dotRadius = 6;
     const dotColor = '#d1d5db';
+    const startFret = this.options.startFret;
+    const endFret = startFret + this.options.fretCount - 1;
 
     for (const fretNum of this.options.inlayPositions) {
-      if (fretNum > this.options.fretCount) continue;
-      const fretX = (fretNum - 0.5) * this.options.fretSpacing;
+      if (fretNum < startFret || fretNum > endFret) continue;
+      const relativePos = fretNum - startFret + 1;
+      const fretX = (relativePos - 0.5) * this.options.fretSpacing;
       const isDoubleDot = fretNum % 12 === 0;
 
       if (isDoubleDot) {
@@ -323,10 +328,13 @@ export class SvgRenderer {
     const neckCenterX = stringWidth / 2;
     const dotRadius = 6;
     const dotColor = '#d1d5db';
+    const startFret = this.options.startFret;
+    const endFret = startFret + this.options.fretCount - 1;
 
     for (const fretNum of this.options.inlayPositions) {
-      if (fretNum > this.options.fretCount) continue;
-      const fretY = (fretNum - 0.5) * this.options.fretSpacing;
+      if (fretNum < startFret || fretNum > endFret) continue;
+      const relativePos = fretNum - startFret + 1;
+      const fretY = (relativePos - 0.5) * this.options.fretSpacing;
       const isDoubleDot = fretNum % 12 === 0;
 
       if (isDoubleDot) {
@@ -364,9 +372,11 @@ export class SvgRenderer {
    * Renders a string in vertical orientation
    */
   private renderVerticalString(str: GuitarString, height: number, group: SVGElement): void {
+    const overlap = 10;
+    const y1 = this.options.startFret > 1 ? -overlap : 0;
     const line = document.createElementNS(SVG_NS, 'line');
     line.setAttribute('x1', String(str.x + str.thickness / 2));
-    line.setAttribute('y1', '0');
+    line.setAttribute('y1', String(y1));
     line.setAttribute('x2', String(str.x + str.thickness / 2));
     line.setAttribute('y2', String(height));
     line.setAttribute('stroke', '#000000');
@@ -497,6 +507,16 @@ export class SvgRenderer {
    * Renders an individual fingering marker
    */
   private renderFingering(fingering: Fingering, radius: number, group: SVGElement): void {
+    const startFret = this.options.startFret;
+    const endFret = startFret + this.options.fretCount - 1;
+
+    // Filter out fingerings outside the visible range
+    if (fingering.fret === 0) {
+      if (startFret > 1) return;
+    } else if (fingering.fret < startFret || fingering.fret > endFret) {
+      return;
+    }
+
     const pos = getFingeringPosition(
       fingering.string,
       fingering.fret,
@@ -505,7 +525,8 @@ export class SvgRenderer {
       this.options.fretSpacing,
       this.options.stringCount,
       this.options.stringThickness,
-      this.options.fretThickness
+      this.options.fretThickness,
+      startFret
     );
 
     const g = this.createGroup(fingering.getCssClass());

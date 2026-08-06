@@ -215,7 +215,9 @@
     </a>
     <nav class="nav-links">
       <a href="index.html" class="nav-btn">Home</a>
-      <a href="editor.html" class="nav-btn nav-btn-primary">Interactive Editor</a>
+      <a href="editor.html" class="nav-btn">Editor</a>
+      <a href="studio.html" class="nav-btn">Studio</a>
+      <a href="demo.html" class="nav-btn nav-btn-primary">Demos</a>
       <a href="https://github.com/sebastienferry/fretly" target="_blank" rel="noopener" class="nav-btn">GitHub</a>
     </nav>
   </header>
@@ -264,6 +266,26 @@
         <p class="demo-card-desc">Horizontal 4-string bass neck configuration with root and octave fingering highlights.</p>
       </div>
       <div class="demo-card-body" id="demo-bass"></div>
+    </div>
+
+    <!-- Example 4: Configurable Starting Fret -->
+    <div class="demo-card">
+      <div class="demo-card-header">
+        <h2 class="demo-card-title">4. Configurable Starting Fret (High Position Chords)</h2>
+        <p class="demo-card-desc">Render chord diagrams starting at higher neck positions (e.g. fret 5 and fret 7) with starting fret indicators and absolute inlay numbering.</p>
+      </div>
+      <div class="demo-card-body">
+        <div class="vertical-grid">
+          <div class="vertical-card">
+            <span class="vertical-card-title">Am Barre (Fret 5)</span>
+            <div id="demo-starting-fret-am"></div>
+          </div>
+          <div class="vertical-card">
+            <span class="vertical-card-title">Bm Barre (Fret 7)</span>
+            <div id="demo-starting-fret-bm"></div>
+          </div>
+        </div>
+      </div>
     </div>
   </main>
 
@@ -351,6 +373,39 @@
         ]
       });
       document.getElementById('demo-bass').appendChild(bass.render());
+
+      // 4. Starting Fret Examples
+      const startingFretAm = new fretlyLib.Fretboard({
+        stringCount: 6,
+        fretCount: 4,
+        startFret: 5,
+        orientation: 'vertical',
+        fingerings: [
+          { string: 1, fret: 5, text: '1' },
+          { string: 2, fret: 5, text: '1' },
+          { string: 3, fret: 5, text: '1' },
+          { string: 4, fret: 7, text: '3' },
+          { string: 5, fret: 7, text: '2', color: '#ef4444', textColor: '#ffffff' },
+          { string: 6, fret: 5, text: '1' }
+        ]
+      });
+      document.getElementById('demo-starting-fret-am').appendChild(startingFretAm.render());
+
+      const startingFretBm = new fretlyLib.Fretboard({
+        stringCount: 6,
+        fretCount: 4,
+        startFret: 7,
+        orientation: 'vertical',
+        fingerings: [
+          { string: 1, fret: 7, text: '1' },
+          { string: 2, fret: 7, text: '1' },
+          { string: 3, fret: 7, text: '1' },
+          { string: 4, fret: 9, text: '3' },
+          { string: 5, fret: 9, text: '2', color: '#ef4444', textColor: '#ffffff' },
+          { string: 6, fret: 7, text: '1' }
+        ]
+      });
+      document.getElementById('demo-starting-fret-bm').appendChild(startingFretBm.render());
     });
   </script>
 </body>

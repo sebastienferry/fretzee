@@ -37,7 +37,8 @@ import {
   DEFAULT_FRET_SPACING,
   DEFAULT_FRET_THICKNESS,
   DEFAULT_SHOW_INLAYS,
-  DEFAULT_INLAY_POSITIONS
+  DEFAULT_INLAY_POSITIONS,
+  DEFAULT_START_FRET
 } from './constants';
 import { validateOptions } from '../utils/validation';
 import {
@@ -98,7 +99,8 @@ export class Fretboard {
    * @throws RangeError if any option value is outside valid ranges
    */
   constructor(options: Partial<FretboardOptions> = {}) {
-    // Merge options with defaults
+    // Merge options with defaults (startFret: 0 is treated as 1)
+    const effectiveStartFret = options.startFret === 0 ? 1 : (options.startFret ?? DEFAULT_START_FRET);
     this.options = {
       fretCount: DEFAULT_FRET_COUNT,
       stringCount: DEFAULT_STRING_COUNT,
@@ -110,11 +112,12 @@ export class Fretboard {
       inlayPositions: [...DEFAULT_INLAY_POSITIONS],
       showInlays: DEFAULT_SHOW_INLAYS,
       fingerings: [],
-      ...options
+      ...options,
+      startFret: effectiveStartFret
     };
 
     // Validate all provided options
-    validateOptions(options);
+    validateOptions(this.options);
 
     // Initialize fingerings
     this.fingerings = (this.options.fingerings || []).map(f => new Fingering(f));
@@ -177,15 +180,17 @@ export class Fretboard {
     this.frets = [];
     const isHorizontal = this.options.orientation === 'horizontal';
     const totalFrets = this.options.fretCount + 1; // +1 for the end fret line
+    const startFret = this.options.startFret;
 
     for (let i = 1; i <= totalFrets; i++) {
+      const fretIndex = startFret + i - 1;
       if (isHorizontal) {
         const x = getHorizontalFretX(i, this.options.fretSpacing);
-        const fret = new Fret(i, x, this.options.fretThickness);
+        const fret = new Fret(fretIndex, x, this.options.fretThickness);
         this.frets.push(fret);
       } else {
         const y = getVerticalFretY(i, this.options.fretSpacing);
-        const fret = new Fret(i, 0, this.options.fretThickness); // x not used in vertical orientation
+        const fret = new Fret(fretIndex, 0, this.options.fretThickness); // x not used in vertical orientation
         // Override y coordinate for vertical orientation
         (fret as any).y = y;
         this.frets.push(fret);
@@ -200,14 +205,18 @@ export class Fretboard {
     this.inlays = [];
     const isHorizontal = this.options.orientation === 'horizontal';
     const inlayOffset = 20; // Base space for inlay numbers
+    const startFret = this.options.startFret;
+    const endFret = startFret + this.options.fretCount - 1;
 
     for (const fretNumber of this.options.inlayPositions) {
-      if (fretNumber > this.options.fretCount) continue;
+      if (fretNumber < startFret || fretNumber > endFret) continue;
+
+      const relativePos = fretNumber - startFret + 1;
 
       if (isHorizontal) {
         // Horizontal: inlays below the fretboard, centered between fret lines
         // Position between fret lines, same as fingerings
-        const x = (fretNumber - 0.5) * this.options.fretSpacing + 
+        const x = (relativePos - 0.5) * this.options.fretSpacing + 
                   this.options.fretThickness / 2;
         const height = calculateHorizontalHeight(
           this.options.stringCount,
@@ -225,7 +234,7 @@ export class Fretboard {
         const leftStringExtraThickness = this.options.stringThickness * (this.options.stringCount - 1);
         const x = -(inlayOffset + leftStringExtraThickness);
         // Position inlay between fret lines, same as fingerings
-        const y = (fretNumber - 0.5) * this.options.fretSpacing + 
+        const y = (relativePos - 0.5) * this.options.fretSpacing + 
                   this.options.fretThickness / 2;
         this.inlays.push(new Inlay(fretNumber, x, y, 'left'));
       }
@@ -514,6 +523,13 @@ export class Fretboard {
    */
   getOptions(): Required<FretboardOptions> {
     return { ...this.options };
+  }
+
+  /**
+   * Returns the starting fret configured for this fretboard
+   */
+  get startFret(): number {
+    return this.options.startFret;
   }
 
   /**

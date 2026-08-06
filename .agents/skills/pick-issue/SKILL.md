@@ -157,6 +157,68 @@ Run the standard Speckit specification & planning pipeline:
 ## Multi-Agent Execution
 
 When running with subagents or multi-agent delegation:
-- **Design Subagent**: Executes Step 1 and Step 2 (`speckit-specify`, `speckit-plan`, `speckit-tasks`).
-- **Implementation Subagent**: Executes Step 3 (`speckit-implement`) in an isolated feature branch.
-- **Lead Agent**: Coordinates Step 4 user validation and Step 5 CHANGELOG / PR finalization.
+
+### For "to-specify" Issues:
+- **Specification Subagent** (`/spec-issue`): Executes specification creation and label transition
+- **Implementation Subagent**: Executes Step 3-6 (planning, implementation, validation, finalization)
+- **Lead Agent**: Coordinates the handoff between specification and implementation phases
+
+### For "to-implement" Issues:
+- **Implementation Subagent**: Executes Step 3-6 directly
+- **Lead Agent**: Manages user validation and finalization
+
+### For Unlabeled Issues:
+- **Design Subagent**: Executes Step 3 (Speckit planning and tasks)
+- **Implementation Subagent**: Executes Step 4 (`speckit-implement`) in an isolated feature branch
+- **Lead Agent**: Coordinates Step 5 user validation and Step 6 CHANGELOG / PR finalization
+
+---
+
+## Workflow Summary
+
+```mermaid
+graph TD
+    A[Start: Pick Issue] --> B{Has 'to-specify' label?}
+    B -->|Yes| C[Delegate to /spec-issue]
+    B -->|No| D{Has 'to-implement' label?}
+    C --> E[Specification Created]
+    E --> D
+    D -->|Yes| F[Implementation Workflow]
+    D -->|No| G[Full Workflow: Spec + Implementation]
+    F --> H[User Validation]
+    G --> H
+    H --> I[Finalization: CHANGELOG + PR]
+```
+
+## Alternative: Direct Agent Usage
+
+For more granular control, users can invoke agents directly:
+
+1. **Specification Only**:
+   ```
+   /spec-issue    # Creates spec, transitions "to-specify" → "to-implement"
+   ```
+
+2. **Implementation Only**:
+   ```
+   /code-issue    # Implements code, transitions "to-implement" → "implemented"
+   ```
+
+3. **Full Workflow** (legacy):
+   ```
+   /pick-issue    # Handles both spec and implementation based on labels
+   ```
+
+## Agent Responsibilities
+
+| Agent | Role | Input Label | Output Label | Primary Command |
+|-------|------|-------------|---------------|-----------------|
+| `/spec-issue` | Product Owner | `to-specify` | `to-implement` | `/speckit-specify` |
+| `/code-issue` | Developer | `to-implement` | `implemented` | `/speckit-implement` |
+| `/pick-issue` | Orchestrator | Any | Depends on input | Delegates as needed |
+
+This modular approach allows:
+- **Separation of concerns**: Product owner (`spec-issue`) vs Developer (`code-issue`)
+- **Reusability**: Each agent can be used independently
+- **Flexibility**: `pick-issue` remains backward compatible and can handle all issue types
+- **Clear handoffs**: Issues transition from "to-specify" → "to-implement" → "implemented"
