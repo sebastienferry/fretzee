@@ -202,24 +202,16 @@ When running with subagents or multi-agent delegation:
 
 ```mermaid
 graph TD
-    A[Start: Pick Issue] --> B{Has workflow label?}
-    B -->|No| C[Delegate to /clarify-issue]
-    B -->|Yes| D{Has 'to-clarify' label?}
-    D -->|Yes| E[Wait for user to change to 'clarified']
-    D -->|No| F{Has 'clarified' label?}
-    F -->|Yes| G[Remove 'clarified', add 'to-specify']
-    F -->|No| H{Has 'to-specify' label?}
-    G --> H
-    H -->|Yes| I[Delegate to /spec-issue]
-    H -->|No| J{Has 'to-implement' label?}
-    I --> K[Specification Created]
-    K --> J
-    J -->|Yes| L[Implementation Workflow]
-    J -->|No| M[Full Workflow: Spec + Implementation]
-    L --> N[User Validation]
-    M --> N
-    N --> O[Finalization: CHANGELOG + PR]
-    E --> D
+    A[Start: Pick Issue] --> B{Has issue arg or url?}
+    B -->|Yes| C[Fetch specified issue]
+    B -->|No| D[Fetch next item from Board]
+    C --> E{Label?}
+    D --> E
+    E -->|selected / none| F[/clarify-issue: add to-clarify]
+    E -->|to-clarify| G[Wait for user -> set clarified]
+    E -->|clarified| H[/spec-issue: add specified]
+    E -->|specified| I[/code-issue: add validate + PR]
+    E -->|validate| J[User Approval -> set validated & close]
 ```
 
 ## Alternative: Direct Agent Usage
@@ -248,15 +240,13 @@ For more granular control, users can invoke agents directly:
 
 ## Agent Responsibilities
 
-| Agent | Role | Input Label | Output Label | Primary Command |
-|-------|------|-------------|---------------|-----------------|
-| `/clarify-issue` | Clarification | None (Todo status) | `to-clarify` | Ask questions in comments |
-| `/spec-issue` | Product Owner | `to-specify` or `clarified` | `to-implement` | `/speckit-specify` |
-| `/code-issue` | Developer | `to-implement` | `implemented` | `/speckit-implement` |
+| Agent | Role | Input Label / Column | Output Label | Primary Command |
+|-------|------|----------------------|---------------|-----------------|
+| `/clarify-issue` | Clarification | `selected` / Clarification | `to-clarify` | Ask questions in comments |
+| `/spec-issue` | Product Owner | `clarified` / Specification | `specified` | `/speckit-specify` |
+| `/code-issue` | Developer | `specified` / Code | `validate` / `validated` | `/speckit-implement` |
 | `/pick-issue` | Orchestrator | Any | Depends on input | Delegates as needed |
 
 This modular approach allows:
-- **Separation of concerns**: Clarification (`clarify-issue`) vs Product owner (`spec-issue`) vs Developer (`code-issue`)
-- **Reusability**: Each agent can be used independently
-- **Flexibility**: `pick-issue` remains backward compatible and can handle all issue types
-- **Clear handoffs**: Issues transition from "to-clarify" → "clarified" → "to-specify" → "to-implement" → "implemented"
+- **Clear handoffs**: Issues transition from `selected` → `clarified` → `specified` → `validate` → `validated`
+- **Board alignment**: Maps directly to Project 3 columns (Idea → Clarification → Specification → Code → Done)

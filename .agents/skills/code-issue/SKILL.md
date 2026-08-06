@@ -131,18 +131,22 @@ This skill acts as a developer agent responsible for implementing features from 
 
 ### Step 7: Transition Issue Labels
 
-1. **Remove "to-implement" Label**:
+1. **Remove "specified" Label**:
    ```bash
-   gh issue edit <ISSUE_NUM> --remove-label "to-implement"
+   gh issue edit <ISSUE_NUM> --remove-label "specified"
    ```
 
-2. **Add "implemented" Label**:
+2. **Add "validate" Label**:
    ```bash
-   gh issue edit <ISSUE_NUM> --add-label "implemented"
+   gh issue edit <ISSUE_NUM> --add-label "validate"
    ```
 
-3. **Update Project Board Status** (if ITEM_ID available):
-   Update status from `Todo` to `Done`:
+3. **Upon User Validation & Approval**:
+   - Remove `validate` label and add `validated` label:
+   ```bash
+   gh issue edit <ISSUE_NUM> --remove-label "validate" --add-label "validated"
+   ```
+   - Update status to `Done` column on GitHub Project Board 3:
    ```bash
    gh project item-edit --id "<ITEM_ID>" --project-id 3 --field-id "<STATUS_FIELD_ID>" --single-select-option-id "<DONE_OPTION_ID>"
    ```
