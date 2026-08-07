@@ -104,6 +104,21 @@ document.body.appendChild(fretboard.render());
 | `color` | `string` | `'#000000'` | Optional HTML/CSS background fill color |
 | `textColor` | `string` | `'#ffffff'` | Optional HTML/CSS font color for text |
 
+### PNG Export
+
+Export fretboard diagrams as high-resolution PNG images natively using HTML5 Canvas with zero runtime dependencies:
+
+```typescript
+// Export to PNG Blob
+const pngBlob = await fretboard.toPNGBlob({ scale: 2 });
+
+// Export to PNG Data URL
+const dataUrl = await fretboard.toPNGDataURL({ scale: 2 });
+
+// Trigger direct browser file download
+await fretboard.downloadPNG('fretboard.png', { scale: 2 });
+```
+
 ## Development & Releases
 
 ```bash

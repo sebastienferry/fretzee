@@ -19,6 +19,9 @@ new Fretboard(options?: Partial<FretboardOptions>)
 
 ### Methods & Getters
 - `render(): SVGSVGElement` - Returns rendered SVG element.
+- `toPNGBlob(options?: PNGExportOptions): Promise<Blob>` - Exports SVG diagram as a PNG Blob.
+- `toPNGDataURL(options?: PNGExportOptions): Promise<string>` - Exports SVG diagram as a PNG Data URL.
+- `downloadPNG(filename?: string, options?: PNGExportOptions): Promise<void>` - Triggers a browser file download of the PNG.
 - `getFingerings(): Fingering[]` - Returns array of fingering markers.
 - `getOptions(): Required<FretboardOptions>` - Returns complete configuration.
 - `startFret: number` - Returns configured starting fret number.

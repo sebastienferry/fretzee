@@ -21,7 +21,8 @@
  * ```
  */
 
-import type { FretboardOptions, Position } from './types';
+import type { FretboardOptions, Position, PNGExportOptions } from './types';
+import { exportSvgToPngBlob, exportSvgToPngDataUrl, triggerPngDownload } from '../utils/export';
 import { Marker } from './Marker';
 import { String } from './String';
 import { Fret } from './Fret';
@@ -274,6 +275,39 @@ export class Fretboard {
     );
 
     return this.svgCache;
+  }
+
+  /**
+   * Exports the rendered fretboard as a PNG Blob
+   * 
+   * @param options - PNG export options (scale factor, quality)
+   * @returns Promise resolving to PNG Blob
+   */
+  async toPNGBlob(options?: PNGExportOptions): Promise<Blob> {
+    const svg = this.render();
+    return exportSvgToPngBlob(svg, options);
+  }
+
+  /**
+   * Exports the rendered fretboard as a PNG Data URL string
+   * 
+   * @param options - PNG export options (scale factor, quality)
+   * @returns Promise resolving to PNG Data URL string
+   */
+  async toPNGDataURL(options?: PNGExportOptions): Promise<string> {
+    const svg = this.render();
+    return exportSvgToPngDataUrl(svg, options);
+  }
+
+  /**
+   * Triggers a browser file download of the rendered fretboard as a PNG file
+   * 
+   * @param filename - Destination filename for the download (default: 'fretboard.png')
+   * @param options - PNG export options (scale factor, quality)
+   */
+  async downloadPNG(filename = 'fretboard.png', options?: PNGExportOptions): Promise<void> {
+    const blob = await this.toPNGBlob(options);
+    triggerPngDownload(blob, filename);
   }
 
   /**

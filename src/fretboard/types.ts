@@ -47,6 +47,17 @@ export interface FretboardOptions {
 }
 
 /**
+ * Options for exporting fretboard SVG as PNG
+ */
+export interface PNGExportOptions {
+  /** Scaling multiplier for high DPI / Retina export (default: 2) */
+  scale?: number;
+
+  /** Quality factor between 0.0 and 1.0 (default: 1.0) */
+  quality?: number;
+}
+
+/**
  * Representation of a fingering marker on the fretboard
  */
 export interface Fingering {
