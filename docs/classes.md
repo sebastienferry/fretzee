@@ -16,6 +16,7 @@ new Fretboard(options?: Partial<FretboardOptions>)
 - `fretCount?: number` - Number of frets (4-16).
 - `stringCount?: number` - Number of strings (4-8).
 - `orientation?: 'horizontal' | 'vertical'` - Fretboard orientation.
+- `tuning?: string[]` - Optional tuning note labels (lowest string to highest string).
 
 ### Methods & Getters
 - `render(): SVGSVGElement` - Returns rendered SVG element.

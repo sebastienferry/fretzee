@@ -102,6 +102,19 @@ export class SvgRenderer {
       height += inlayOffset + extraThickness; // Space for text below + thickness
     }
 
+    // Additional adjustment for tuning labels
+    const hasTuning = Boolean(this.options.tuning && Array.isArray(this.options.tuning) && this.options.tuning.length > 0);
+    const tuningOffset = hasTuning ? (isHorizontal ? 25 : 20) : 0;
+    if (hasTuning) {
+      if (isHorizontal) {
+        viewBoxX -= tuningOffset;
+        width += tuningOffset;
+      } else {
+        viewBoxY -= tuningOffset;
+        height += tuningOffset;
+      }
+    }
+
     // Create SVG element with adjusted viewBox
     const svg = document.createElementNS(SVG_NS, 'svg');
     svg.setAttribute('viewBox', `${viewBoxX} ${viewBoxY} ${width} ${height}`);
@@ -114,7 +127,7 @@ export class SvgRenderer {
     if (isHorizontal) {
       this.renderHorizontal(strings, frets, inlays, markers, fingerings, svg, width, height, topMarkerOffset);
     } else {
-      this.renderVertical(strings, frets, inlays, markers, fingerings, svg, width, height, hasOpenStrings ? openOffset : 0);
+      this.renderVertical(strings, frets, inlays, markers, fingerings, svg, width, height, (hasOpenStrings ? openOffset : 0) + tuningOffset);
     }
 
     return svg;
@@ -176,6 +189,9 @@ export class SvgRenderer {
     if (fingerings.length > 0) {
       this.renderFingeringsGroup(fingerings, svg);
     }
+
+    // Render tuning labels if specified
+    this.renderTuningLabels(svg, true);
   }
 
   /**
@@ -234,6 +250,9 @@ export class SvgRenderer {
     if (fingerings.length > 0) {
       this.renderFingeringsGroup(fingerings, svg);
     }
+
+    // Render tuning labels if specified
+    this.renderTuningLabels(svg, false);
   }
 
   /**
@@ -243,6 +262,85 @@ export class SvgRenderer {
     const g = document.createElementNS(SVG_NS, 'g');
     g.setAttribute('class', className);
     return g;
+  }
+
+  /**
+   * Renders tuning note labels for strings
+   * In horizontal mode: rendered to the left of the nut, aligned vertically with strings
+   * In vertical mode: rendered above the nut, aligned horizontally with strings
+   */
+  private renderTuningLabels(svg: SVGSVGElement, isHorizontal: boolean): void {
+    if (!this.options.tuning || !Array.isArray(this.options.tuning) || this.options.tuning.length === 0) {
+      return;
+    }
+
+    const tuningGroup = this.createGroup(CSS_CLASSES.tuning);
+    const stringCount = this.options.stringCount;
+    const tuning = this.options.tuning;
+
+    // tuning is provided 6th string to 1st string (lowest string to highest string)
+    for (let i = 0; i < stringCount; i++) {
+      // Map stringIndex (0 = highest/1st string, N-1 = lowest/Nth string)
+      const tuningIndex = (stringCount - 1) - i;
+      const noteLabel = tuning[tuningIndex];
+      if (noteLabel === undefined || noteLabel === null || noteLabel.trim() === '') continue;
+
+      const text = document.createElementNS(SVG_NS, 'text');
+      text.setAttribute('class', `${CSS_CLASSES.tuningLabel} fretly-tuning-s${i + 1}`);
+      text.setAttribute('fill', '#000000');
+      text.setAttribute('font-size', '12');
+      text.setAttribute('font-family', 'sans-serif');
+      text.setAttribute('font-weight', 'bold');
+
+      if (isHorizontal) {
+        // Positioned left of the nut (negative X), centered vertically on string line
+        const stringPos = getFingeringPosition(
+          i + 1,
+          0,
+          'horizontal',
+          this.options.stringSpacing,
+          this.options.fretSpacing,
+          stringCount,
+          this.options.stringThickness,
+          this.options.fretThickness,
+          this.options.startFret
+        );
+        const radius = calculateFingeringRadius(this.options.stringSpacing, this.options.fretSpacing);
+        const hasOpenMarker = (this.options.startFret <= 1) && (this.options.fingerings || []).some(f => f.string === i + 1 && (f.fret === 0 || f.fret === -1));
+        const offsetX = hasOpenMarker ? -(this.options.fretSpacing * 0.35 + radius + 15) : -12;
+
+        text.setAttribute('x', String(offsetX));
+        text.setAttribute('y', String(stringPos.y));
+        text.setAttribute('text-anchor', 'end');
+        text.setAttribute('dominant-baseline', 'central');
+      } else {
+        // Positioned above the nut (negative Y), centered horizontally on string line
+        const stringPos = getFingeringPosition(
+          i + 1,
+          0,
+          'vertical',
+          this.options.stringSpacing,
+          this.options.fretSpacing,
+          stringCount,
+          this.options.stringThickness,
+          this.options.fretThickness,
+          this.options.startFret
+        );
+        const radius = calculateFingeringRadius(this.options.stringSpacing, this.options.fretSpacing);
+        const hasOpenMarker = (this.options.startFret <= 1) && (this.options.fingerings || []).some(f => f.string === i + 1 && (f.fret === 0 || f.fret === -1));
+        const offsetY = hasOpenMarker ? -(this.options.fretSpacing * 0.35 + radius + 15) : -12;
+
+        text.setAttribute('x', String(stringPos.x));
+        text.setAttribute('y', String(offsetY));
+        text.setAttribute('text-anchor', 'middle');
+        text.setAttribute('dominant-baseline', 'auto');
+      }
+
+      text.textContent = noteLabel;
+      tuningGroup.appendChild(text);
+    }
+
+    svg.appendChild(tuningGroup);
   }
 
   /**
