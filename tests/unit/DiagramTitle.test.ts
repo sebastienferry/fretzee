@@ -82,6 +82,52 @@ describe('Diagram Title', () => {
     });
   });
 
+  describe('Title Offset with Top String Fingerings', () => {
+    it('offsets title y position when fingerings are placed on string 1 in horizontal mode', () => {
+      const fretboardNormal = new Fretboard({
+        title: 'Normal Title',
+        orientation: 'horizontal',
+        fingerings: [{ string: 2, fret: 1 }]
+      });
+      const svgNormal = fretboardNormal.render();
+      const titleNormal = svgNormal.querySelector(`.${CSS_CLASSES.title}`);
+      const yNormal = parseFloat(titleNormal?.getAttribute('y') || '0');
+
+      const fretboardTop = new Fretboard({
+        title: 'Top String Title',
+        orientation: 'horizontal',
+        fingerings: [{ string: 1, fret: 1 }]
+      });
+      const svgTop = fretboardTop.render();
+      const titleTop = svgTop.querySelector(`.${CSS_CLASSES.title}`);
+      const yTop = parseFloat(titleTop?.getAttribute('y') || '0');
+
+      expect(yTop).toBeLessThan(yNormal);
+    });
+
+    it('offsets title y position when open/muted string fingerings exist in vertical mode', () => {
+      const fretboardNormal = new Fretboard({
+        title: 'Vertical Normal',
+        orientation: 'vertical',
+        fingerings: [{ string: 1, fret: 1 }]
+      });
+      const svgNormal = fretboardNormal.render();
+      const titleNormal = svgNormal.querySelector(`.${CSS_CLASSES.title}`);
+      const yNormal = parseFloat(titleNormal?.getAttribute('y') || '0');
+
+      const fretboardOpen = new Fretboard({
+        title: 'Vertical Open',
+        orientation: 'vertical',
+        fingerings: [{ string: 1, fret: 0 }]
+      });
+      const svgOpen = fretboardOpen.render();
+      const titleOpen = svgOpen.querySelector(`.${CSS_CLASSES.title}`);
+      const yOpen = parseFloat(titleOpen?.getAttribute('y') || '0');
+
+      expect(yOpen).toBeLessThan(yNormal);
+    });
+  });
+
   describe('Validation', () => {
     it('throws TypeError if invalid titleAlignment is provided', () => {
       expect(() => new Fretboard({ title: 'Test', titleAlignment: 'right' as any })).toThrow(TypeError);
