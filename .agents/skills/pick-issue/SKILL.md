@@ -193,12 +193,12 @@ When running with subagents or multi-agent delegation:
 - **Lead Agent**: Waits for user to provide answers and change label to "clarified"
 
 ### For "clarified" Issues:
-- **Specification Subagent** (`/spec-issue`): Detects "clarified" label, removes it, adds "to-specify", and executes specification creation
+- **Specification Subagent** (`/specify-issue`): Detects "clarified" label, removes it, adds "to-specify", and executes specification creation
 - **Implementation Subagent**: Executes Step 4-6 (planning, implementation, validation, finalization)
 - **Lead Agent**: Coordinates the handoff between specification and implementation phases
 
 ### For "to-specify" Issues:
-- **Specification Subagent** (`/spec-issue`): Executes specification creation and label transition
+- **Specification Subagent** (`/specify-issue`): Executes specification creation and label transition
 - **Implementation Subagent**: Executes Step 4-6 (planning, implementation, validation, finalization)
 - **Lead Agent**: Coordinates the handoff between specification and implementation phases
 
@@ -225,7 +225,7 @@ graph TD
     D --> E
     E -->|selected / none| F[/clarify-issue: add to-clarify]
     E -->|to-clarify| G[Wait for user -> set clarified]
-    E -->|clarified| H[/spec-issue: add specified]
+    E -->|clarified| H[/specify-issue: add specified]
     E -->|specified| I[/code-issue: add validate + PR]
     E -->|validate| J[User Approval -> set validated & close]
 ```
@@ -241,7 +241,7 @@ For more granular control, users can invoke agents directly:
 
 2. **Specification Only**:
    ```
-   /spec-issue    # Creates spec, transitions "to-specify"/"clarified" → "to-implement"
+   /specify-issue    # Creates spec, transitions "to-specify"/"clarified" → "to-implement"
    ```
 
 3. **Implementation Only**:

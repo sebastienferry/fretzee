@@ -1,11 +1,11 @@
 ---
-name: spec-issue
-description: Pick up the next Todo item from the GitHub project board with label "to-specify" and create a new specification using Speckit workflow.
+name: specify-issue
+description: Pick up the next Todo item from the GitHub project board with label "to-specify" or "clarified", update status to Specification column, and create a new specification using Speckit workflow.
 ---
 
-# Specification Agent Workflow (`/spec-issue`)
+# Specification Agent Workflow (`/specify-issue`)
 
-This skill acts as a product owner agent responsible for creating specifications from GitHub project board issues. It picks up the next issue with status "Todo" and label "to-specify", creates a specification using the Speckit workflow, and transitions the issue by updating its labels.
+This skill acts as a product owner agent responsible for creating specifications from GitHub project board issues. It picks up the next issue with status "Clarification" / label "clarified", updates its project board status column to "Specification", creates a specification using the Speckit workflow, posts a specification digest comment, and transitions the issue by updating its label to `specified`.
 
 ---
 
@@ -49,17 +49,21 @@ This skill acts as a product owner agent responsible for creating specifications
    ```
 
 2. **Filter and Select Target Issue**:
-   - Filter items matching `status == "Todo"` AND having label `"to-specify"` OR `"clarified"`
+   - Filter items matching `status == "Clarification"` OR having label `"clarified"` OR `"to-specify"`
    - Select the **first matching item** (oldest first)
    - Extract: `ISSUE_NUM`, `ISSUE_TITLE`, `ISSUE_BODY`, `ISSUE_LABELS`, `ITEM_ID`, and `NODE_ID`
 
-3. **Fallback (if project CLI fails)**:
+3. **Update Project Board Status to Specification Column**:
+   Update status column on Project Board 3 to `Specification`:
+   ```bash
+   gh project item-edit --id "<ITEM_ID>" --project-id 3 --field-id "<STATUS_FIELD_ID>" --single-select-option-id "<SPECIFICATION_OPTION_ID>"
+   ```
+
+4. **Fallback (if project CLI fails)**:
    Query repository open issues filtered by label:
    ```bash
    gh issue list --owner sebastienferry --repo fretly --state open --json number,title,body,labels,projectItems
    ```
-   - Filter issues with label `"to-specify"` OR `"clarified"` and project board status `"Todo"`
-   - Select the first matching issue
 
 ---
 
@@ -123,12 +127,6 @@ This skill acts as a product owner agent responsible for creating specifications
 2. **Add "specified" Label**:
    ```bash
    gh issue edit <ISSUE_NUM> --add-label "specified"
-   ```
-
-3. **Update Project Board Status** (if ITEM_ID available):
-   Update column from `Specification` to `Code`:
-   ```bash
-   gh project item-edit --id "<ITEM_ID>" --project-id 3 --field-id "<STATUS_FIELD_ID>" --single-select-option-id "<CODE_OPTION_ID>"
    ```
 
 ---
