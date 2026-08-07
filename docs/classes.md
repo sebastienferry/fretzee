@@ -36,7 +36,7 @@ new Fingering(options: FingeringInterface)
 
 ### Properties
 - `string: number` - 1-based string number.
-- `fret: number` - Fret position (0 = open).
-- `text: string` - Display text.
+- `fret: number` - Fret position (-1 = muted string 'X', 0 = open string, 1..N = fretted position).
+- `text: string` - Display text (defaults to 'X' for `fret: -1`).
 - `color: string` - HTML fill color for marker circle.
 - `textColor: string` - HTML font color for text.

@@ -3,7 +3,7 @@
  */
 
 import type { FretboardOptions, Marker as MarkerInterface } from '../fretboard/types';
-import { SVG_NS, CSS_CLASSES, TITLE_FONT_SIZE, TITLE_PADDING } from '../fretboard/constants';
+import { SVG_NS, CSS_CLASSES, TITLE_FONT_SIZE, TITLE_PADDING, DEFAULT_FINGERING_TEXT_COLOR } from '../fretboard/constants';
 import { String as GuitarString } from '../fretboard/String';
 import { Fret } from '../fretboard/Fret';
 import { Inlay } from '../fretboard/Inlay';
@@ -79,8 +79,8 @@ export class SvgRenderer {
       height += inlayOffset + extraThickness; // Space for text below + thickness
     }
 
-    // Additional adjustments for open string fingerings (fret 0)
-    const hasOpenStrings = (this.options.startFret <= 1) && fingerings.some(f => f.fret === 0);
+    // Additional adjustments for open string / muted string fingerings (fret 0 or fret -1)
+    const hasOpenStrings = (this.options.startFret <= 1) && fingerings.some(f => f.fret === 0 || f.fret === -1);
     if (hasOpenStrings) {
       const radius = calculateFingeringRadius(this.options.stringSpacing, this.options.fretSpacing);
       const openOffset = (this.options.fretSpacing * 0.35) + radius + 5;
@@ -566,7 +566,7 @@ export class SvgRenderer {
     const endFret = startFret + this.options.fretCount - 1;
 
     // Filter out fingerings outside the visible range
-    if (fingering.fret === 0) {
+    if (fingering.fret === 0 || fingering.fret === -1) {
       if (startFret > 1) return;
     } else if (fingering.fret < startFret || fingering.fret > endFret) {
       return;
@@ -586,25 +586,32 @@ export class SvgRenderer {
 
     const g = this.createGroup(fingering.getCssClass());
 
-    const circle = document.createElementNS(SVG_NS, 'circle');
-    circle.setAttribute('cx', String(pos.x));
-    circle.setAttribute('cy', String(pos.y));
-    circle.setAttribute('r', String(radius));
-    circle.setAttribute('fill', fingering.color);
-    circle.setAttribute('class', CSS_CLASSES.fingeringCircle);
-    g.appendChild(circle);
+    const isNutMarker = fingering.fret === 0 || fingering.fret === -1;
+
+    if (!isNutMarker) {
+      const circle = document.createElementNS(SVG_NS, 'circle');
+      circle.setAttribute('cx', String(pos.x));
+      circle.setAttribute('cy', String(pos.y));
+      circle.setAttribute('r', String(radius));
+      circle.setAttribute('fill', fingering.color);
+      circle.setAttribute('class', CSS_CLASSES.fingeringCircle);
+      g.appendChild(circle);
+    }
 
     if (fingering.text) {
       const text = document.createElementNS(SVG_NS, 'text');
       text.setAttribute('x', String(pos.x));
       text.setAttribute('y', String(pos.y));
-      text.setAttribute('fill', fingering.textColor);
+      // For standalone nut markers (no circle), default fill color to black if non-customized
+      const fill = (isNutMarker && fingering.textColor === DEFAULT_FINGERING_TEXT_COLOR) ? '#000000' : fingering.textColor;
+      text.setAttribute('fill', fill);
       text.setAttribute('text-anchor', 'middle');
       text.setAttribute('dominant-baseline', 'central');
       text.setAttribute('font-size', String(Math.round(radius * 1.2)));
       text.setAttribute('font-family', 'sans-serif');
       text.setAttribute('font-weight', 'bold');
-      text.setAttribute('class', CSS_CLASSES.fingeringText);
+      const textClass = isNutMarker ? 'fretly-fingering-text fretly-open-marker' : CSS_CLASSES.fingeringText;
+      text.setAttribute('class', textClass);
       text.textContent = fingering.text;
       g.appendChild(text);
     }

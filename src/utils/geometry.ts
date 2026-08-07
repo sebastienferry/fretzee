@@ -368,7 +368,7 @@ export function getFingeringPosition(
   const fretThicknessOffset = fretThickness / 2;
 
   // Map absolute fret number to relative position on the displayed fretboard
-  const relativeFret = fretNum === 0 ? 0 : fretNum - startFret + 1;
+  const relativeFret = (fretNum === 0 || fretNum === -1) ? 0 : fretNum - startFret + 1;
 
   if (orientation === 'horizontal') {
     const y = getHorizontalStringY(stringIndex, stringSpacing) + thicknessOffset;
