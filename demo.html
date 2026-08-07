@@ -142,6 +142,14 @@
       padding: 20px 24px;
       border-bottom: 1px solid var(--panel-border);
       background: rgba(15, 23, 42, 0.4);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .demo-card-info {
+      flex: 1;
     }
 
     .demo-card-title {
@@ -154,6 +162,34 @@
     .demo-card-desc {
       font-size: 14px;
       color: var(--text-muted);
+    }
+
+    .copy-btn {
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: var(--accent-blue);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .copy-btn:hover {
+      background: var(--accent-blue);
+      color: #0f172a;
+      border-color: var(--accent-blue);
+    }
+
+    .copy-btn.copied {
+      background: #22c55e;
+      color: #ffffff;
+      border-color: #22c55e;
     }
 
     .demo-card-body {
@@ -229,8 +265,11 @@
     <!-- Example 1: Horizontal Standard Guitar -->
     <div class="demo-card">
       <div class="demo-card-header">
-        <h2 class="demo-card-title">1. Standard 6-String Guitar (Horizontal)</h2>
-        <p class="demo-card-desc">12-fret horizontal neck layout with standard fret inlays at frets 3, 5, 7, 9, and 12.</p>
+        <div class="demo-card-info">
+          <h2 class="demo-card-title">1. Standard 6-String Guitar (Horizontal)</h2>
+          <p class="demo-card-desc">12-fret horizontal neck layout with standard fret inlays at frets 3, 5, 7, 9, and 12.</p>
+        </div>
+        <button class="copy-btn" onclick="copySnippet('ex1', this)">📋 Copy JS</button>
       </div>
       <div class="demo-card-body" id="demo-horizontal-guitar"></div>
     </div>
@@ -238,8 +277,11 @@
     <!-- Example 2: Vertical Chord Diagrams -->
     <div class="demo-card">
       <div class="demo-card-header">
-        <h2 class="demo-card-title">2. Vertical Chord Diagrams</h2>
-        <p class="demo-card-desc">Vertical chord chart layouts featuring open string markers, finger numbers, and custom root note highlight colors.</p>
+        <div class="demo-card-info">
+          <h2 class="demo-card-title">2. Vertical Chord Diagrams</h2>
+          <p class="demo-card-desc">Vertical chord chart layouts featuring open string markers, finger numbers, and custom root note highlight colors.</p>
+        </div>
+        <button class="copy-btn" onclick="copySnippet('ex2', this)">📋 Copy JS</button>
       </div>
       <div class="demo-card-body">
         <div class="vertical-grid">
@@ -262,8 +304,11 @@
     <!-- Example 3: 4-String Bass Guitar -->
     <div class="demo-card">
       <div class="demo-card-header">
-        <h2 class="demo-card-title">3. 4-String Bass Guitar</h2>
-        <p class="demo-card-desc">Horizontal 4-string bass neck configuration with root and octave fingering highlights.</p>
+        <div class="demo-card-info">
+          <h2 class="demo-card-title">3. 4-String Bass Guitar</h2>
+          <p class="demo-card-desc">Horizontal 4-string bass neck configuration with root and octave fingering highlights.</p>
+        </div>
+        <button class="copy-btn" onclick="copySnippet('ex3', this)">📋 Copy JS</button>
       </div>
       <div class="demo-card-body" id="demo-bass"></div>
     </div>
@@ -271,8 +316,11 @@
     <!-- Example 4: Configurable Starting Fret -->
     <div class="demo-card">
       <div class="demo-card-header">
-        <h2 class="demo-card-title">4. Configurable Starting Fret (High Position Chords)</h2>
-        <p class="demo-card-desc">Render chord diagrams starting at higher neck positions (e.g. fret 5 and fret 7) with starting fret indicators and absolute inlay numbering.</p>
+        <div class="demo-card-info">
+          <h2 class="demo-card-title">4. Configurable Starting Fret (High Position Chords)</h2>
+          <p class="demo-card-desc">Render chord diagrams starting at higher neck positions (e.g. fret 5 and fret 7) with starting fret indicators and absolute inlay numbering.</p>
+        </div>
+        <button class="copy-btn" onclick="copySnippet('ex4', this)">📋 Copy JS</button>
       </div>
       <div class="demo-card-body">
         <div class="vertical-grid">
@@ -291,8 +339,11 @@
     <!-- Example 5: Diagram Titles -->
     <div class="demo-card">
       <div class="demo-card-header">
-        <h2 class="demo-card-title">5. Diagram Titles</h2>
-        <p class="demo-card-desc">Render custom title text headers above fretboard diagrams with configurable alignment (center or left).</p>
+        <div class="demo-card-info">
+          <h2 class="demo-card-title">5. Diagram Titles</h2>
+          <p class="demo-card-desc">Render custom title text headers above fretboard diagrams with configurable alignment (center or left).</p>
+        </div>
+        <button class="copy-btn" onclick="copySnippet('ex5', this)">📋 Copy JS</button>
       </div>
       <div class="demo-card-body">
         <div class="vertical-grid">
@@ -307,14 +358,37 @@
         </div>
       </div>
     </div>
+    <!-- Example 6: Standalone Music Catalog (FretlyMusic) -->
+    <div class="demo-card">
+      <div class="demo-card-header">
+        <div class="demo-card-info">
+          <h2 class="demo-card-title">6. Decoupled Music Catalog (FretlyMusic)</h2>
+          <p class="demo-card-desc">Query real chord definitions independently from the standalone <code>FretlyMusic</code> catalog library (<code>dist/music.umd.js</code>) and pass them to <code>Fretboard</code>.</p>
+        </div>
+        <button class="copy-btn" onclick="copySnippet('ex6', this)">📋 Copy JS</button>
+      </div>
+      <div class="demo-card-body">
+        <div class="vertical-grid">
+          <div class="vertical-card">
+            <span class="vertical-card-title">Fmaj7 (from FretlyMusic)</span>
+            <div id="demo-catalog-fmaj7"></div>
+          </div>
+          <div class="vertical-card">
+            <span class="vertical-card-title">E7 (from FretlyMusic)</span>
+            <div id="demo-catalog-e7"></div>
+          </div>
+        </div>
+      </div>
+    </div>
   </main>
 
   <footer>
     <p>Released under the MIT License • View on <a href="https://github.com/sebastienferry/fretly" target="_blank" rel="noopener">GitHub</a></p>
   </footer>
 
-  <!-- Include Fretly UMD Library Bundle -->
+  <!-- Include Fretly UMD Library Bundle & Decoupled FretlyMusic Catalog Bundle -->
   <script src="./dist/index.umd.js"></script>
+  <script src="./dist/music.umd.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const fretlyLib = window.fretly || window.Fretly;
@@ -460,7 +534,142 @@
         ]
       });
       document.getElementById('demo-title-left').appendChild(titleLeft.render());
+
+      // 6. Standalone Music Catalog (FretlyMusic)
+      if (window.FretlyMusic && window.FretlyMusic.getChord) {
+        const fmaj7Data = window.FretlyMusic.getChord('Fmaj7');
+        if (fmaj7Data) {
+          const catalogFmaj7 = new fretlyLib.Fretboard({
+            title: fmaj7Data.name,
+            stringCount: 6,
+            fretCount: 4,
+            orientation: 'vertical',
+            tuning: ['E', 'A', 'D', 'G', 'B', 'E'],
+            fingerings: fmaj7Data.fingerings
+          });
+          document.getElementById('demo-catalog-fmaj7').appendChild(catalogFmaj7.render());
+        }
+
+        const e7Data = window.FretlyMusic.getChord('E7');
+        if (e7Data) {
+          const catalogE7 = new fretlyLib.Fretboard({
+            title: e7Data.name,
+            stringCount: 6,
+            fretCount: 4,
+            orientation: 'vertical',
+            tuning: ['E', 'A', 'D', 'G', 'B', 'E'],
+            fingerings: e7Data.fingerings
+          });
+          document.getElementById('demo-catalog-e7').appendChild(catalogE7.render());
+        }
+      }
     });
+
+    // Snippets for copying
+    const SNIPPETS = {
+      ex1: `const guitar = new fretly.Fretboard({
+  stringCount: 6,
+  fretCount: 12,
+  orientation: 'horizontal',
+  tuning: ['E', 'A', 'D', 'G', 'B', 'E'],
+  fingerings: [
+    { string: 6, fret: 3, text: 'G', color: '#ef4444', textColor: '#ffffff' },
+    { string: 5, fret: 2, text: 'B' },
+    { string: 4, fret: 0, text: 'D' },
+    { string: 3, fret: 0, text: 'G' },
+    { string: 2, fret: 0, text: 'B' },
+    { string: 1, fret: 3, text: 'G', color: '#ef4444', textColor: '#ffffff' }
+  ]
+});
+document.body.appendChild(guitar.render());`,
+
+      ex2: `const chordC = new fretly.Fretboard({
+  stringCount: 6,
+  fretCount: 4,
+  orientation: 'vertical',
+  tuning: ['E', 'A', 'D', 'G', 'B', 'E'],
+  fingerings: [
+    { string: 1, fret: 0, text: 'E' },
+    { string: 2, fret: 1, text: 'C', color: '#ef4444', textColor: '#ffffff' },
+    { string: 3, fret: 0, text: 'G' },
+    { string: 4, fret: 2, text: 'E' },
+    { string: 5, fret: 3, text: 'C', color: '#ef4444', textColor: '#ffffff' }
+  ]
+});
+document.body.appendChild(chordC.render());`,
+
+      ex3: `const bass = new fretly.Fretboard({
+  stringCount: 4,
+  fretCount: 12,
+  orientation: 'horizontal',
+  tuning: ['E', 'A', 'D', 'G'],
+  fingerings: [
+    { string: 4, fret: 3, text: 'G', color: '#38bdf8', textColor: '#ffffff' },
+    { string: 2, fret: 5, text: 'G', color: '#38bdf8', textColor: '#ffffff' }
+  ]
+});
+document.body.appendChild(bass.render());`,
+
+      ex4: `const startingFretAm = new fretly.Fretboard({
+  stringCount: 6,
+  fretCount: 4,
+  startFret: 5,
+  orientation: 'vertical',
+  fingerings: [
+    { string: 1, fret: 5, text: '1' },
+    { string: 2, fret: 5, text: '1' },
+    { string: 3, fret: 5, text: '1' },
+    { string: 4, fret: 7, text: '3' },
+    { string: 5, fret: 7, text: '2', color: '#ef4444', textColor: '#ffffff' },
+    { string: 6, fret: 5, text: '1' }
+  ]
+});
+document.body.appendChild(startingFretAm.render());`,
+
+      ex5: `const titleCentered = new fretly.Fretboard({
+  title: 'Am Chord',
+  titleAlignment: 'center',
+  stringCount: 6,
+  fretCount: 4,
+  orientation: 'vertical',
+  fingerings: [
+    { string: 1, fret: 0, text: 'E' },
+    { string: 2, fret: 1, text: 'C' },
+    { string: 3, fret: 2, text: 'A', color: '#ef4444', textColor: '#ffffff' },
+    { string: 4, fret: 2, text: 'E' },
+    { string: 5, fret: 0, text: 'A', color: '#ef4444', textColor: '#ffffff' },
+    { string: 6, fret: -1 }
+  ]
+});
+document.body.appendChild(titleCentered.render());`,
+
+      ex6: `// Load chord from standalone FretlyMusic catalog
+const fmaj7Data = FretlyMusic.getChord('Fmaj7');
+
+const catalogFmaj7 = new fretly.Fretboard({
+  title: fmaj7Data.name,
+  stringCount: 6,
+  fretCount: 4,
+  orientation: 'vertical',
+  tuning: ['E', 'A', 'D', 'G', 'B', 'E'],
+  fingerings: fmaj7Data.fingerings
+});
+document.body.appendChild(catalogFmaj7.render());`
+    };
+
+    function copySnippet(key, btn) {
+      const code = SNIPPETS[key];
+      if (!code) return;
+      navigator.clipboard.writeText(code).then(() => {
+        const originalText = btn.textContent;
+        btn.textContent = '✓ Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = originalText;
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    }
   </script>
 </body>
 </html>

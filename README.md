@@ -120,6 +120,22 @@ const dataUrl = await fretboard.toPNGDataURL({ scale: 2 });
 await fretboard.downloadPNG('fretboard.png', { scale: 2 });
 ```
 
+### Standalone Music Catalog (`FretlyMusic`)
+
+For chord library lookups, the standalone `FretlyMusic` module (`dist/music.umd.js` / `dist/music.esm.js`) can be used independently without coupling to the SVG renderer:
+
+```typescript
+import * as FretlyMusic from 'fretly/music'; // or include dist/music.umd.js
+
+// Query chord definitions from catalog
+const cMajor = FretlyMusic.getChord('C');
+
+// Feed fingerings into Fretboard SVG renderer
+const fretboard = new Fretboard({
+  fingerings: cMajor.fingerings
+});
+```
+
 ## Development & Releases
 
 ```bash

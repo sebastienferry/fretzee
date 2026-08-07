@@ -558,11 +558,11 @@
         <h3 class="form-section-title">Type</h3>
         <div class="radio-group">
           <label class="radio-option">
-            <input type="radio" name="type" value="chord" checked onchange="updatePreview()">
+            <input type="radio" name="type" value="chord" checked onchange="onTypeChange()">
             <span>Chord</span>
           </label>
           <label class="radio-option">
-            <input type="radio" name="type" value="scale" onchange="updatePreview()">
+            <input type="radio" name="type" value="scale" onchange="onTypeChange()">
             <span>Scale</span>
           </label>
         </div>
@@ -571,13 +571,29 @@
       <div class="form-section">
         <h3 class="form-section-title">Category</h3>
         <div class="select-wrapper">
-          <label class="select-label">Chord/Scale Category</label>
+          <label class="select-label" id="categoryLabel">Chord Category</label>
           <select id="category" onchange="updatePreview()">
-            <option value="major">Major</option>
-            <option value="minor">Minor</option>
-            <option value="pentatonic">Pentatonic</option>
-            <option value="blues">Blues</option>
+            <option value="major">Major (maj)</option>
+            <option value="minor">Minor (min)</option>
+            <option value="dim">Diminished (dim)</option>
+            <option value="maj7">Major 7 (MAJ7)</option>
+            <option value="7">Dominant 7 (7)</option>
+            <option value="7b5">Half-Diminished (7b5)</option>
           </select>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3 class="form-section-title">Accidentals</h3>
+        <div class="radio-group">
+          <label class="radio-option">
+            <input type="radio" name="accidental" value="sharp" checked onchange="onAccidentalChange()">
+            <span>Sharps (#)</span>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="accidental" value="flat" onchange="onAccidentalChange()">
+            <span>Flats (♭)</span>
+          </label>
         </div>
       </div>
 
@@ -814,8 +830,9 @@
   <!-- Toast Notification -->
   <div class="toast" id="toast"></div>
 
-  <!-- Library Script -->
+  <!-- Library Script & Standalone FretlyMusic Catalog -->
   <script src="./dist/index.umd.js"></script>
+  <script src="./dist/music.umd.js"></script>
 
   <script>
     // Music theory data for chords and scales
@@ -900,6 +917,51 @@
       updatePreview();
     }
 
+    function onTypeChange() {
+      const type = document.querySelector('input[name="type"]:checked').value;
+      const categorySelect = document.getElementById('category');
+      const categoryLabel = document.getElementById('categoryLabel');
+
+      if (type === 'chord') {
+        categoryLabel.textContent = 'Chord Type';
+        categorySelect.innerHTML = `
+          <option value="major" selected>Major (maj)</option>
+          <option value="minor">Minor (min)</option>
+          <option value="dim">Diminished (dim)</option>
+          <option value="maj7">Major 7 (MAJ7)</option>
+          <option value="7">Dominant 7 (7)</option>
+          <option value="7b5">Half-Diminished (7b5)</option>
+        `;
+      } else {
+        categoryLabel.textContent = 'Scale Type';
+        categorySelect.innerHTML = `
+          <option value="pentatonic" selected>Pentatonic</option>
+          <option value="major">Major</option>
+          <option value="minor-naturelle">Minor Naturelle</option>
+          <option value="minor-harmonic">Minor Harmonic</option>
+        `;
+      }
+      updatePreview();
+    }
+
+    const ROOT_NOTES_SHARP = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+    const ROOT_NOTES_FLAT  = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
+
+    function onAccidentalChange() {
+      const accidental = document.querySelector('input[name="accidental"]:checked').value;
+      const rootSelect = document.getElementById('rootNote');
+      const currentValue = rootSelect.value;
+      
+      const notes = accidental === 'flat' ? ROOT_NOTES_FLAT : ROOT_NOTES_SHARP;
+      const currentIndex = (accidental === 'flat' ? ROOT_NOTES_SHARP : ROOT_NOTES_FLAT).indexOf(currentValue);
+      
+      rootSelect.innerHTML = notes.map(n => `<option value="${n}">${n}</option>`).join('');
+      if (currentIndex !== -1 && notes[currentIndex]) {
+        rootSelect.value = notes[currentIndex];
+      }
+      updatePreview();
+    }
+
     // Update preview based on current configuration
     function updatePreview() {
       const type = document.querySelector('input[name="type"]:checked').value;
@@ -960,27 +1022,41 @@
       } else if (stringCount === 8) {
         tuning = ['F#', 'B', 'E', 'G', 'D', 'A', 'E', 'B'];
       } else {
-        tuning = MUSIC_THEORY.guitarTuning.slice(0, stringCount);
+        tuning = ['E', 'A', 'D', 'G', 'B', 'E'];
       }
       
-      let formula;
-      if (type === 'chord') {
-        formula = MUSIC_THEORY.chords[category] || MUSIC_THEORY.chords.major;
-      } else {
-        const scaleKey = category === 'minor' ? 'minor' : 
-                        category === 'pentatonic' ? 'major-pentatonic' :
-                        category === 'blues' ? 'blues' : 'major';
-        formula = MUSIC_THEORY.scales[scaleKey] || MUSIC_THEORY.scales.major;
+      let fingerings = [];
+
+      // Check if FretlyMusic catalog is available for chord lookups
+      if (type === 'chord' && window.FretlyMusic && window.FretlyMusic.getChord) {
+        const chordKey = rootNote + (category === 'minor' ? 'm' : category === '7' ? '7' : category === 'm7' ? 'm7' : category === 'maj7' ? 'maj7' : '');
+        const catalogChord = window.FretlyMusic.getChord(chordKey) || window.FretlyMusic.getChord(rootNote);
+        if (catalogChord && Array.isArray(catalogChord.fingerings)) {
+          fingerings = catalogChord.fingerings;
+        }
       }
 
-      const rootMidi = MUSIC_THEORY.noteToMidi[rootNote];
-      const fingerings = generateFingerings(tuning, formula, rootMidi, fretCount, stringCount, startFret);
+      // Fallback to music theory calculation for scale or uncatalogued chords
+      if (fingerings.length === 0) {
+        let formula;
+        if (type === 'chord') {
+          formula = MUSIC_THEORY.chords[category] || MUSIC_THEORY.chords.major;
+        } else {
+          const scaleKey = category === 'minor' ? 'minor' : 
+                          category === 'pentatonic' ? 'major-pentatonic' :
+                          category === 'blues' ? 'blues' : 'major';
+          formula = MUSIC_THEORY.scales[scaleKey] || MUSIC_THEORY.scales.major;
+        }
+        const rootMidi = MUSIC_THEORY.noteToMidi[rootNote] || 48;
+        fingerings = generateFingerings(tuning, formula, rootMidi, fretCount, stringCount, startFret);
+      }
 
       const config = {
         stringCount,
         fretCount,
         startFret,
         orientation,
+        tuning,
         fingerings,
         stringSpacing: orientation === 'vertical' ? 30 : 28,
         fretSpacing: fretWidth,
