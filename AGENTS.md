@@ -146,14 +146,15 @@ graph LR
 #### `/code-issue` - Developer Agent
 - **Location**: `.agents/skills/code-issue/SKILL.md`
 - **Responsibilities**:
-  - Picks next issue in Code column with label "specified"
+  - Picks next issue in Specification column with label "specified"
+  - Updates project status column to Code
   - Verifies specification exists (warns if missing)
   - Executes implementation using `/speckit-implement`
   - Runs automated verification (build, lint, test)
   - Creates pull request using `/create-pr`
   - Updates changelog
   - **Label Transition**: Updates label to "validate" (and "validated" upon approval)
-  - **Project Status**: Updates column to Done
+  - **Project Status**: Updates column to Code initially, then to Done upon user approval
 
 #### `/pick-issue` - Orchestrator Agent
 - **Location**: `.agents/skills/pick-issue/SKILL.md`
