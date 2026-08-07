@@ -11,8 +11,28 @@ Try the live online configurator on [GitHub Pages](https://sebastienferry.github
 
 ## Installation
 
+### NPM
+
 ```bash
 npm install fretzee
+```
+
+### Public CDNs (unpkg & jsDelivr)
+
+Include directly in browser HTML via public script tag:
+
+```html
+<!-- via unpkg -->
+<script src="https://unpkg.com/fretzee@latest/dist/index.umd.js"></script>
+
+<!-- via jsDelivr -->
+<script src="https://cdn.jsdelivr.net/npm/fretzee@latest/dist/index.umd.js"></script>
+```
+
+```javascript
+// Access exported global Fretzee class
+const fretboard = new Fretzee.Fretboard({ stringCount: 6, fretCount: 12 });
+document.body.appendChild(fretboard.render());
 ```
 
 ## Basic Usage

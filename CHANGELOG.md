@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add optional tuning note labels (`tuning?: string[]`) for horizontal and vertical orientations (#24).
 - Add standalone, decoupled music catalog library (`FretlyMusic`, `dist/music.umd.js`) with comprehensive chord definitions (#18).
 - Rename library and branding from Fretly to **Fretzee** (`package.json`, UMD global `Fretzee` / `FretzeeMusic`, `fretzee-*` CSS classes) (#42).
+- Add CI/CD GitHub Actions release workflow for automated NPM publishing and unpkg / jsDelivr public CDN availability (#44).
 
 ### Fixed
 - Add inlays as small grey dots on standard fretboard positions (#11).

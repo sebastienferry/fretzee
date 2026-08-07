@@ -43,9 +43,12 @@ jobs:
           files: |
             dist/*
 
-      - name: Publish to NPM
-        if: env.NPM_TOKEN != ''
+      - name: Publish to NPM Registry
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm publish --access public
+        run: |
+          if [ -n "$NODE_AUTH_TOKEN" ]; then
+            npm publish --access public
+          else
+            echo "NPM_TOKEN secret not configured, skipping npm publish."
+          fi
