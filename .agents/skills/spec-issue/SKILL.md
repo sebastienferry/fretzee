@@ -91,7 +91,28 @@ This skill acts as a product owner agent responsible for creating specifications
 
 ---
 
-### Step 4: Transition Issue Labels
+### Step 4: Post Specification Digest Comment
+
+1. **Format Specification Digest**:
+   Extract summary, user stories/scenarios, and functional requirements from `spec.md` into a clear markdown digest comment.
+
+2. **Post Comment to Issue**:
+   ```bash
+   gh issue comment <ISSUE_NUM> --body-file - << 'EOF'
+   ## 📝 Feature Specification Digest
+
+   **Spec File**: `specs/<NNN-feature-name>/spec.md`  
+   **Feature Branch**: `<BRANCH_NAME>`
+
+   ### 🎯 Summary & Key Scenarios
+   <EXTRACTED_SCENARIOS_AND_REQUIREMENTS>
+
+   ---
+   *Label updated to `specified`. Ready for implementation (`/code-issue`).*
+   EOF
+   ```
+
+### Step 5: Transition Issue Labels
 
 1. **Handle "clarified" Label**:
    - If the issue has "clarified" label, remove it:

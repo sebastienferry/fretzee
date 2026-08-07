@@ -109,6 +109,22 @@ Run the standard Speckit specification & planning pipeline:
    ```
    *Generates dependency-ordered `tasks.md` checklist.*
 
+5. **Post Specification Digest Comment**:
+   Post a summary/digest of `spec.md` as a comment on the GitHub issue:
+   ```bash
+   gh issue comment <ISSUE_NUM> --body-file - << 'EOF'
+   ## 📝 Feature Specification Digest
+
+   **Spec File**: `specs/<NNN-feature-name>/spec.md`
+
+   ### 🎯 Summary & Scenarios
+   <EXTRACTED_SCENARIOS_AND_REQUIREMENTS>
+
+   ---
+   *Label updated to `specified`.*
+   EOF
+   ```
+
 ---
 
 ### Step 3: Implementation & Coding Workflow
