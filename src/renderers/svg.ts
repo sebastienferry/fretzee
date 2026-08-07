@@ -60,6 +60,29 @@ export class SvgRenderer {
     width += padding * 2;
     height += padding * 2;
 
+    // Additional adjustments for open string / muted string fingerings (fret 0 or fret -1)
+    const hasOpenStrings = (this.options.startFret <= 1) && fingerings.some(f => f.fret === 0 || f.fret === -1);
+    const radius = calculateFingeringRadius(this.options.stringSpacing, this.options.fretSpacing);
+    const openOffset = (this.options.fretSpacing * 0.35) + radius + 5;
+
+    if (hasOpenStrings) {
+      if (isHorizontal) {
+        viewBoxX -= openOffset;
+        width += openOffset;
+      } else {
+        viewBoxY -= openOffset;
+        height += openOffset;
+      }
+    }
+
+    // Additional adjustment for fingerings on string 1 (top string in horizontal mode)
+    const hasTopStringFingerings = isHorizontal && fingerings.some(f => f.string === 1);
+    const topMarkerOffset = hasTopStringFingerings ? radius + 5 : 0;
+    if (hasTopStringFingerings) {
+      viewBoxY -= topMarkerOffset;
+      height += topMarkerOffset;
+    }
+
     // Additional adjustment for title
     const hasTitle = Boolean(this.options.title && this.options.title.trim().length > 0);
     const titleSpace = TITLE_FONT_SIZE + TITLE_PADDING;
@@ -79,20 +102,6 @@ export class SvgRenderer {
       height += inlayOffset + extraThickness; // Space for text below + thickness
     }
 
-    // Additional adjustments for open string / muted string fingerings (fret 0 or fret -1)
-    const hasOpenStrings = (this.options.startFret <= 1) && fingerings.some(f => f.fret === 0 || f.fret === -1);
-    if (hasOpenStrings) {
-      const radius = calculateFingeringRadius(this.options.stringSpacing, this.options.fretSpacing);
-      const openOffset = (this.options.fretSpacing * 0.35) + radius + 5;
-      if (isHorizontal) {
-        viewBoxX -= openOffset;
-        width += openOffset;
-      } else {
-        viewBoxY -= openOffset;
-        height += openOffset;
-      }
-    }
-
     // Create SVG element with adjusted viewBox
     const svg = document.createElementNS(SVG_NS, 'svg');
     svg.setAttribute('viewBox', `${viewBoxX} ${viewBoxY} ${width} ${height}`);
@@ -103,9 +112,9 @@ export class SvgRenderer {
 
     // Render components
     if (isHorizontal) {
-      this.renderHorizontal(strings, frets, inlays, markers, fingerings, svg, width, height);
+      this.renderHorizontal(strings, frets, inlays, markers, fingerings, svg, width, height, topMarkerOffset);
     } else {
-      this.renderVertical(strings, frets, inlays, markers, fingerings, svg, width, height);
+      this.renderVertical(strings, frets, inlays, markers, fingerings, svg, width, height, hasOpenStrings ? openOffset : 0);
     }
 
     return svg;
@@ -122,11 +131,12 @@ export class SvgRenderer {
     fingerings: Fingering[],
     svg: SVGSVGElement,
     width: number,
-    _height: number
+    _height: number,
+    topOffset = 0
   ): void {
     // Render title if specified
     if (this.options.title && this.options.title.trim().length > 0) {
-      this.renderTitle(svg, true);
+      this.renderTitle(svg, true, topOffset);
     }
 
     // Render strings (horizontal lines spanning fretboard width)
@@ -179,11 +189,12 @@ export class SvgRenderer {
     fingerings: Fingering[],
     svg: SVGSVGElement,
     width: number,
-    height: number
+    height: number,
+    topOffset = 0
   ): void {
     // Render title if specified
     if (this.options.title && this.options.title.trim().length > 0) {
-      this.renderTitle(svg, false);
+      this.renderTitle(svg, false, topOffset);
     }
 
     // Render strings (vertical lines spanning fretboard height)
@@ -237,7 +248,7 @@ export class SvgRenderer {
   /**
    * Renders the diagram title text above the fretboard
    */
-  private renderTitle(svg: SVGSVGElement, isHorizontal: boolean): void {
+  private renderTitle(svg: SVGSVGElement, isHorizontal: boolean, topOffset = 0): void {
     const text = document.createElementNS(SVG_NS, 'text');
     text.setAttribute('class', CSS_CLASSES.title);
     text.setAttribute('fill', '#000000');
@@ -261,8 +272,8 @@ export class SvgRenderer {
       }
     }
 
-    // Y position is above the fretboard area
-    const yPosition = -(TITLE_PADDING);
+    // Y position is above the fretboard area and any top string/nut markers
+    const yPosition = -(TITLE_PADDING + topOffset);
 
     text.setAttribute('x', String(xPosition));
     text.setAttribute('y', String(yPosition));
