@@ -594,7 +594,11 @@
       try {
         const optionsFunc = new Function(`return (${code});`);
         const options = optionsFunc();
-        const fretboard = new fretly.Fretboard(options);
+        const FretboardClass = (typeof fretly !== 'undefined' && fretly.Fretboard) ? fretly.Fretboard : (typeof Fretly !== 'undefined' && Fretly.Fretboard ? Fretly.Fretboard : window.fretlyLib?.Fretboard);
+        if (!FretboardClass) {
+          throw new Error('Fretboard library class is not available.');
+        }
+        const fretboard = new FretboardClass(options);
         await fretboard.downloadPNG('fretboard.png', { scale: 2 });
       } catch (err) {
         alert('Failed to export PNG: ' + err.message);
