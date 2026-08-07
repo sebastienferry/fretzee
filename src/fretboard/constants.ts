@@ -39,23 +39,23 @@ export const SVG_NS = 'http://www.w3.org/2000/svg';
 
 // CSS class names
 export const CSS_CLASSES = {
-  root: 'fretly',
-  title: 'fretly-title',
-  frets: 'fretly-frets',
-  strings: 'fretly-strings',
-  inlays: 'fretly-inlays',
-  markers: 'fretly-markers',
-  fingerings: 'fretly-fingerings',
-  startFretIndicator: 'fretly-start-fret',
-  fret: (index: number) => `fretly-fret ${CSS_CLASSES.frets} fretly-fret-${index}`,
-  string: (index: number) => `fretly-string ${CSS_CLASSES.strings} fretly-string-${index}`,
-  inlay: (fretNumber: number) => `fretly-inlay ${CSS_CLASSES.inlays} fretly-inlay-${fretNumber}`,
-  inlayDot: (fretNumber: number) => `fretly-inlay-dot ${CSS_CLASSES.inlays} fretly-inlay-dot-${fretNumber}`,
-  fingering: (stringNum: number, fretNum: number) => `fretly-fingering ${CSS_CLASSES.fingerings} fretly-fingering-s${stringNum}-f${fretNum}`,
-  fingeringCircle: 'fretly-fingering-circle',
-  fingeringText: 'fretly-fingering-text',
-  tuning: 'fretly-tuning',
-  tuningLabel: 'fretly-tuning-label'
+  root: 'fretzee',
+  title: 'fretzee-title',
+  frets: 'fretzee-frets',
+  strings: 'fretzee-strings',
+  inlays: 'fretzee-inlays',
+  markers: 'fretzee-markers',
+  fingerings: 'fretzee-fingerings',
+  startFretIndicator: 'fretzee-start-fret',
+  fret: (index: number) => `fretzee-fret ${CSS_CLASSES.frets} fretzee-fret-${index}`,
+  string: (index: number) => `fretzee-string ${CSS_CLASSES.strings} fretzee-string-${index}`,
+  inlay: (fretNumber: number) => `fretzee-inlay ${CSS_CLASSES.inlays} fretzee-inlay-${fretNumber}`,
+  inlayDot: (fretNumber: number) => `fretzee-inlay-dot ${CSS_CLASSES.inlays} fretzee-inlay-dot-${fretNumber}`,
+  fingering: (stringNum: number, fretNum: number) => `fretzee-fingering ${CSS_CLASSES.fingerings} fretzee-fingering-s${stringNum}-f${fretNum}`,
+  fingeringCircle: 'fretzee-fingering-circle',
+  fingeringText: 'fretzee-fingering-text',
+  tuning: 'fretzee-tuning',
+  tuningLabel: 'fretzee-tuning-label'
 };
 
 // Error messages

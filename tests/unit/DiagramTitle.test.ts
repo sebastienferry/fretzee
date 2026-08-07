@@ -3,7 +3,7 @@ import { CSS_CLASSES } from '../../src/fretboard/constants';
 
 describe('Diagram Title', () => {
   describe('US1: Centered title rendering', () => {
-    it('renders a title as an SVG text element with class fretly-title', () => {
+    it('renders a title as an SVG text element with class fretzee-title', () => {
       const fretboard = new Fretboard({ title: 'Am Chord' });
       const svg = fretboard.render();
       const titleEl = svg.querySelector(`.${CSS_CLASSES.title}`);

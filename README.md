@@ -1,24 +1,24 @@
-# Fretly
+# Fretzee
 
-[![CI](https://github.com/sebastienferry/fretly/actions/workflows/ci.yml/badge.svg)](https://github.com/sebastienferry/fretly/actions/workflows/ci.yml)
-[![GitHub Pages](https://github.com/sebastienferry/fretly/actions/workflows/deploy-pages.yml/badge.svg)](https://sebastienferry.github.io/fretly/)
+[![CI](https://github.com/sebastienferry/fretzee/actions/workflows/ci.yml/badge.svg)](https://github.com/sebastienferry/fretzee/actions/workflows/ci.yml)
+[![GitHub Pages](https://github.com/sebastienferry/fretzee/actions/workflows/deploy-pages.yml/badge.svg)](https://sebastienferry.github.io/fretzee/)
 
 A zero-dependency TypeScript library for rendering customizable guitar and bass fretboards as SVG graphics. Supports both horizontal and vertical orientations, position markers, inlays, and fingering diagrams.
 
 ## 🚀 Interactive Live Editor & Web Site
 
-Try the live online configurator on [GitHub Pages](https://sebastienferry.github.io/fretly/) or open [`editor.html`](editor.html) locally to edit JSON/JS configurations and preview SVG diagrams in real-time!
+Try the live online configurator on [GitHub Pages](https://sebastienferry.github.io/fretzee/) or open [`editor.html`](editor.html) locally to edit JSON/JS configurations and preview SVG diagrams in real-time!
 
 ## Installation
 
 ```bash
-npm install fretly
+npm install fretzee
 ```
 
 ## Basic Usage
 
 ```typescript
-import { Fretboard } from 'fretly';
+import { Fretboard } from 'fretzee';
 
 // Create a standard 6-string guitar fretboard with 12 frets
 const fretboard = new Fretboard({
@@ -36,7 +36,7 @@ document.body.appendChild(svg);
 Pass an array of fingering position objects to display finger numbers, note names, and custom colors on the fretboard:
 
 ```typescript
-import { Fretboard } from 'fretly';
+import { Fretboard } from 'fretzee';
 
 // C Major Chord Diagram
 const fretboard = new Fretboard({
@@ -60,7 +60,7 @@ document.body.appendChild(fretboard.render());
 Render chord diagrams at higher neck positions using the `startFret` option (1-based fret number, range 0–24):
 
 ```typescript
-import { Fretboard } from 'fretly';
+import { Fretboard } from 'fretzee';
 
 // A Minor Barre Chord at 5th Fret
 const fretboard = new Fretboard({
@@ -120,15 +120,15 @@ const dataUrl = await fretboard.toPNGDataURL({ scale: 2 });
 await fretboard.downloadPNG('fretboard.png', { scale: 2 });
 ```
 
-### Standalone Music Catalog (`FretlyMusic`)
+### Standalone Music Catalog (`FretzeeMusic`)
 
-For chord library lookups, the standalone `FretlyMusic` module (`dist/music.umd.js` / `dist/music.esm.js`) can be used independently without coupling to the SVG renderer:
+For chord library lookups, the standalone `FretzeeMusic` module (`dist/music.umd.js` / `dist/music.esm.js`) can be used independently without coupling to the SVG renderer:
 
 ```typescript
-import * as FretlyMusic from 'fretly/music'; // or include dist/music.umd.js
+import * as FretzeeMusic from 'fretzee/music'; // or include dist/music.umd.js
 
 // Query chord definitions from catalog
-const cMajor = FretlyMusic.getChord('C');
+const cMajor = FretzeeMusic.getChord('C');
 
 // Feed fingerings into Fretboard SVG renderer
 const fretboard = new Fretboard({

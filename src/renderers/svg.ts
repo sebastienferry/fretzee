@@ -293,7 +293,7 @@ export class SvgRenderer {
       if (noteLabel === undefined || noteLabel === null || noteLabel.trim() === '') continue;
 
       const text = document.createElementNS(SVG_NS, 'text');
-      text.setAttribute('class', `${CSS_CLASSES.tuningLabel} fretly-tuning-s${i + 1}`);
+      text.setAttribute('class', `${CSS_CLASSES.tuningLabel} fretzee-tuning-s${i + 1}`);
       text.setAttribute('fill', '#000000');
       text.setAttribute('font-size', '10');
       text.setAttribute('font-family', 'sans-serif');
@@ -600,7 +600,7 @@ export class SvgRenderer {
     circle.setAttribute('cy', '0');
     circle.setAttribute('r', String(marker.options.size ?? 4));
     circle.setAttribute('fill', marker.options.color ?? '#ff0000');
-    circle.setAttribute('class', 'fretly-marker');
+    circle.setAttribute('class', 'fretzee-marker');
     group.appendChild(circle);
   }
 
@@ -720,7 +720,7 @@ export class SvgRenderer {
       text.setAttribute('font-size', String(Math.round(radius * 1.2)));
       text.setAttribute('font-family', 'sans-serif');
       text.setAttribute('font-weight', 'bold');
-      const textClass = isNutMarker ? 'fretly-fingering-text fretly-open-marker' : CSS_CLASSES.fingeringText;
+      const textClass = isNutMarker ? 'fretzee-fingering-text fretzee-open-marker' : CSS_CLASSES.fingeringText;
       text.setAttribute('class', textClass);
       text.textContent = fingering.text;
       g.appendChild(text);

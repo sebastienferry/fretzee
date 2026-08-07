@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Fretly Demo & Showcase - Visual examples of horizontal, vertical, and custom fretboard SVG graphics.">
-  <title>Fretly Showcase & Demos - Guitar & Bass Fretboard SVG Examples</title>
+  <meta name="description" content="Fretzee Demo & Showcase - Visual examples of horizontal, vertical, and custom fretboard SVG graphics.">
+  <title>Fretzee Showcase & Demos - Guitar & Bass Fretboard SVG Examples</title>
 
   <!-- Google Fonts: Inter & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -247,19 +247,19 @@
 
   <header>
     <a href="index.html" class="brand">
-      <span class="brand-logo">Fretly</span>
+      <span class="brand-logo">Fretzee</span>
     </a>
     <nav class="nav-links">
       <a href="index.html" class="nav-btn">Home</a>
       <a href="editor.html" class="nav-btn">Editor</a>
       <a href="studio.html" class="nav-btn">Studio</a>
       <a href="demo.html" class="nav-btn nav-btn-primary">Demos</a>
-      <a href="https://github.com/sebastienferry/fretly" target="_blank" rel="noopener" class="nav-btn">GitHub</a>
+      <a href="https://github.com/sebastienferry/fretzee" target="_blank" rel="noopener" class="nav-btn">GitHub</a>
     </nav>
   </header>
 
   <main class="main-container">
-    <h1 class="page-title">Fretly Visual Showcase</h1>
+    <h1 class="page-title">Fretzee Visual Showcase</h1>
     <p class="page-subtitle">Explore pre-configured fretboard rendering examples including horizontal necks, vertical chord charts, custom color markers, and bass fretboards.</p>
 
     <!-- Example 1: Horizontal Standard Guitar -->
@@ -358,23 +358,23 @@
         </div>
       </div>
     </div>
-    <!-- Example 6: Standalone Music Catalog (FretlyMusic) -->
+    <!-- Example 6: Standalone Music Catalog (FretzeeMusic) -->
     <div class="demo-card">
       <div class="demo-card-header">
         <div class="demo-card-info">
-          <h2 class="demo-card-title">6. Decoupled Music Catalog (FretlyMusic)</h2>
-          <p class="demo-card-desc">Query real chord definitions independently from the standalone <code>FretlyMusic</code> catalog library (<code>dist/music.umd.js</code>) and pass them to <code>Fretboard</code>.</p>
+          <h2 class="demo-card-title">6. Decoupled Music Catalog (FretzeeMusic)</h2>
+          <p class="demo-card-desc">Query real chord definitions independently from the standalone <code>FretzeeMusic</code> catalog library (<code>dist/music.umd.js</code>) and pass them to <code>Fretboard</code>.</p>
         </div>
         <button class="copy-btn" onclick="copySnippet('ex6', this)">📋 Copy JS</button>
       </div>
       <div class="demo-card-body">
         <div class="vertical-grid">
           <div class="vertical-card">
-            <span class="vertical-card-title">Fmaj7 (from FretlyMusic)</span>
+            <span class="vertical-card-title">Fmaj7 (from FretzeeMusic)</span>
             <div id="demo-catalog-fmaj7"></div>
           </div>
           <div class="vertical-card">
-            <span class="vertical-card-title">E7 (from FretlyMusic)</span>
+            <span class="vertical-card-title">E7 (from FretzeeMusic)</span>
             <div id="demo-catalog-e7"></div>
           </div>
         </div>
@@ -383,19 +383,19 @@
   </main>
 
   <footer>
-    <p>Released under the MIT License • View on <a href="https://github.com/sebastienferry/fretly" target="_blank" rel="noopener">GitHub</a></p>
+    <p>Released under the MIT License • View on <a href="https://github.com/sebastienferry/fretzee" target="_blank" rel="noopener">GitHub</a></p>
   </footer>
 
-  <!-- Include Fretly UMD Library Bundle & Decoupled FretlyMusic Catalog Bundle -->
+  <!-- Include Fretzee UMD Library Bundle & Decoupled FretzeeMusic Catalog Bundle -->
   <script src="./dist/index.umd.js"></script>
   <script src="./dist/music.umd.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      const fretlyLib = window.fretly || window.Fretly;
-      if (!fretlyLib || !fretlyLib.Fretboard) return;
+      const fretzeeLib = window.fretzee || window.Fretzee;
+      if (!fretzeeLib || !fretzeeLib.Fretboard) return;
 
       // 1. Horizontal Guitar
-      const guitar = new fretlyLib.Fretboard({
+      const guitar = new fretzeeLib.Fretboard({
         stringCount: 6,
         fretCount: 12,
         orientation: 'horizontal',
@@ -412,7 +412,7 @@
       document.getElementById('demo-horizontal-guitar').appendChild(guitar.render());
 
       // 2. Chord C Major
-      const chordC = new fretlyLib.Fretboard({
+      const chordC = new fretzeeLib.Fretboard({
         stringCount: 6,
         fretCount: 4,
         orientation: 'vertical',
@@ -428,7 +428,7 @@
       document.getElementById('demo-chord-c').appendChild(chordC.render());
 
       // 2. Chord G Major
-      const chordG = new fretlyLib.Fretboard({
+      const chordG = new fretzeeLib.Fretboard({
         stringCount: 6,
         fretCount: 4,
         orientation: 'vertical',
@@ -444,7 +444,7 @@
       document.getElementById('demo-chord-g').appendChild(chordG.render());
 
       // 2. Chord A Minor
-      const chordAm = new fretlyLib.Fretboard({
+      const chordAm = new fretzeeLib.Fretboard({
         stringCount: 6,
         fretCount: 4,
         orientation: 'vertical',
@@ -459,7 +459,7 @@
       document.getElementById('demo-chord-am').appendChild(chordAm.render());
 
       // 3. Bass Guitar
-      const bass = new fretlyLib.Fretboard({
+      const bass = new fretzeeLib.Fretboard({
         stringCount: 4,
         fretCount: 12,
         orientation: 'horizontal',
@@ -472,7 +472,7 @@
       document.getElementById('demo-bass').appendChild(bass.render());
 
       // 4. Starting Fret Examples
-      const startingFretAm = new fretlyLib.Fretboard({
+      const startingFretAm = new fretzeeLib.Fretboard({
         stringCount: 6,
         fretCount: 4,
         startFret: 5,
@@ -488,7 +488,7 @@
       });
       document.getElementById('demo-starting-fret-am').appendChild(startingFretAm.render());
 
-      const startingFretBm = new fretlyLib.Fretboard({
+      const startingFretBm = new fretzeeLib.Fretboard({
         stringCount: 6,
         fretCount: 4,
         startFret: 7,
@@ -505,7 +505,7 @@
       document.getElementById('demo-starting-fret-bm').appendChild(startingFretBm.render());
 
       // 5. Titled Fretboards
-      const titleCentered = new fretlyLib.Fretboard({
+      const titleCentered = new fretzeeLib.Fretboard({
         title: 'Am Chord',
         titleAlignment: 'center',
         stringCount: 6,
@@ -522,7 +522,7 @@
       });
       document.getElementById('demo-title-centered').appendChild(titleCentered.render());
 
-      const titleLeft = new fretlyLib.Fretboard({
+      const titleLeft = new fretzeeLib.Fretboard({
         title: 'C Pentatonic',
         titleAlignment: 'left',
         stringCount: 6,
@@ -535,11 +535,11 @@
       });
       document.getElementById('demo-title-left').appendChild(titleLeft.render());
 
-      // 6. Standalone Music Catalog (FretlyMusic)
-      if (window.FretlyMusic && window.FretlyMusic.getChord) {
-        const fmaj7Data = window.FretlyMusic.getChord('Fmaj7');
+      // 6. Standalone Music Catalog (FretzeeMusic)
+      if (window.FretzeeMusic && window.FretzeeMusic.getChord) {
+        const fmaj7Data = window.FretzeeMusic.getChord('Fmaj7');
         if (fmaj7Data) {
-          const catalogFmaj7 = new fretlyLib.Fretboard({
+          const catalogFmaj7 = new fretzeeLib.Fretboard({
             title: fmaj7Data.name,
             stringCount: 6,
             fretCount: 4,
@@ -550,9 +550,9 @@
           document.getElementById('demo-catalog-fmaj7').appendChild(catalogFmaj7.render());
         }
 
-        const e7Data = window.FretlyMusic.getChord('E7');
+        const e7Data = window.FretzeeMusic.getChord('E7');
         if (e7Data) {
-          const catalogE7 = new fretlyLib.Fretboard({
+          const catalogE7 = new fretzeeLib.Fretboard({
             title: e7Data.name,
             stringCount: 6,
             fretCount: 4,
@@ -567,7 +567,7 @@
 
     // Snippets for copying
     const SNIPPETS = {
-      ex1: `const guitar = new fretly.Fretboard({
+      ex1: `const guitar = new fretzee.Fretboard({
   stringCount: 6,
   fretCount: 12,
   orientation: 'horizontal',
@@ -583,7 +583,7 @@
 });
 document.body.appendChild(guitar.render());`,
 
-      ex2: `const chordC = new fretly.Fretboard({
+      ex2: `const chordC = new fretzee.Fretboard({
   stringCount: 6,
   fretCount: 4,
   orientation: 'vertical',
@@ -598,7 +598,7 @@ document.body.appendChild(guitar.render());`,
 });
 document.body.appendChild(chordC.render());`,
 
-      ex3: `const bass = new fretly.Fretboard({
+      ex3: `const bass = new fretzee.Fretboard({
   stringCount: 4,
   fretCount: 12,
   orientation: 'horizontal',
@@ -610,7 +610,7 @@ document.body.appendChild(chordC.render());`,
 });
 document.body.appendChild(bass.render());`,
 
-      ex4: `const startingFretAm = new fretly.Fretboard({
+      ex4: `const startingFretAm = new fretzee.Fretboard({
   stringCount: 6,
   fretCount: 4,
   startFret: 5,
@@ -626,7 +626,7 @@ document.body.appendChild(bass.render());`,
 });
 document.body.appendChild(startingFretAm.render());`,
 
-      ex5: `const titleCentered = new fretly.Fretboard({
+      ex5: `const titleCentered = new fretzee.Fretboard({
   title: 'Am Chord',
   titleAlignment: 'center',
   stringCount: 6,
@@ -643,10 +643,10 @@ document.body.appendChild(startingFretAm.render());`,
 });
 document.body.appendChild(titleCentered.render());`,
 
-      ex6: `// Load chord from standalone FretlyMusic catalog
-const fmaj7Data = FretlyMusic.getChord('Fmaj7');
+      ex6: `// Load chord from standalone FretzeeMusic catalog
+const fmaj7Data = FretzeeMusic.getChord('Fmaj7');
 
-const catalogFmaj7 = new fretly.Fretboard({
+const catalogFmaj7 = new fretzee.Fretboard({
   title: fmaj7Data.name,
   stringCount: 6,
   fretCount: 4,

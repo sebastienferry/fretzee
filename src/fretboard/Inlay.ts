@@ -63,6 +63,6 @@ export class Inlay implements InlayInterface {
    * Returns CSS class name for this inlay
    */
   getCssClass(): string {
-    return `fretly-inlay fretly-inlay-${this.fretNumber}`;
+    return `fretzee-inlay fretzee-inlay-${this.fretNumber}`;
   }
 }

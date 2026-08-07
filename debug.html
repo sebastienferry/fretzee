@@ -17,12 +17,12 @@
   
   <script src="./dist/index.umd.js"></script>
   <script>
-    console.log('fretly:', typeof fretly);
-    console.log('Fretboard:', typeof fretly?.Fretboard);
+    console.log('fretzee:', typeof fretzee);
+    console.log('Fretboard:', typeof fretzee?.Fretboard);
     
-    if (fretly && fretly.Fretboard) {
+    if (fretzee && fretzee.Fretboard) {
       try {
-        const f = new fretly.Fretboard({ fretCount: 6, stringCount: 4 });
+        const f = new fretzee.Fretboard({ fretCount: 6, stringCount: 4 });
         const svg = f.render();
         
         document.getElementById('fretboard').appendChild(svg);
@@ -60,9 +60,9 @@
           `<p style="color: red;">❌ Error: ${e.message}</p>`;
       }
     } else {
-      console.error('fretly not loaded!');
+      console.error('fretzee not loaded!');
       document.getElementById('output').innerHTML = 
-        `<p style="color: red;">❌ fretly global not found</p>`;
+        `<p style="color: red;">❌ fretzee global not found</p>`;
     }
   </script>
 </body>

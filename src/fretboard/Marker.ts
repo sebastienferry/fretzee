@@ -9,7 +9,7 @@ import type { Marker as MarkerInterface, MarkerOptions, Position } from './types
  */
 let markerIdCounter = 0;
 function generateId(): string {
-  return `fretly-marker-${++markerIdCounter}`;
+  return `fretzee-marker-${++markerIdCounter}`;
 }
 
 /**
@@ -72,7 +72,7 @@ export class Marker implements MarkerInterface {
    * Returns CSS class name for this marker
    */
   getCssClass(): string {
-    return `fretly-marker fretly-marker-${this.id}`;
+    return `fretzee-marker fretzee-marker-${this.id}`;
   }
 
   /**

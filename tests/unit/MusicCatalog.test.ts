@@ -42,6 +42,6 @@ describe('Standalone Music Catalog (FretlyMusic)', () => {
 
     const svg = fretboard.render();
     expect(svg).not.toBeNull();
-    expect(svg.querySelectorAll('.fretly-fingering').length).toBe(6);
+    expect(svg.querySelectorAll('.fretzee-fingering').length).toBe(6);
   });
 });

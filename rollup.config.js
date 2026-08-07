@@ -12,8 +12,8 @@ export default [
       {
         file: 'dist/index.umd.js',
         format: 'umd',
-        name: 'fretly',
-        footer: 'if (typeof window !== "undefined" && window.fretly && !window.Fretly) { window.Fretly = window.fretly; }',
+        name: 'fretzee',
+        footer: 'if (typeof window !== "undefined") { if (!window.Fretzee) window.Fretzee = window.fretzee; if (!window.fretzee) window.fretzee = window.Fretzee; if (!window.Fretly) window.Fretly = window.Fretzee; if (!window.fretly) window.fretly = window.Fretzee; }',
         sourcemap: true,
         globals: {}
       }
@@ -39,7 +39,8 @@ export default [
       {
         file: 'dist/music.umd.js',
         format: 'umd',
-        name: 'FretlyMusic',
+        name: 'FretzeeMusic',
+        footer: 'if (typeof window !== "undefined" && !window.FretlyMusic) { window.FretlyMusic = window.FretzeeMusic; }',
         sourcemap: true,
         globals: {}
       }

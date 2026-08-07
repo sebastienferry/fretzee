@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Fretly Live Interactive Editor - Live JS/JSON fretboard generator with custom fingerings, colors, and orientation.">
-  <title>Fretly Live Editor - Guitar & Bass Fretboard Generator</title>
+  <meta name="description" content="Fretzee Live Interactive Editor - Live JS/JSON fretboard generator with custom fingerings, colors, and orientation.">
+  <title>Fretzee Live Editor - Guitar & Bass Fretboard Generator</title>
 
   <!-- Google Fonts: Inter & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -353,14 +353,14 @@
   <!-- Header -->
   <header>
     <a href="index.html" class="brand" style="text-decoration: none;">
-      <span class="brand-logo">Fretly</span>
+      <span class="brand-logo">Fretzee</span>
     </a>
     <nav class="nav-links">
       <a href="index.html" class="nav-btn">Home</a>
       <a href="editor.html" class="nav-btn nav-btn-primary">Editor</a>
       <a href="studio.html" class="nav-btn">Studio</a>
       <a href="demo.html" class="nav-btn">Demos</a>
-      <a href="https://github.com/sebastienferry/fretly" target="_blank" rel="noopener" class="nav-btn">GitHub</a>
+      <a href="https://github.com/sebastienferry/fretzee" target="_blank" rel="noopener" class="nav-btn">GitHub</a>
     </nav>
     <div class="header-actions" style="display: flex; gap: 8px;">
       <button class="btn btn-secondary" onclick="exportPngFile()">
@@ -418,7 +418,7 @@
       <div class="status-dot" id="status-dot"></div>
       <span id="status-text">Live Render Active</span>
     </div>
-    <div>Fretly v0.1.0 • Modern TypeScript SVG Engine</div>
+    <div>Fretzee v0.1.0 • Modern TypeScript SVG Engine</div>
   </footer>
 
   <!-- Library Scripts -->
@@ -543,11 +543,11 @@
         const optionsFunc = new Function(`return (${code});`);
         const options = optionsFunc();
 
-        if (typeof fretly === 'undefined' || !fretly.Fretboard) {
-          throw new Error('Fretly library not loaded');
+        if (typeof fretzee === 'undefined' || !fretzee.Fretboard) {
+          throw new Error('Fretzee library not loaded');
         }
 
-        const fretboard = new fretly.Fretboard(options);
+        const fretboard = new fretzee.Fretboard(options);
         const svg = fretboard.render();
 
         svgOutput.innerHTML = '';
@@ -595,7 +595,7 @@
       try {
         const optionsFunc = new Function(`return (${code});`);
         const options = optionsFunc();
-        const FretboardClass = (typeof fretly !== 'undefined' && fretly.Fretboard) ? fretly.Fretboard : (typeof Fretly !== 'undefined' && Fretly.Fretboard ? Fretly.Fretboard : window.fretlyLib?.Fretboard);
+        const FretboardClass = (typeof fretzee !== 'undefined' && fretzee.Fretboard) ? fretzee.Fretboard : (typeof Fretzee !== 'undefined' && Fretzee.Fretboard ? Fretzee.Fretboard : window.fretzeeLib?.Fretboard);
         if (!FretboardClass) {
           throw new Error('Fretboard library class is not available.');
         }

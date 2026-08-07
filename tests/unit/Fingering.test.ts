@@ -39,6 +39,6 @@ describe('Fingering Entity', () => {
 
   it('should generate correct CSS class string', () => {
     const fingering = new Fingering({ string: 2, fret: 3 });
-    expect(fingering.getCssClass()).toContain('fretly-fingering-s2-f3');
+    expect(fingering.getCssClass()).toContain('fretzee-fingering-s2-f3');
   });
 });

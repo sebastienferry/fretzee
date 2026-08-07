@@ -8,7 +8,7 @@ describe('Fretboard Inlay Rendering', () => {
       orientation: 'horizontal'
     });
     const svg = fretboard.render();
-    const dots = svg.querySelectorAll('.fretly-inlay-dot');
+    const dots = svg.querySelectorAll('.fretzee-inlay-dot');
 
     expect(dots.length).toBeGreaterThan(0);
     // Frets 3, 5, 7, 9 get 1 dot each, fret 12 gets 2 dots -> total 6 dot circles
@@ -22,8 +22,8 @@ describe('Fretboard Inlay Rendering', () => {
       showInlays: false
     });
     const svg = fretboard.render();
-    const dots = svg.querySelectorAll('.fretly-inlay-dot');
-    const inlaysGroup = svg.querySelector('.fretly-inlays');
+    const dots = svg.querySelectorAll('.fretzee-inlay-dot');
+    const inlaysGroup = svg.querySelector('.fretzee-inlays');
 
     expect(dots.length).toBe(0);
     expect(inlaysGroup).toBeNull();
@@ -37,7 +37,7 @@ describe('Fretboard Inlay Rendering', () => {
       showInlays: true
     });
     const svg = fretboard.render();
-    const dots = svg.querySelectorAll('.fretly-inlay-dot');
+    const dots = svg.querySelectorAll('.fretzee-inlay-dot');
 
     expect(dots.length).toBe(6);
   });
@@ -49,7 +49,7 @@ describe('Fretboard Inlay Rendering', () => {
       orientation: 'horizontal'
     });
     const svg = fretboard.render();
-    const fret12Dots = svg.querySelectorAll('.fretly-inlay-dot-12');
+    const fret12Dots = svg.querySelectorAll('.fretzee-inlay-dot-12');
 
     expect(fret12Dots.length).toBe(2);
   });

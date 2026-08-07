@@ -1,5 +1,5 @@
 {
-  "name": "fretly",
+  "name": "fretzee",
   "version": "0.1.0",
   "description": "A lightweight library to render guitar fretboards as SVG with configurable frets, strings, and orientation.",
   "type": "module",

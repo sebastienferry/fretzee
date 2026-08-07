@@ -24,7 +24,7 @@ describe('Muted Open Strings (fret: -1)', () => {
     });
 
     const svg = fretboard.render();
-    const mutedGroup = svg.querySelector('.fretly-fingering-s6-f-1');
+    const mutedGroup = svg.querySelector('.fretzee-fingering-s6-f-1');
     expect(mutedGroup).not.toBeNull();
     expect(mutedGroup?.querySelector('circle')).toBeNull();
 
@@ -44,7 +44,7 @@ describe('Muted Open Strings (fret: -1)', () => {
     });
 
     const svg = fretboard.render();
-    const mutedMarkers = svg.querySelectorAll('.fretly-open-marker');
+    const mutedMarkers = svg.querySelectorAll('.fretzee-open-marker');
     expect(mutedMarkers.length).toBe(2);
   });
 });

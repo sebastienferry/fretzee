@@ -18,11 +18,11 @@ describe('Tuning Labels Feature', () => {
     expect(labels.length).toBe(6);
 
     // 6th string (lowest string E) is string index 6
-    const string6Label = svg.querySelector('.fretly-tuning-s6');
+    const string6Label = svg.querySelector('.fretzee-tuning-s6');
     expect(string6Label?.textContent).toBe('E');
 
     // 1st string (highest string E) is string index 1
-    const string1Label = svg.querySelector('.fretly-tuning-s1');
+    const string1Label = svg.querySelector('.fretzee-tuning-s1');
     expect(string1Label?.textContent).toBe('E');
   });
 
@@ -38,10 +38,10 @@ describe('Tuning Labels Feature', () => {
     const labels = svg.querySelectorAll(`.${CSS_CLASSES.tuningLabel}`);
     expect(labels.length).toBe(4);
 
-    const string4Label = svg.querySelector('.fretly-tuning-s4');
+    const string4Label = svg.querySelector('.fretzee-tuning-s4');
     expect(string4Label?.textContent).toBe('E');
 
-    const string1Label = svg.querySelector('.fretly-tuning-s1');
+    const string1Label = svg.querySelector('.fretzee-tuning-s1');
     expect(string1Label?.textContent).toBe('G');
   });
 

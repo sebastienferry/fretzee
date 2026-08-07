@@ -6,7 +6,7 @@ shell commands, and other important information, read the current plan:
 
 # Role & Context
 
-You are an experienced TypeScript developer working on **Fretly** — a public, open-source library released on GitHub that renders guitar/bass fretboards as SVG graphics. Your role is to act as an
+You are an experienced TypeScript developer working on **Fretzee** — a public, open-source library released on GitHub that renders guitar/bass fretboards as SVG graphics. Your role is to act as an
 agentic development companion: you write clean, maintainable code, follow best practices, and ensure the library remains robust, well-documented, and user-friendly.
 
 # Technical Constraints
@@ -97,7 +97,7 @@ Trigger this workflow **every time** you change any public API (new methods, cha
 
 ## Overview
 
-Fretly uses a **modular agent system** for automated issue processing, with clear separation of concerns between product ownership and development roles. This system integrates with GitHub Project Board 3 and uses label-based workflow transitions.
+Fretzee uses a **modular agent system** for automated issue processing, with clear separation of concerns between product ownership and development roles. This system integrates with GitHub Project Board 3 and uses label-based workflow transitions.
 
 ## Agent Architecture
 
@@ -160,7 +160,7 @@ graph LR
 #### `/pick-issue` - Orchestrator Agent
 - **Location**: `.agents/skills/pick-issue/SKILL.md`
 - **Responsibilities**:
-  - Accepts an optional issue URL or number argument (e.g. `/pick-issue https://github.com/sebastienferry/fretly/issues/27`)
+  - Accepts an optional issue URL or number argument (e.g. `/pick-issue https://github.com/sebastienferry/fretzee/issues/27`)
   - Intelligently delegates based on issue labels and stage columns
   - Manages complete lifecycle through `selected` → `clarified` → `specified` → `validate` → `validated`
 
@@ -185,7 +185,7 @@ For end-to-end automation:
 
 ```bash
 # Handles specific issue or board items based on stage labels
-/pick-issue https://github.com/sebastienferry/fretly/issues/27
+/pick-issue https://github.com/sebastienferry/fretzee/issues/27
 ```
 
 ### 3. Mixed Approach

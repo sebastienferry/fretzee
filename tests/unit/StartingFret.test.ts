@@ -38,7 +38,7 @@ describe('Configurable Starting Fret', () => {
       // Standard inlays in range [5, 8]: 5, 7
       const fretboard = new Fretboard({ startFret: 5, fretCount: 4 });
       const svg = fretboard.render();
-      const inlays = svg.querySelectorAll('.fretly-inlay');
+      const inlays = svg.querySelectorAll('.fretzee-inlay');
 
       expect(inlays.length).toBe(2);
       const labels = Array.from(inlays).map(el => el.textContent);
@@ -50,7 +50,7 @@ describe('Configurable Starting Fret', () => {
       // startFret: 12, fretCount: 4 -> visible frets: 12..15
       const fretboard = new Fretboard({ startFret: 12, fretCount: 4 });
       const svg = fretboard.render();
-      const inlays = svg.querySelectorAll('.fretly-inlay');
+      const inlays = svg.querySelectorAll('.fretzee-inlay');
 
       expect(inlays.length).toBe(2); // 12, 15
       const labels = Array.from(inlays).map(el => el.textContent);
@@ -61,7 +61,7 @@ describe('Configurable Starting Fret', () => {
       // startFret: 1, fretCount: 4 with custom inlayPositions: [5, 7] -> no inlays in range [1, 4]
       const fretboard = new Fretboard({ startFret: 1, fretCount: 4, inlayPositions: [5, 7] });
       const svg = fretboard.render();
-      const inlays = svg.querySelectorAll('.fretly-inlay');
+      const inlays = svg.querySelectorAll('.fretzee-inlay');
 
       expect(inlays.length).toBe(0);
     });
@@ -69,7 +69,7 @@ describe('Configurable Starting Fret', () => {
     it('should display double dots for octave frets in visible range', () => {
       const fretboard = new Fretboard({ startFret: 10, fretCount: 4 }); // 10..13 includes 12
       const svg = fretboard.render();
-      const doubleDots = svg.querySelectorAll('.fretly-inlay-dot-12');
+      const doubleDots = svg.querySelectorAll('.fretzee-inlay-dot-12');
 
       expect(doubleDots.length).toBe(2);
     });
@@ -85,7 +85,7 @@ describe('Configurable Starting Fret', () => {
         fingerings: [{ string: 1, fret: 5, text: 'A' }]
       });
       const svg = fretboard.render();
-      const fingering = svg.querySelector('.fretly-fingering-s1-f5');
+      const fingering = svg.querySelector('.fretzee-fingering-s1-f5');
 
       expect(fingering).not.toBeNull();
     });
@@ -101,7 +101,7 @@ describe('Configurable Starting Fret', () => {
         ]
       });
       const svg = fretboard.render();
-      const fingerings = svg.querySelectorAll('.fretly-fingering');
+      const fingerings = svg.querySelectorAll('.fretzee-fingering');
 
       expect(fingerings.length).toBe(1);
     });
@@ -113,7 +113,7 @@ describe('Configurable Starting Fret', () => {
         fingerings: [{ string: 1, fret: 0, text: 'E' }]
       });
       const svg = fretboard.render();
-      const fingerings = svg.querySelectorAll('.fretly-fingering');
+      const fingerings = svg.querySelectorAll('.fretzee-fingering');
 
       expect(fingerings.length).toBe(0);
     });
@@ -123,7 +123,7 @@ describe('Configurable Starting Fret', () => {
     it('should overlap string past 1st fret when startFret > 1 in horizontal mode', () => {
       const fretboard = new Fretboard({ startFret: 5, fretCount: 4, orientation: 'horizontal' });
       const svg = fretboard.render();
-      const firstString = svg.querySelector('.fretly-string-0');
+      const firstString = svg.querySelector('.fretzee-string-0');
 
       expect(firstString).not.toBeNull();
       expect(Number(firstString?.getAttribute('x1'))).toBeLessThan(0);
@@ -132,7 +132,7 @@ describe('Configurable Starting Fret', () => {
     it('should overlap string past 1st fret when startFret > 1 in vertical mode', () => {
       const fretboard = new Fretboard({ startFret: 5, fretCount: 4, orientation: 'vertical' });
       const svg = fretboard.render();
-      const firstString = svg.querySelector('.fretly-string-0');
+      const firstString = svg.querySelector('.fretzee-string-0');
 
       expect(firstString).not.toBeNull();
       expect(Number(firstString?.getAttribute('y1'))).toBeLessThan(0);
@@ -141,7 +141,7 @@ describe('Configurable Starting Fret', () => {
     it('should NOT overlap string past 1st fret when startFret is 1 (starts at nut)', () => {
       const fretboard = new Fretboard({ startFret: 1, fretCount: 4, orientation: 'horizontal' });
       const svg = fretboard.render();
-      const firstString = svg.querySelector('.fretly-string-0');
+      const firstString = svg.querySelector('.fretzee-string-0');
 
       expect(firstString).not.toBeNull();
       expect(Number(firstString?.getAttribute('x1'))).toBe(0);
@@ -150,7 +150,7 @@ describe('Configurable Starting Fret', () => {
     it('should NOT render start fret text indicator element', () => {
       const fretboard = new Fretboard({ startFret: 5, fretCount: 4 });
       const svg = fretboard.render();
-      const indicator = svg.querySelector('.fretly-start-fret');
+      const indicator = svg.querySelector('.fretzee-start-fret');
 
       expect(indicator).toBeNull();
     });
