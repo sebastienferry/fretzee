@@ -1,11 +1,11 @@
 ---
 name: clarify-issue
-description: Pick up the next Todo item from the GitHub project board and ask clarifying questions in comments, adding the to-clarify label.
+description: Pick up the next item from the GitHub project board, update status to Clarification column, and ask clarifying questions in comments (or interactive chat interview), adding the to-clarify label.
 ---
 
 # Clarification Agent Workflow (`/clarify-issue`)
 
-This skill acts as a clarification agent responsible for asking targeted questions about GitHub project board issues that need more information before specification can begin. It picks up the next issue with status "Todo", asks clarifying questions as comments, and adds the "to-clarify" label.
+This skill acts as a clarification agent responsible for asking targeted questions about GitHub project board issues that need more information before specification can begin. It picks up the next issue with status "Idea" / "Todo", updates its project board status column to `Clarification`, asks clarifying questions as comments (or in an interactive chat session), and adds the `to-clarify` label.
 
 ---
 
@@ -33,7 +33,7 @@ This skill acts as a clarification agent responsible for asking targeted questio
 
 ---
 
-### Step 2: Query & Pick Next Issue from Project Board
+### Step 2: Query & Pick Next Issue & Move to Clarification Column
 
 1. **Fetch Project Items**:
    Query items from Project Board 3:
@@ -42,17 +42,21 @@ This skill acts as a clarification agent responsible for asking targeted questio
    ```
 
 2. **Filter and Select Target Issue**:
-   - Filter items matching `status == "Todo"` AND NOT having labels `"to-clarify"`, `"clarified"`, `"to-specify"`, `"to-implement"`, or `"implemented"`
+   - Filter items matching `status == "Idea"` OR `status == "Todo"` AND NOT having workflow labels (`"to-clarify"`, `"clarified"`, `"specified"`, `"validate"`, `"validated"`)
    - Select the **first matching item** (oldest first)
    - Extract: `ISSUE_NUM`, `ISSUE_TITLE`, `ISSUE_BODY`, `ISSUE_LABELS`, `ITEM_ID`, and `NODE_ID`
 
-3. **Fallback (if project CLI fails)**:
+3. **Update Project Board Status to Clarification Column**:
+   Update status column on Project Board 3 to `Clarification`:
+   ```bash
+   gh project item-edit --id "<ITEM_ID>" --project-id 3 --field-id "<STATUS_FIELD_ID>" --single-select-option-id "<CLARIFICATION_OPTION_ID>"
+   ```
+
+4. **Fallback (if project CLI fails)**:
    Query repository open issues:
    ```bash
    gh issue list --owner sebastienferry --repo fretly --state open --json number,title,body,labels,projectItems
    ```
-   - Filter issues with status "Todo" and without clarification/specification labels
-   - Select the first matching issue
 
 ---
 
@@ -74,10 +78,6 @@ This skill acts as a clarification agent responsible for asking targeted questio
    /speckit-clarify
    ```
    - Generate 3-5 specific, targeted questions that would help clarify the requirements
-   - Questions should be:
-     - **Specific**: Address concrete aspects of the feature/bug
-     - **Actionable**: Lead to clear answers that inform specification
-     - **Non-redundant**: Don't ask about information already provided
 
 ---
 
@@ -98,7 +98,7 @@ This skill acts as a clarification agent responsible for asking targeted questio
 
 ---
 
-### Step 5: Add "to-clarify" Label
+### Step 5: Add "to-clarify" Label (Async Mode)
 
 1. **Add Clarification Label**:
    ```bash
@@ -111,9 +111,9 @@ This skill acts as a clarification agent responsible for asking targeted questio
 
 ---
 
-### Step 6: Update Project Board Status (Optional)
+### Step 6: Update Project Board Status
 
-The issue should remain in "Todo" status until the user manually changes the label to "clarified". However, you can optionally add a custom field or note to track that clarification is in progress.
+The issue status on Project Board 3 is set to `Clarification` upon starting clarification. Once user provides feedback and sets label to `clarified`, running `/specify-issue` will transition the item to `Specification`.
 
 ---
 

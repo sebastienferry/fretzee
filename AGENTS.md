@@ -126,11 +126,12 @@ graph LR
 #### `/clarify-issue` - Clarification Agent
 - **Location**: `.agents/skills/clarify-issue/SKILL.md`
 - **Responsibilities**:
-  - Picks next issue with status/label "selected" or in Clarification column
-  - Analyzes issue content and generates targeted clarifying questions
-  - Posts questions as comments on the GitHub issue
+  - Picks next issue with status "Idea" or "Todo"
+  - Updates project status column to Clarification
+  - Analyzes issue content and generates targeted clarifying questions (or conducts interactive chat interview)
+  - Posts questions/summaries as comments on the GitHub issue
   - **Label Transition**: Adds "to-clarify"
-  - **Project Status**: Remains in Clarification until user responds and changes label to "clarified"
+  - **Project Status**: Updated to Clarification column
 
 #### `/specify-issue` - Product Owner Agent
 - **Location**: `.agents/skills/specify-issue/SKILL.md`
