@@ -115,6 +115,7 @@ export class Fretboard {
       showInlays: DEFAULT_SHOW_INLAYS,
       title: undefined as any,
       titleAlignment: DEFAULT_TITLE_ALIGNMENT,
+      tuning: options.tuning ?? [],
       fingerings: [],
       ...options,
       startFret: effectiveStartFret

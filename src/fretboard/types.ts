@@ -42,6 +42,9 @@ export interface FretboardOptions {
   /** Title alignment: 'center' or 'left' (default: 'center') */
   titleAlignment?: 'center' | 'left';
 
+  /** Optional tuning note labels ordered from lowest string (6th string) to highest (1st string) */
+  tuning?: string[];
+
   /** Fingering markers to render on the fretboard */
   fingerings?: Fingering[];
 }

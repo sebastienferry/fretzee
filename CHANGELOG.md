@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Implement Project Board stage-gate workflow skills and label progression (`#27`).
 - Add support for unplayed / muted open strings using `fret: -1` rendered with an 'X' marker (#19).
 - Add PNG export capabilities (`toPNGBlob()`, `toPNGDataURL()`, `downloadPNG()`) and editor PNG export button (#30).
+- Add optional tuning note labels (`tuning?: string[]`) for horizontal and vertical orientations (#24).
 
 ### Fixed
 - Add inlays as small grey dots on standard fretboard positions (#11).

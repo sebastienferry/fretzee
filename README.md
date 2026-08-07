@@ -93,6 +93,7 @@ document.body.appendChild(fretboard.render());
 | `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` | Layout direction |
 | `showInlays` | `boolean` | `true` | Display fret position numbers/inlays |
 | `inlayPositions` | `number[]` | `[3, 5, 7, 9, 12, ...]` | Fret positions for inlays |
+| `tuning` | `string[]` | `undefined` | Optional tuning note labels (lowest string to highest string, e.g. `['E', 'A', 'D', 'G', 'B', 'E']`) |
 
 ### Fingering Options
 

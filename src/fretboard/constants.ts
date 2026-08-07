@@ -53,7 +53,9 @@ export const CSS_CLASSES = {
   inlayDot: (fretNumber: number) => `fretly-inlay-dot ${CSS_CLASSES.inlays} fretly-inlay-dot-${fretNumber}`,
   fingering: (stringNum: number, fretNum: number) => `fretly-fingering ${CSS_CLASSES.fingerings} fretly-fingering-s${stringNum}-f${fretNum}`,
   fingeringCircle: 'fretly-fingering-circle',
-  fingeringText: 'fretly-fingering-text'
+  fingeringText: 'fretly-fingering-text',
+  tuning: 'fretly-tuning',
+  tuningLabel: 'fretly-tuning-label'
 };
 
 // Error messages
