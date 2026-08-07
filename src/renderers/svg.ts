@@ -278,6 +278,13 @@ export class SvgRenderer {
     const stringCount = this.options.stringCount;
     const tuning = this.options.tuning;
 
+    const radius = calculateFingeringRadius(this.options.stringSpacing, this.options.fretSpacing);
+    const hasAnyOpenMarker = (this.options.startFret <= 1) && (this.options.fingerings || []).some(f => f.fret === 0 || f.fret === -1);
+    
+    // Uniform offset across all strings to keep labels aligned in a straight line
+    const openOffset = (this.options.fretSpacing * 0.35) + radius;
+    const uniformOffset = hasAnyOpenMarker ? -(openOffset + 14) : -(radius + 12);
+
     // tuning is provided 6th string to 1st string (lowest string to highest string)
     for (let i = 0; i < stringCount; i++) {
       // Map stringIndex (0 = highest/1st string, N-1 = lowest/Nth string)
@@ -293,7 +300,7 @@ export class SvgRenderer {
       text.setAttribute('font-weight', 'bold');
 
       if (isHorizontal) {
-        // Positioned before nut and before any open string marker ('O' or 'X')
+        // Positioned left of nut & open markers in a straight vertical column
         const stringPos = getFingeringPosition(
           i + 1,
           0,
@@ -305,18 +312,13 @@ export class SvgRenderer {
           this.options.fretThickness,
           this.options.startFret
         );
-        const radius = calculateFingeringRadius(this.options.stringSpacing, this.options.fretSpacing);
-        const hasOpenMarker = (this.options.startFret <= 1) && (this.options.fingerings || []).some(f => f.string === i + 1 && (f.fret === 0 || f.fret === -1));
-        // Open marker is at stringPos.x (-fretSpacing * 0.35). Tuning label goes before it.
-        const baseNutOffset = -(this.options.fretSpacing * 0.35 + radius + 10);
-        const offsetX = hasOpenMarker ? (stringPos.x - (radius + 12)) : baseNutOffset;
 
-        text.setAttribute('x', String(offsetX));
+        text.setAttribute('x', String(uniformOffset));
         text.setAttribute('y', String(stringPos.y));
         text.setAttribute('text-anchor', 'end');
         text.setAttribute('dominant-baseline', 'central');
       } else {
-        // Positioned above nut and above any open string marker ('O' or 'X')
+        // Positioned above nut & open markers in a straight horizontal row
         const stringPos = getFingeringPosition(
           i + 1,
           0,
@@ -328,13 +330,9 @@ export class SvgRenderer {
           this.options.fretThickness,
           this.options.startFret
         );
-        const radius = calculateFingeringRadius(this.options.stringSpacing, this.options.fretSpacing);
-        const hasOpenMarker = (this.options.startFret <= 1) && (this.options.fingerings || []).some(f => f.string === i + 1 && (f.fret === 0 || f.fret === -1));
-        const baseNutOffset = -(this.options.fretSpacing * 0.35 + radius + 10);
-        const offsetY = hasOpenMarker ? (stringPos.y - (radius + 12)) : baseNutOffset;
 
         text.setAttribute('x', String(stringPos.x));
-        text.setAttribute('y', String(offsetY));
+        text.setAttribute('y', String(uniformOffset));
         text.setAttribute('text-anchor', 'middle');
         text.setAttribute('dominant-baseline', 'auto');
       }
