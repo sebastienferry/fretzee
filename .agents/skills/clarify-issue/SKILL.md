@@ -81,19 +81,20 @@ This skill acts as a clarification agent responsible for asking targeted questio
 
 ---
 
-### Step 4: Post Clarifying Questions as Comment
+### Step 4: Clarification Interview & Comment
 
-1. **Format Questions for Comment**:
-   Create a well-formatted comment with:
-   - Header indicating this is a clarification request
-   - List of specific questions (numbered for easy reference)
-   - Instructions for the user on how to proceed
-   - Mention that the issue will remain in "Todo" until labeled as "clarified"
+1. **Interactive Chat Mode (When user is present in conversation)**:
+   - Use the `ask_question` tool directly in the chat session to interview the user about key design choices.
+   - Summarize agreed answers and post the technical clarification summary as an issue comment.
+   - Update issue label from `to-clarify` to `clarified`.
 
-2. **Post Comment to GitHub Issue**:
-   ```bash
-   gh issue comment <ISSUE_NUM> --body "<FORMATTED_QUESTIONS>"
-   ```
+2. **Async Mode (When issue picked in background / unattended)**:
+   - Format questions as an issue comment.
+   - Post comment to GitHub Issue:
+     ```bash
+     gh issue comment <ISSUE_NUM> --body "<FORMATTED_QUESTIONS>"
+     ```
+   - Add `to-clarify` label and wait for user input.
 
 ---
 
