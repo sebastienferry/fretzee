@@ -288,12 +288,12 @@ export class SvgRenderer {
       const text = document.createElementNS(SVG_NS, 'text');
       text.setAttribute('class', `${CSS_CLASSES.tuningLabel} fretly-tuning-s${i + 1}`);
       text.setAttribute('fill', '#000000');
-      text.setAttribute('font-size', '12');
+      text.setAttribute('font-size', '10');
       text.setAttribute('font-family', 'sans-serif');
       text.setAttribute('font-weight', 'bold');
 
       if (isHorizontal) {
-        // Positioned left of the nut (negative X), centered vertically on string line
+        // Positioned before nut and before any open string marker ('O' or 'X')
         const stringPos = getFingeringPosition(
           i + 1,
           0,
@@ -307,14 +307,16 @@ export class SvgRenderer {
         );
         const radius = calculateFingeringRadius(this.options.stringSpacing, this.options.fretSpacing);
         const hasOpenMarker = (this.options.startFret <= 1) && (this.options.fingerings || []).some(f => f.string === i + 1 && (f.fret === 0 || f.fret === -1));
-        const offsetX = hasOpenMarker ? -(this.options.fretSpacing * 0.35 + radius + 15) : -12;
+        // Open marker is at stringPos.x (-fretSpacing * 0.35). Tuning label goes before it.
+        const baseNutOffset = -(this.options.fretSpacing * 0.35 + radius + 10);
+        const offsetX = hasOpenMarker ? (stringPos.x - (radius + 12)) : baseNutOffset;
 
         text.setAttribute('x', String(offsetX));
         text.setAttribute('y', String(stringPos.y));
         text.setAttribute('text-anchor', 'end');
         text.setAttribute('dominant-baseline', 'central');
       } else {
-        // Positioned above the nut (negative Y), centered horizontally on string line
+        // Positioned above nut and above any open string marker ('O' or 'X')
         const stringPos = getFingeringPosition(
           i + 1,
           0,
@@ -328,7 +330,8 @@ export class SvgRenderer {
         );
         const radius = calculateFingeringRadius(this.options.stringSpacing, this.options.fretSpacing);
         const hasOpenMarker = (this.options.startFret <= 1) && (this.options.fingerings || []).some(f => f.string === i + 1 && (f.fret === 0 || f.fret === -1));
-        const offsetY = hasOpenMarker ? -(this.options.fretSpacing * 0.35 + radius + 15) : -12;
+        const baseNutOffset = -(this.options.fretSpacing * 0.35 + radius + 10);
+        const offsetY = hasOpenMarker ? (stringPos.y - (radius + 12)) : baseNutOffset;
 
         text.setAttribute('x', String(stringPos.x));
         text.setAttribute('y', String(offsetY));
