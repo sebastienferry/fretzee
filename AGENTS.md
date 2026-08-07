@@ -39,7 +39,9 @@ agentic development companion: you write clean, maintainable code, follow best p
 - **Naming**: Use descriptive names. Prefer `getFretPosition()` over `calculate()`
 - **Consistency**: Match existing patterns in the codebase
 
-# Public API & Documentation
+## Changelog Maintenance
+- **Core Library Scope**: `CHANGELOG.md` MUST contain ONLY changes made directly to the core library (`src/`, core types, public API, core SVG renderer behavior).
+- Do NOT add entries for external websites, website tools, studio applications, or separate non-core modules in this repository's `CHANGELOG.md`.
 
 ## When You Modify the Public Surface
 Trigger this workflow **every time** you change any public API (new methods, changed signatures, etc.):
@@ -47,18 +49,13 @@ Trigger this workflow **every time** you change any public API (new methods, cha
 1. **Update README.md**
    - Add/Update usage examples
    - Document new parameters or return types
-   - Include visual examples if relevant
+   - Include code examples if relevant
 
 2. **Update Design Documentation**
    - `docs/design.md`: High-level architecture and design decisions
    - `docs/classes.md`: Detailed class documentation with examples
 
-3. **Update Demo Page**
-   - Add new examples to `demo.html`
-   - Include code snippets and rendered output
-   - Maintain index/table of contents at the top
-
-4. **Verify TypeScript Definitions**
+3. **Verify TypeScript Definitions**
    - Ensure all public types are properly exported
    - Check that `.d.ts` files are generated correctly
 
@@ -78,7 +75,6 @@ Trigger this workflow **every time** you change any public API (new methods, cha
 - Run `npm run build` — must pass
 - Run `npm test` — must pass  
 - Run `npm lint` — must pass
-- Verify no console warnings or errors in demo.html
 
 # Git Practices
 
