@@ -130,7 +130,7 @@ The issue should remain in "Todo" status until the user manually changes the lab
    - User can also add "to-specify" label at this point
 
 3. **Automatic Detection**:
-   - The `/spec-issue` or `/pick-issue` agents should detect issues with "clarified" label
+   - The `/specify-issue` or `/pick-issue` agents should detect issues with "clarified" label
    - When "clarified" label is present, the agent should:
      - Remove "clarified" label
      - Add "to-specify" label
@@ -194,7 +194,7 @@ Agent responds with:
 **Next Steps**:
 - User should answer the questions in the issue comments
 - User should change label from "to-clarify" to "clarified" when ready
-- Then run `/spec-issue` or `/pick-issue` to start specification
+- Then run `/specify-issue` or `/pick-issue` to start specification
 ```
 
 ---
@@ -203,7 +203,7 @@ Agent responds with:
 
 This agent integrates with the existing workflow as follows:
 
-1. **Before `/spec-issue`**: Issues that need clarification are processed by this agent first
+1. **Before `/specify-issue`**: Issues that need clarification are processed by this agent first
 2. **Before `/code-issue`**: Ensures specifications are based on clear requirements
 3. **With `/pick-issue`**: The orchestrator can delegate to this agent when clarification is needed
 
@@ -212,7 +212,7 @@ The complete workflow becomes:
 /clarify-issue   → Asks questions, transitions to "to-clarify"
 [User answers]   → User provides clarification in comments
 [User action]   
-/spec-issue     → Detects "clarified", transitions to "to-specify", starts specification
+/specify-issue     → Detects "clarified", transitions to "to-specify", starts specification
 /code-issue     → Implements code, transitions "to-implement" → "implemented"
 ```
 
@@ -223,7 +223,7 @@ The complete workflow becomes:
 | Agent | Role | Input Label / Column | Output Label | Primary Command |
 |-------|------|----------------------|---------------|-----------------|
 | `/clarify-issue` | Clarification | `selected` (Clarification column) | `to-clarify` | Ask questions in comments |
-| `/spec-issue` | Product Owner | `clarified` (Specification column) | `specified` | `/speckit-specify` |
+| `/specify-issue` | Product Owner | `clarified` (Specification column) | `specified` | `/speckit-specify` |
 | `/code-issue` | Developer | `specified` (Code column) | `validate` / `validated` | `/speckit-implement` |
 | `/pick-issue` | Orchestrator | Any | Depends on input | Delegates as needed |
 

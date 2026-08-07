@@ -67,7 +67,7 @@ This skill acts as a developer agent responsible for implementing features from 
 
 1. **Check for Existing Specification**:
    - Look for spec directory matching the issue: `specs/<NNN-feature-name>/spec.md`
-   - If not found, warn user: "No specification found for issue #<ISSUE_NUM>. Run `/spec-issue` first."
+   - If not found, warn user: "No specification found for issue #<ISSUE_NUM>. Run `/specify-issue` first."
    - Optionally, check for `plan.md` and `tasks.md` in the spec directory
 
 2. **Load Specification Context**:
@@ -209,11 +209,11 @@ This skill acts as a developer agent responsible for implementing features from 
 1. **No Issues Found**:
    - If no issues with status "Todo" and label "to-implement" are found, report:
      > "No issues found with status 'Todo' and label 'to-implement' in project board 3."
-   - Suggest checking the board manually or running `/spec-issue` first
+   - Suggest checking the board manually or running `/specify-issue` first
 
 2. **No Specification Found**:
    - If no spec directory is found for the issue, report:
-     > "No specification found for issue #<ISSUE_NUM>. Please run `/spec-issue` first to create the specification."
+     > "No specification found for issue #<ISSUE_NUM>. Please run `/specify-issue` first to create the specification."
 
 3. **Implementation Failed**:
    - If `/speckit-implement` fails, provide detailed error information

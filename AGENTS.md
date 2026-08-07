@@ -106,7 +106,7 @@ Fretly uses a **modular agent system** for automated issue processing, with clea
 | Agent | Command | Role | Input Label / Column | Output Label | Primary Function |
 |-------|---------|------|----------------------|---------------|------------------|
 | **Clarification Agent** | `/clarify-issue` | Clarification | `selected` (Clarification) | `to-clarify` | Asks clarifying questions in comments |
-| **Specification Agent** | `/spec-issue` | Product Owner | `clarified` (Specification) | `specified` | Creates feature specifications |
+| **Specification Agent** | `/specify-issue` | Product Owner | `clarified` (Specification) | `specified` | Creates feature specifications |
 | **Implementation Agent** | `/code-issue` | Developer | `specified` (Code) | `validate` / `validated` | Implements code from specs |
 | **Orchestrator Agent** | `/pick-issue` | Smart Router | Any | Depends | Intelligently delegates based on labels |
 
@@ -116,7 +116,7 @@ Fretly uses a **modular agent system** for automated issue processing, with clea
 graph LR
     A[Idea: selected] -->|/clarify-issue| B[Clarification: to-clarify]
     B -->|User Feedback| C[Specification: clarified]
-    C -->|/spec-issue| D[Code: specified]
+    C -->|/specify-issue| D[Code: specified]
     D -->|/code-issue| E[Code: validate + PR]
     E -->|User Approval| F[Done: validated]
 ```
@@ -132,15 +132,16 @@ graph LR
   - **Label Transition**: Adds "to-clarify"
   - **Project Status**: Remains in Clarification until user responds and changes label to "clarified"
 
-#### `/spec-issue` - Product Owner Agent
-- **Location**: `.agents/skills/spec-issue/SKILL.md`
+#### `/specify-issue` - Product Owner Agent
+- **Location**: `.agents/skills/specify-issue/SKILL.md`
 - **Responsibilities**:
   - Picks next issue in Specification column with label "clarified"
+  - Updates project status column to Specification
   - Creates specification using Speckit workflow (`/speckit-specify`, `/speckit-plan`, `/speckit-tasks`)
+  - Posts specification digest comment on issue
   - Creates dedicated feature branch from main
   - Commits specification files
   - **Label Transition**: Removes "clarified", adds "specified"
-  - **Project Status**: Updates column to Code
 
 #### `/code-issue` - Developer Agent
 - **Location**: `.agents/skills/code-issue/SKILL.md`
@@ -171,7 +172,7 @@ For maximum control and separation of concerns:
 /clarify-issue
 
 # Product Owner creates specifications
-/spec-issue
+/specify-issue
 
 # Developer implements code
 /code-issue
@@ -191,7 +192,7 @@ Use direct agents for most work, with `/pick-issue` as fallback:
 ```bash
 # Most issues: use direct agents
 /clarify-issue  # For issues needing clarification
-/spec-issue    # For new features needing specs
+/specify-issue    # For new features needing specs
 /code-issue    # For issues ready for implementation
 
 # Edge cases: use orchestrator
