@@ -25,7 +25,6 @@
 - **Multi-Instrument** — Guitar (6-string), Bass (4-string), 5-string, 7-string, 8-string, and custom tunings.
 - **Advanced Fingerings** — Root note highlights, interval badges, muted strings (<kbd>X</kbd>), open strings (<kbd>O</kbd>), custom text, and custom colors.
 - **Native PNG Export** — Export directly to high-resolution PNG using HTML5 Canvas.
-- **Standalone Music Catalog** — Chord and scale lookup module (`fretzee/music`) included.
 
 ---
 

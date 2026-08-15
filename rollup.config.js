@@ -27,32 +27,6 @@ export default [
         exclude: ['**/*.test.ts']
       })
     ]
-  },
-  {
-    input: 'src/music/index.ts',
-    output: [
-      {
-        file: 'dist/music.esm.js',
-        format: 'esm',
-        sourcemap: true
-      },
-      {
-        file: 'dist/music.umd.js',
-        format: 'umd',
-        name: 'FretzeeMusic',
-        footer: 'if (typeof window !== "undefined" && !window.FretlyMusic) { window.FretlyMusic = window.FretzeeMusic; }',
-        sourcemap: true,
-        globals: {}
-      }
-    ],
-    plugins: [
-      typescript({
-        tsconfig: './tsconfig.json',
-        declaration: true,
-        declarationDir: 'dist/music',
-        rootDir: 'src',
-        exclude: ['**/*.test.ts']
-      })
-    ]
   }
 ];
+
