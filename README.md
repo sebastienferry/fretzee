@@ -16,7 +16,7 @@
 > Zero-dependency, lightweight TypeScript & JavaScript library for rendering customizable, vector SVG guitar and bass chord & scale diagrams.
 
 <p align="center">
-  <b><a href="https://sebastienferry.github.io/fretzee/demo.html">Live Showcase / Demos</a></b> &nbsp;•&nbsp; 
+  <b><a href="https://sebastienferry.github.io/fretzee/demo.html">Showcase</a></b> &nbsp;•&nbsp; 
   <b><a href="https://sebastienferry.github.io/fretzee/editor.html">Live JS/JSON Editor</a></b> &nbsp;•&nbsp; 
   <b><a href="https://www.fretzee.com">Online Fretzee Studio</a></b>
 </p>
