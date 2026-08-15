@@ -737,7 +737,7 @@ export class SvgRenderer {
         }
         polygon.setAttribute('class', CSS_CLASSES.zoneRect);
         zoneG.appendChild(polygon);
-      } else {
+      } else if (zoneType === 'path') {
         // Render connected path (e.g. scale run or arpeggio sequence line)
         const path = document.createElementNS(SVG_NS, 'path');
         const d = screenCoords.map((c, i) => `${i === 0 ? 'M' : 'L'} ${c.x} ${c.y}`).join(' ');
@@ -752,6 +752,38 @@ export class SvgRenderer {
         }
         path.setAttribute('class', CSS_CLASSES.zoneRect);
         zoneG.appendChild(path);
+      }
+    } else if (zoneType === 'brace') {
+      // Render curly brace / accolade spanning frets at top (or side)
+      const zStartFret = zone.startFret ?? 1;
+      const zEndFret = zone.endFret ?? zStartFret;
+
+      const effectiveStartFret = Math.max(zStartFret, startFret);
+      const effectiveEndFret = Math.min(zEndFret, endFret);
+
+      if (effectiveStartFret > effectiveEndFret) return;
+
+      const pos1 = getFingeringPosition(1, effectiveStartFret, this.options.orientation, this.options.stringSpacing, this.options.fretSpacing, this.options.stringCount, this.options.stringThickness, this.options.fretThickness, startFret);
+      const pos2 = getFingeringPosition(1, effectiveEndFret, this.options.orientation, this.options.stringSpacing, this.options.fretSpacing, this.options.stringCount, this.options.stringThickness, this.options.fretThickness, startFret);
+
+      if (isHorizontal) {
+        const x1 = Math.min(pos1.x, pos2.x) - radius;
+        const x2 = Math.max(pos1.x, pos2.x) + radius;
+        const y = -14;
+        const midX = (x1 + x2) / 2;
+        const heightVal = 10;
+
+        minX = x1; maxX = x2; minY = y - heightVal; maxY = y;
+
+        // SVG path for horizontal curly brace pointing upwards
+        const pathD = `M ${x1} ${y} Q ${x1} ${y - heightVal} ${x1 + 10} ${y - heightVal} L ${midX - 10} ${y - heightVal} Q ${midX} ${y - heightVal} ${midX} ${y - heightVal - 4} Q ${midX} ${y - heightVal} ${midX + 10} ${y - heightVal} L ${x2 - 10} ${y - heightVal} Q ${x2} ${y - heightVal} ${x2} ${y}`;
+        const bracePath = document.createElementNS(SVG_NS, 'path');
+        bracePath.setAttribute('d', pathD);
+        bracePath.setAttribute('fill', 'none');
+        bracePath.setAttribute('stroke', zone.strokeColor ?? '#38bdf8');
+        bracePath.setAttribute('stroke-width', '2');
+        bracePath.setAttribute('class', CSS_CLASSES.zoneRect);
+        zoneG.appendChild(bracePath);
       }
     } else {
       // Box / Bounding rectangle mode

@@ -56,8 +56,8 @@ export interface FretboardOptions {
  * Definition of a highlighted region/zone on the fretboard
  */
 export interface Zone {
-  /** Zone shape type: 'box' (default bounding box), 'hull' (convex polygon hull wrapping points), or 'path' (connected line path) */
-  type?: 'box' | 'hull' | 'path';
+  /** Zone shape type: 'box' (default bounding box), 'hull' (convex polygon), 'path' (line sequence), or 'brace' (curly brace accolade) */
+  type?: 'box' | 'hull' | 'path' | 'brace';
 
   /** Starting string for box shape (1-based, e.g. 1 for High E) */
   startString?: number;
