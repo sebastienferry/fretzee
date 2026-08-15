@@ -1,7 +1,7 @@
 # Fretzee
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/sebastienferry/fretzee/main/docs/assets/fretzee-preview.svg" alt="Fretzee SVG Fretboard Diagrams Rendering" width="550">
+  <img src="docs/assets/fretzee-preview.svg" alt="Fretzee SVG Fretboard Diagrams Rendering" width="550">
 </p>
 
 <p align="center">
