@@ -21,8 +21,6 @@
   <b><a href="https://www.fretzee.com">Fretzee Studio SaaS</a></b>
 </p>
 
----
-
 ## Table of Contents
 
 - [Features](#features)
@@ -39,8 +37,6 @@
 - [Support the Project](#support-the-project)
 - [License](#license)
 
----
-
 ## Features
 
 - **Zero Runtime Dependencies** — Tiny footprint, fast execution.
@@ -49,8 +45,6 @@
 - **Multi-Instrument** — Guitar (6-string), Bass (4-string), 5-string, 7-string, 8-string, and custom tunings.
 - **Advanced Fingerings** — Root note highlights, interval badges, muted strings (<kbd>X</kbd>), open strings (<kbd>O</kbd>), custom text, and custom colors.
 - **Native PNG Export** — Export directly to high-resolution PNG using HTML5 Canvas.
-
----
 
 ## Installation
 
@@ -200,15 +194,11 @@ While `@fretzee/core` is **free and open-source** for programmatic integration, 
 
 [Launch Fretzee Studio Web App](https://www.fretzee.com) *(Free Account required)*
 
----
-
 ## Support the Project
 
 Fretzee is an independent open-source project. If you find it useful, you can support its development and maintenance on Ko-fi:
 
 [![Support on Ko-fi](https://img.shields.io/badge/Support%20on-Ko--fi-ff5e5b?style=for-the-badge)](https://ko-fi.com/sebastienferry)
-
----
 
 ## License
 
