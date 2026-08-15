@@ -285,13 +285,31 @@
         <div class="demo-card-body" id="demo-path"></div>
       </div>
 
-      <!-- Demo 4: Fret Range Accolade / Curly Brace -->
+      <!-- Demo 4: Fret Range Accolade (Brace) -->
       <div class="demo-card">
         <div class="demo-card-header">
-          <h2 class="demo-card-title">4. Fret Position Range Accolade (Brace)</h2>
-          <p class="demo-card-desc">Displaying a top curly brace / accolade over frets 5 to 8 for scale position bounds (type: 'brace').</p>
+          <h2 class="demo-card-title">4. Fret Position Accolade (Horizontal Brace)</h2>
+          <p class="demo-card-desc">Top curly brace accolade over frets 5 to 8 for scale position bounds (type: 'brace').</p>
         </div>
         <div class="demo-card-body" id="demo-brace"></div>
+      </div>
+
+      <!-- Demo 5: Vertical Orientation Barre & Triad -->
+      <div class="demo-card">
+        <div class="demo-card-header">
+          <h2 class="demo-card-title">5. Vertical Barre Chord Zone (Am Fret 5)</h2>
+          <p class="demo-card-desc">Vertical neck view with highlighted barre zone across strings 1 to 6.</p>
+        </div>
+        <div class="demo-card-body" id="demo-vertical-barre"></div>
+      </div>
+
+      <!-- Demo 6: Vertical Orientation Accolade (Right Bracket) -->
+      <div class="demo-card">
+        <div class="demo-card-header">
+          <h2 class="demo-card-title">6. Vertical Position Accolade (Side Brace)</h2>
+          <p class="demo-card-desc">Vertical accolade brace spanning along the right side of frets 5 to 8.</p>
+        </div>
+        <div class="demo-card-body" id="demo-vertical-brace"></div>
       </div>
     </div>
   </main>
@@ -420,6 +438,63 @@
         ]
       });
       document.getElementById('demo-brace').appendChild(brace.render());
+
+      // Demo 5: Vertical Orientation Barre Zone
+      const vBarre = new Fretboard({
+        title: 'Am Barre Chord (Fret 5)',
+        stringCount: 6,
+        fretCount: 4,
+        startFret: 5,
+        orientation: 'vertical',
+        tuning: ['E', 'A', 'D', 'G', 'B', 'E'],
+        fingerings: [
+          { string: 6, fret: 5, text: '1' },
+          { string: 5, fret: 7, text: '3', color: '#e74c3c' },
+          { string: 4, fret: 7, text: '4' },
+          { string: 3, fret: 5, text: '1' },
+          { string: 2, fret: 5, text: '1' },
+          { string: 1, fret: 5, text: '1' }
+        ],
+        zones: [
+          {
+            type: 'box',
+            startString: 1,
+            endString: 6,
+            startFret: 5,
+            endFret: 5,
+            label: 'Barre Fret 5',
+            fillColor: 'rgba(239, 68, 68, 0.15)',
+            strokeColor: '#ef4444'
+          }
+        ]
+      });
+      document.getElementById('demo-vertical-barre').appendChild(vBarre.render());
+
+      // Demo 6: Vertical Orientation Side Brace
+      const vBrace = new Fretboard({
+        title: 'Vertical Position 1 (A Minor Pentatonic)',
+        stringCount: 6,
+        fretCount: 5,
+        startFret: 5,
+        orientation: 'vertical',
+        tuning: ['E', 'A', 'D', 'G', 'B', 'E'],
+        fingerings: [
+          { string: 6, fret: 5, text: 'R', color: '#00f5d4', textColor: '#090d16' },
+          { string: 6, fret: 8, text: 'b3' },
+          { string: 1, fret: 5, text: 'R', color: '#00f5d4', textColor: '#090d16' },
+          { string: 1, fret: 8, text: 'b3' }
+        ],
+        zones: [
+          {
+            type: 'brace',
+            startFret: 5,
+            endFret: 8,
+            label: 'Box 1 Range (Frets 5-8)',
+            strokeColor: '#6366f1'
+          }
+        ]
+      });
+      document.getElementById('demo-vertical-brace').appendChild(vBrace.render());
     });
   </script>
 </body>

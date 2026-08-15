@@ -804,6 +804,37 @@ export class SvgRenderer {
         bracePath.setAttribute('stroke-linejoin', 'round');
         bracePath.setAttribute('class', CSS_CLASSES.zoneRect);
         zoneG.appendChild(bracePath);
+      } else {
+        // Vertical orientation: curly brace spanning frets vertically along right edge
+        const y1 = Math.min(pos1.y, pos2.y) - radius;
+        const y2 = Math.max(pos1.y, pos2.y) + radius;
+        const widthVal = calculateVerticalWidth(this.options.stringCount, this.options.stringSpacing, this.options.stringThickness);
+        const x = widthVal + 14;
+        const midY = (y1 + y2) / 2;
+        const braceWidth = 12;
+        const r = 6;
+
+        minX = x; maxX = x + braceWidth; minY = y1; maxY = y2;
+
+        const pathD = `
+          M ${x} ${y1} 
+          Q ${x + r} ${y1} ${x + r} ${y1 + r} 
+          V ${midY - r} 
+          Q ${x + r} ${midY} ${x + braceWidth} ${midY} 
+          Q ${x + r} ${midY} ${x + r} ${midY + r} 
+          V ${y2 - r} 
+          Q ${x + r} ${y2} ${x} ${y2}
+        `.replace(/\s+/g, ' ').trim();
+
+        const bracePath = document.createElementNS(SVG_NS, 'path');
+        bracePath.setAttribute('d', pathD);
+        bracePath.setAttribute('fill', 'none');
+        bracePath.setAttribute('stroke', zone.strokeColor ?? '#38bdf8');
+        bracePath.setAttribute('stroke-width', '2');
+        bracePath.setAttribute('stroke-linecap', 'round');
+        bracePath.setAttribute('stroke-linejoin', 'round');
+        bracePath.setAttribute('class', CSS_CLASSES.zoneRect);
+        zoneG.appendChild(bracePath);
       }
     } else {
       // Box / Bounding rectangle mode
@@ -878,7 +909,12 @@ export class SvgRenderer {
       text.setAttribute('font-weight', 'bold');
       text.setAttribute('class', CSS_CLASSES.zoneLabel);
 
-      if (isHorizontal) {
+      if (zoneType === 'brace' && !isHorizontal) {
+        text.setAttribute('x', String(maxX + 6));
+        text.setAttribute('y', String((minY + maxY) / 2));
+        text.setAttribute('text-anchor', 'start');
+        text.setAttribute('dominant-baseline', 'central');
+      } else if (isHorizontal) {
         text.setAttribute('x', String(minX + 8));
         text.setAttribute('y', String(minY - 6));
         text.setAttribute('text-anchor', 'start');
