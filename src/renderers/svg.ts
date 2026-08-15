@@ -83,13 +83,19 @@ export class SvgRenderer {
       height += topMarkerOffset;
     }
 
-    // Additional adjustment for title or zone labels
+    // Additional adjustment for title or zone labels/braces
+    const hasBraces = Boolean(this.options.zones && this.options.zones.some(z => z.type === 'brace'));
     const hasZoneLabels = Boolean(this.options.zones && this.options.zones.some(z => z.label && z.label.trim().length > 0));
     const hasTitle = Boolean(this.options.title && this.options.title.trim().length > 0);
-    const titleSpace = TITLE_FONT_SIZE + TITLE_PADDING;
-    if (hasTitle || (hasZoneLabels && isHorizontal)) {
-      viewBoxY -= titleSpace;
-      height += titleSpace;
+    
+    let extraTopSpace = 0;
+    if (hasTitle) extraTopSpace += TITLE_FONT_SIZE + TITLE_PADDING + 8;
+    if (hasBraces) extraTopSpace += 26; // Dedicated vertical clearance for curly brace accolade & label
+    else if (hasZoneLabels && isHorizontal) extraTopSpace += 16;
+
+    if (extraTopSpace > 0) {
+      viewBoxY -= extraTopSpace;
+      height += extraTopSpace;
     }
     
     // Additional adjustments for inlays
