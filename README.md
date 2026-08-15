@@ -174,8 +174,6 @@ While `@fretzee/core` is **free and open-source** for programmatic integration, 
 - **Cloud Storage & Collections**: Save, organize, and manage your diagrams in personal cloud collections.
 - **Multi-Format Export**: Export to SVG, high-resolution PNG, JSON, Markdown, and JS code snippets.
 
-*Note: For a quick offline JS/JSON interactive builder included directly in this repository, open [`studio.html`](studio.html) (or access it via the GitHub Pages demo).*
-
 [Launch Fretzee Studio Web App](https://github.com/sebastienferry/fretzee-studio) *(Free Account required)*
 
 ---
