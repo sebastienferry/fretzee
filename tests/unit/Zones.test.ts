@@ -81,4 +81,46 @@ describe('Highlighted Fretboard Zones', () => {
     expect(rect?.getAttribute('stroke-dasharray')).toBe('4 4');
     expect(rect?.getAttribute('rx')).toBe('12');
   });
+
+  it('should support hull shape enclosing discrete points', () => {
+    const fretboard = new Fretboard({
+      zones: [
+        {
+          type: 'hull',
+          points: [
+            { string: 1, fret: 2 },
+            { string: 2, fret: 3 },
+            { string: 3, fret: 2 }
+          ],
+          label: 'Convex Hull'
+        }
+      ]
+    });
+
+    const svg = fretboard.render();
+    const polygon = svg.querySelector('polygon.fretzee-zone-rect');
+    expect(polygon).not.toBeNull();
+    expect(polygon?.getAttribute('points')).toBeTruthy();
+  });
+
+  it('should support path shape connecting sequential points', () => {
+    const fretboard = new Fretboard({
+      zones: [
+        {
+          type: 'path',
+          points: [
+            { string: 6, fret: 5 },
+            { string: 5, fret: 7 },
+            { string: 4, fret: 7 }
+          ],
+          label: 'Scale Run'
+        }
+      ]
+    });
+
+    const svg = fretboard.render();
+    const path = svg.querySelector('path.fretzee-zone-rect');
+    expect(path).not.toBeNull();
+    expect(path?.getAttribute('d')).toContain('M');
+  });
 });

@@ -681,76 +681,143 @@ export class SvgRenderer {
   /**
    * Renders an individual highlighted zone
    */
+  /**
+   * Renders an individual highlighted zone (box, hull, or path shape)
+   */
   private renderZone(zone: Zone, group: SVGElement): void {
     const startFret = this.options.startFret;
     const endFret = startFret + this.options.fretCount - 1;
     const isHorizontal = this.options.orientation === 'horizontal';
-
-    // Clamp zone fret bounds to visible fretboard range
-    const effectiveStartFret = Math.max(zone.startFret, startFret);
-    const effectiveEndFret = Math.min(zone.endFret, endFret);
-
-    if (effectiveStartFret > effectiveEndFret) {
-      return;
-    }
-
-    // Get positions for top-left (startString, startFret) and bottom-right (endString, endFret)
-    const posStart = getFingeringPosition(
-      zone.startString,
-      effectiveStartFret,
-      this.options.orientation,
-      this.options.stringSpacing,
-      this.options.fretSpacing,
-      this.options.stringCount,
-      this.options.stringThickness,
-      this.options.fretThickness,
-      startFret
-    );
-
-    const posEnd = getFingeringPosition(
-      zone.endString,
-      effectiveEndFret,
-      this.options.orientation,
-      this.options.stringSpacing,
-      this.options.fretSpacing,
-      this.options.stringCount,
-      this.options.stringThickness,
-      this.options.fretThickness,
-      startFret
-    );
+    const zoneType = zone.type ?? 'box';
 
     const radius = calculateFingeringRadius(this.options.stringSpacing, this.options.fretSpacing);
     const padding = radius + 6;
-
-    // Calculate bounding box for rectangle
-    const minX = Math.min(posStart.x, posEnd.x) - padding;
-    const maxX = Math.max(posStart.x, posEnd.x) + padding;
-    const minY = Math.min(posStart.y, posEnd.y) - padding;
-    const maxY = Math.max(posStart.y, posEnd.y) + padding;
-
-    const width = maxX - minX;
-    const height = maxY - minY;
-
     const zoneG = this.createGroup(CSS_CLASSES.zone);
 
-    const rect = document.createElementNS(SVG_NS, 'rect');
-    rect.setAttribute('x', String(minX));
-    rect.setAttribute('y', String(minY));
-    rect.setAttribute('width', String(width));
-    rect.setAttribute('height', String(height));
-    rect.setAttribute('rx', String(zone.borderRadius ?? 8));
-    rect.setAttribute('ry', String(zone.borderRadius ?? 8));
-    rect.setAttribute('fill', zone.fillColor ?? 'rgba(56, 189, 248, 0.15)');
-    rect.setAttribute('stroke', zone.strokeColor ?? '#38bdf8');
-    rect.setAttribute('stroke-width', '2');
-    if (zone.strokeDashArray) {
-      rect.setAttribute('stroke-dasharray', zone.strokeDashArray);
+    let minX = Infinity;
+    let maxX = -Infinity;
+    let minY = Infinity;
+    let maxY = -Infinity;
+
+    if (zoneType === 'hull' || zoneType === 'path') {
+      const points = zone.points || [];
+      if (points.length === 0) return;
+
+      const screenCoords = points.map(pt => getFingeringPosition(
+        pt.string,
+        pt.fret,
+        this.options.orientation,
+        this.options.stringSpacing,
+        this.options.fretSpacing,
+        this.options.stringCount,
+        this.options.stringThickness,
+        this.options.fretThickness,
+        startFret
+      ));
+
+      screenCoords.forEach(c => {
+        if (c.x < minX) minX = c.x;
+        if (c.x > maxX) maxX = c.x;
+        if (c.y < minY) minY = c.y;
+        if (c.y > maxY) maxY = c.y;
+      });
+
+      if (zoneType === 'hull') {
+        // Render convex polygon hull wrapping the given points
+        const polygon = document.createElementNS(SVG_NS, 'polygon');
+        const pointsString = screenCoords.map(c => `${c.x},${c.y}`).join(' ');
+        polygon.setAttribute('points', pointsString);
+        polygon.setAttribute('fill', zone.fillColor ?? 'rgba(56, 189, 248, 0.15)');
+        polygon.setAttribute('stroke', zone.strokeColor ?? '#38bdf8');
+        polygon.setAttribute('stroke-width', String(padding * 2));
+        polygon.setAttribute('stroke-linejoin', 'round');
+        polygon.setAttribute('stroke-linecap', 'round');
+        if (zone.strokeDashArray) {
+          polygon.setAttribute('stroke-dasharray', zone.strokeDashArray);
+        }
+        polygon.setAttribute('class', CSS_CLASSES.zoneRect);
+        zoneG.appendChild(polygon);
+      } else {
+        // Render connected path (e.g. scale run or arpeggio sequence line)
+        const path = document.createElementNS(SVG_NS, 'path');
+        const d = screenCoords.map((c, i) => `${i === 0 ? 'M' : 'L'} ${c.x} ${c.y}`).join(' ');
+        path.setAttribute('d', d);
+        path.setAttribute('fill', 'none');
+        path.setAttribute('stroke', zone.strokeColor ?? '#38bdf8');
+        path.setAttribute('stroke-width', '4');
+        path.setAttribute('stroke-linecap', 'round');
+        path.setAttribute('stroke-linejoin', 'round');
+        if (zone.strokeDashArray) {
+          path.setAttribute('stroke-dasharray', zone.strokeDashArray);
+        }
+        path.setAttribute('class', CSS_CLASSES.zoneRect);
+        zoneG.appendChild(path);
+      }
+    } else {
+      // Box / Bounding rectangle mode
+      const zStartFret = zone.startFret ?? 1;
+      const zEndFret = zone.endFret ?? zStartFret;
+      const zStartString = zone.startString ?? 1;
+      const zEndString = zone.endString ?? zStartString;
+
+      const effectiveStartFret = Math.max(zStartFret, startFret);
+      const effectiveEndFret = Math.min(zEndFret, endFret);
+
+      if (effectiveStartFret > effectiveEndFret) {
+        return;
+      }
+
+      const posStart = getFingeringPosition(
+        zStartString,
+        effectiveStartFret,
+        this.options.orientation,
+        this.options.stringSpacing,
+        this.options.fretSpacing,
+        this.options.stringCount,
+        this.options.stringThickness,
+        this.options.fretThickness,
+        startFret
+      );
+
+      const posEnd = getFingeringPosition(
+        zEndString,
+        effectiveEndFret,
+        this.options.orientation,
+        this.options.stringSpacing,
+        this.options.fretSpacing,
+        this.options.stringCount,
+        this.options.stringThickness,
+        this.options.fretThickness,
+        startFret
+      );
+
+      minX = Math.min(posStart.x, posEnd.x) - padding;
+      maxX = Math.max(posStart.x, posEnd.x) + padding;
+      minY = Math.min(posStart.y, posEnd.y) - padding;
+      maxY = Math.max(posStart.y, posEnd.y) + padding;
+
+      const width = maxX - minX;
+      const height = maxY - minY;
+
+      const rect = document.createElementNS(SVG_NS, 'rect');
+      rect.setAttribute('x', String(minX));
+      rect.setAttribute('y', String(minY));
+      rect.setAttribute('width', String(width));
+      rect.setAttribute('height', String(height));
+      rect.setAttribute('rx', String(zone.borderRadius ?? 8));
+      rect.setAttribute('ry', String(zone.borderRadius ?? 8));
+      rect.setAttribute('fill', zone.fillColor ?? 'rgba(56, 189, 248, 0.15)');
+      rect.setAttribute('stroke', zone.strokeColor ?? '#38bdf8');
+      rect.setAttribute('stroke-width', '2');
+      if (zone.strokeDashArray) {
+        rect.setAttribute('stroke-dasharray', zone.strokeDashArray);
+      }
+      rect.setAttribute('class', CSS_CLASSES.zoneRect);
+      zoneG.appendChild(rect);
     }
-    rect.setAttribute('class', CSS_CLASSES.zoneRect);
-    zoneG.appendChild(rect);
 
     // Optional label rendering
-    if (zone.label && zone.label.trim() !== '') {
+    if (zone.label && zone.label.trim() !== '' && isFinite(minX) && isFinite(minY)) {
       const text = document.createElementNS(SVG_NS, 'text');
       const labelColor = zone.strokeColor ?? '#38bdf8';
       text.setAttribute('fill', labelColor);

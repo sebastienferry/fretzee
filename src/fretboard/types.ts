@@ -56,17 +56,23 @@ export interface FretboardOptions {
  * Definition of a highlighted region/zone on the fretboard
  */
 export interface Zone {
-  /** Starting string (1-based, e.g. 1 for High E) */
-  startString: number;
+  /** Zone shape type: 'box' (default bounding box), 'hull' (convex polygon hull wrapping points), or 'path' (connected line path) */
+  type?: 'box' | 'hull' | 'path';
 
-  /** Ending string (1-based, e.g. 3 for G string) */
-  endString: number;
+  /** Starting string for box shape (1-based, e.g. 1 for High E) */
+  startString?: number;
 
-  /** Starting fret number */
-  startFret: number;
+  /** Ending string for box shape (1-based, e.g. 3 for G string) */
+  endString?: number;
 
-  /** Ending fret number */
-  endFret: number;
+  /** Starting fret number for box shape */
+  startFret?: number;
+
+  /** Ending fret number for box shape */
+  endFret?: number;
+
+  /** Array of point positions [{ string: 1, fret: 2 }, ...] to enclose with a hull or connect with a path */
+  points?: Array<{ string: number; fret: number }>;
 
   /** Fill background color of the zone (e.g. 'rgba(56, 189, 248, 0.15)') */
   fillColor?: string;
