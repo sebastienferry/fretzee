@@ -388,8 +388,10 @@ export class SvgRenderer {
       }
     }
 
-    // Y position is above the fretboard area and any top string/nut markers
-    const yPosition = -(TITLE_PADDING + topOffset);
+    // Y position is above the fretboard area, top string/nut markers, and any curly brace accolades
+    const hasBraces = Boolean(this.options.zones && this.options.zones.some(z => z.type === 'brace'));
+    const braceOffset = hasBraces ? 24 : 0;
+    const yPosition = -(TITLE_PADDING + topOffset + braceOffset);
 
     text.setAttribute('x', String(xPosition));
     text.setAttribute('y', String(yPosition));
