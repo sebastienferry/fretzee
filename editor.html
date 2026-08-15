@@ -41,38 +41,69 @@
       overflow: hidden;
     }
 
-    /* Header */
+    /* Navbar */
     header {
-      background: rgba(30, 41, 59, 0.8);
+      background: rgba(15, 23, 42, 0.85);
       backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--panel-border);
-      padding: 12px 24px;
+      padding: 0 24px;
+      height: 60px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      height: 60px;
     }
 
     .brand {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
+      text-decoration: none;
     }
 
     .brand-logo {
-      font-size: 24px;
-      background: linear-gradient(135deg, var(--accent-blue), var(--accent-indigo));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      font-size: 20px;
       font-weight: 800;
+      color: #ffffff;
       letter-spacing: -0.5px;
     }
 
-    .brand-tagline {
-      font-size: 13px;
+    .brand-tag {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent-blue);
+      padding: 2px 8px;
+      border-radius: 12px;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .nav-link {
       color: var(--text-muted);
-      border-left: 1px solid var(--panel-border);
-      padding-left: 12px;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 8px 14px;
+      border-radius: 8px;
+      transition: all 0.15s ease;
+    }
+
+    .nav-link:hover {
+      color: var(--text-main);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .nav-link.active {
+      color: #ffffff;
+      background: var(--panel-bg);
+      font-weight: 600;
     }
 
     .header-actions {
@@ -81,39 +112,23 @@
       gap: 12px;
     }
 
-    .nav-links {
-      display: flex;
-      gap: 16px;
-      align-items: center;
-    }
-
-    .nav-btn {
-      color: var(--text-main);
-      text-decoration: none;
-      font-size: 14px;
-      font-weight: 500;
-      padding: 8px 16px;
-      border-radius: 6px;
-      transition: all 0.2s ease;
-      background: var(--panel-bg);
-      border: 1px solid var(--panel-border);
-    }
-
-    .nav-btn:hover {
-      border-color: var(--accent-blue);
-      color: var(--accent-blue);
-    }
-
-    .nav-btn-primary {
+    .btn-studio {
       background: linear-gradient(135deg, var(--accent-blue), var(--accent-indigo));
-      color: white;
-      border: none;
+      color: #ffffff;
+      text-decoration: none;
+      font-size: 13px;
       font-weight: 600;
+      padding: 8px 16px;
+      border-radius: 8px;
+      transition: opacity 0.15s ease, transform 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
     }
 
-    .nav-btn-primary:hover {
-      opacity: 0.9;
-      color: white;
+    .btn-studio:hover {
+      opacity: 0.92;
+      transform: translateY(-1px);
     }
 
     .btn {
@@ -353,19 +368,20 @@
   <!-- Header -->
   <header>
     <a href="index.html" class="brand" style="text-decoration: none;">
-      <span class="brand-logo">Fretzee Core</span>
+      <span class="brand-logo">Fretzee</span>
+      <span class="brand-tag">Core</span>
     </a>
     <nav class="nav-links">
-      <a href="index.html" class="nav-btn">Home</a>
-      <a href="editor.html" class="nav-btn nav-btn-primary">Editor</a>
-      <a href="demo.html" class="nav-btn">Demos</a>
-      <a href="https://github.com/sebastienferry/fretzee" target="_blank" rel="noopener" class="nav-btn">GitHub</a>
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="editor.html" class="nav-link active">Editor</a>
+      <a href="demo.html" class="nav-link">Demos</a>
+      <a href="https://github.com/sebastienferry/fretzee" target="_blank" rel="noopener" class="nav-link">GitHub</a>
     </nav>
-    <div class="header-actions" style="display: flex; gap: 8px;">
+    <div class="header-actions">
       <button class="btn btn-secondary" onclick="exportPngFile()">
         Export PNG
       </button>
-      <a href="https://www.fretzee.com" target="_blank" rel="noopener" class="btn btn-primary nav-btn-studio">Studio ↗</a>
+      <a href="https://www.fretzee.com" target="_blank" rel="noopener" class="btn-studio">Studio ↗</a>
     </div>
   </header>
 
