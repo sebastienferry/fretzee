@@ -552,71 +552,7 @@
   <main class="main-container">
     <!-- Sidebar -->
     <aside class="sidebar">
-      <h2 class="sidebar-title">Studio Generator</h2>
-
-      <div class="form-section">
-        <h3 class="form-section-title">Type</h3>
-        <div class="radio-group">
-          <label class="radio-option">
-            <input type="radio" name="type" value="chord" checked onchange="onTypeChange()">
-            <span>Chord</span>
-          </label>
-          <label class="radio-option">
-            <input type="radio" name="type" value="scale" onchange="onTypeChange()">
-            <span>Scale</span>
-          </label>
-        </div>
-      </div>
-
-      <div class="form-section">
-        <h3 class="form-section-title">Category</h3>
-        <div class="select-wrapper">
-          <label class="select-label" id="categoryLabel">Chord Category</label>
-          <select id="category" onchange="updatePreview()">
-            <option value="major">Major (maj)</option>
-            <option value="minor">Minor (min)</option>
-            <option value="dim">Diminished (dim)</option>
-            <option value="maj7">Major 7 (MAJ7)</option>
-            <option value="7">Dominant 7 (7)</option>
-            <option value="7b5">Half-Diminished (7b5)</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="form-section">
-        <h3 class="form-section-title">Accidentals</h3>
-        <div class="radio-group">
-          <label class="radio-option">
-            <input type="radio" name="accidental" value="sharp" checked onchange="onAccidentalChange()">
-            <span>Sharps (#)</span>
-          </label>
-          <label class="radio-option">
-            <input type="radio" name="accidental" value="flat" onchange="onAccidentalChange()">
-            <span>Flats (♭)</span>
-          </label>
-        </div>
-      </div>
-
-      <div class="form-section">
-        <h3 class="form-section-title">Root Note</h3>
-        <div class="select-wrapper">
-          <label class="select-label">Root</label>
-          <select id="rootNote" onchange="updatePreview()">
-            <option value="C">C</option>
-            <option value="C#">C#</option>
-            <option value="D">D</option>
-            <option value="D#">D#</option>
-            <option value="E">E</option>
-            <option value="F">F</option>
-            <option value="F#">F#</option>
-            <option value="G">G</option>
-            <option value="G#">G#</option>
-            <option value="A">A</option>
-            <option value="A#">A#</option>
-            <option value="B">B</option>
-          </select>
-        </div>
-      </div>
+      <h2 class="sidebar-title">Playground Options</h2>
 
       <div class="form-section">
         <h3 class="form-section-title">Orientation</h3>
@@ -736,10 +672,9 @@
 
     <!-- Content Area -->
     <div class="content-area">
-      <h1 class="page-title">Fretzee Studio Generator</h1>
+      <h1 class="page-title">Fretzee Interactive Playground</h1>
       <p class="page-subtitle">
-        Browse, configure, and generate fretboard diagrams for chords and scales at any neck position.
-        Select your options from the sidebar to preview and copy generated code.
+        Configure fretboard options (orientation, title, fret range, string counts) to preview and copy generated JavaScript code.
       </p>
 
       <!-- Preview Section -->
