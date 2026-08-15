@@ -5,7 +5,7 @@ All notable changes to the **Fretzee** core library will be documented in this f
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Next]
+## [0.2.0] - 2026-08-15
 
 ### Added
 - Add support for unplayed / muted open strings using `fret: -1` rendered with an 'X' marker (#19).
@@ -14,6 +14,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Rename library and branding from Fretly to **Fretzee** (`package.json`, UMD global `Fretzee`, `fretzee-*` CSS classes) (#42).
 - Add npm OIDC Trusted Publishing with `--provenance` to `.github/workflows/release.yml` (#44).
 - Add inlays as small grey dots on standard fretboard positions (#11).
+
+### Changed / Refactored
+- Remove decoupled music catalog module (`src/music`) to focus core library strictly on SVG/PNG fretboard rendering.
 
 ### Fixed
 - Fixed title overlap when fingerings are placed on string 1 or open nut markers in horizontal and vertical modes (#34).
