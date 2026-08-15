@@ -55,7 +55,11 @@ export const CSS_CLASSES = {
   fingeringCircle: 'fretzee-fingering-circle',
   fingeringText: 'fretzee-fingering-text',
   tuning: 'fretzee-tuning',
-  tuningLabel: 'fretzee-tuning-label'
+  tuningLabel: 'fretzee-tuning-label',
+  zones: 'fretzee-zones',
+  zone: 'fretzee-zone',
+  zoneRect: 'fretzee-zone-rect',
+  zoneLabel: 'fretzee-zone-label'
 };
 
 // Error messages

@@ -2,7 +2,7 @@
  * SVG renderer for Fretboard Renderer Library
  */
 
-import type { FretboardOptions, Marker as MarkerInterface } from '../fretboard/types';
+import type { FretboardOptions, Marker as MarkerInterface, Zone } from '../fretboard/types';
 import { SVG_NS, CSS_CLASSES, TITLE_FONT_SIZE, TITLE_PADDING, DEFAULT_FINGERING_TEXT_COLOR } from '../fretboard/constants';
 import { String as GuitarString } from '../fretboard/String';
 import { Fret } from '../fretboard/Fret';
@@ -83,10 +83,11 @@ export class SvgRenderer {
       height += topMarkerOffset;
     }
 
-    // Additional adjustment for title
+    // Additional adjustment for title or zone labels
+    const hasZoneLabels = Boolean(this.options.zones && this.options.zones.some(z => z.label && z.label.trim().length > 0));
     const hasTitle = Boolean(this.options.title && this.options.title.trim().length > 0);
     const titleSpace = TITLE_FONT_SIZE + TITLE_PADDING;
-    if (hasTitle) {
+    if (hasTitle || (hasZoneLabels && isHorizontal)) {
       viewBoxY -= titleSpace;
       height += titleSpace;
     }
@@ -185,6 +186,11 @@ export class SvgRenderer {
       svg.appendChild(markersGroup);
     }
 
+    // Render zones (underneath fingerings)
+    if (this.options.zones && this.options.zones.length > 0) {
+      this.renderZonesGroup(this.options.zones, svg);
+    }
+
     // Render fingerings
     if (fingerings.length > 0) {
       this.renderFingeringsGroup(fingerings, svg);
@@ -244,6 +250,11 @@ export class SvgRenderer {
         this.renderMarker(marker, markersGroup);
       }
       svg.appendChild(markersGroup);
+    }
+
+    // Render zones (underneath fingerings)
+    if (this.options.zones && this.options.zones.length > 0) {
+      this.renderZonesGroup(this.options.zones, svg);
     }
 
     // Render fingerings
@@ -652,6 +663,117 @@ export class SvgRenderer {
     line.setAttribute('class', CSS_CLASSES.fret(fret.index));
     
     return line;
+  }
+
+  /**
+   * Renders group of zones / highlighted regions
+   */
+  private renderZonesGroup(zones: Zone[], svg: SVGSVGElement): void {
+    const zonesGroup = this.createGroup(CSS_CLASSES.zones);
+
+    for (const zone of zones) {
+      this.renderZone(zone, zonesGroup);
+    }
+
+    svg.appendChild(zonesGroup);
+  }
+
+  /**
+   * Renders an individual highlighted zone
+   */
+  private renderZone(zone: Zone, group: SVGElement): void {
+    const startFret = this.options.startFret;
+    const endFret = startFret + this.options.fretCount - 1;
+    const isHorizontal = this.options.orientation === 'horizontal';
+
+    // Clamp zone fret bounds to visible fretboard range
+    const effectiveStartFret = Math.max(zone.startFret, startFret);
+    const effectiveEndFret = Math.min(zone.endFret, endFret);
+
+    if (effectiveStartFret > effectiveEndFret) {
+      return;
+    }
+
+    // Get positions for top-left (startString, startFret) and bottom-right (endString, endFret)
+    const posStart = getFingeringPosition(
+      zone.startString,
+      effectiveStartFret,
+      this.options.orientation,
+      this.options.stringSpacing,
+      this.options.fretSpacing,
+      this.options.stringCount,
+      this.options.stringThickness,
+      this.options.fretThickness,
+      startFret
+    );
+
+    const posEnd = getFingeringPosition(
+      zone.endString,
+      effectiveEndFret,
+      this.options.orientation,
+      this.options.stringSpacing,
+      this.options.fretSpacing,
+      this.options.stringCount,
+      this.options.stringThickness,
+      this.options.fretThickness,
+      startFret
+    );
+
+    const radius = calculateFingeringRadius(this.options.stringSpacing, this.options.fretSpacing);
+    const padding = radius + 6;
+
+    // Calculate bounding box for rectangle
+    const minX = Math.min(posStart.x, posEnd.x) - padding;
+    const maxX = Math.max(posStart.x, posEnd.x) + padding;
+    const minY = Math.min(posStart.y, posEnd.y) - padding;
+    const maxY = Math.max(posStart.y, posEnd.y) + padding;
+
+    const width = maxX - minX;
+    const height = maxY - minY;
+
+    const zoneG = this.createGroup(CSS_CLASSES.zone);
+
+    const rect = document.createElementNS(SVG_NS, 'rect');
+    rect.setAttribute('x', String(minX));
+    rect.setAttribute('y', String(minY));
+    rect.setAttribute('width', String(width));
+    rect.setAttribute('height', String(height));
+    rect.setAttribute('rx', String(zone.borderRadius ?? 8));
+    rect.setAttribute('ry', String(zone.borderRadius ?? 8));
+    rect.setAttribute('fill', zone.fillColor ?? 'rgba(56, 189, 248, 0.15)');
+    rect.setAttribute('stroke', zone.strokeColor ?? '#38bdf8');
+    rect.setAttribute('stroke-width', '2');
+    if (zone.strokeDashArray) {
+      rect.setAttribute('stroke-dasharray', zone.strokeDashArray);
+    }
+    rect.setAttribute('class', CSS_CLASSES.zoneRect);
+    zoneG.appendChild(rect);
+
+    // Optional label rendering
+    if (zone.label && zone.label.trim() !== '') {
+      const text = document.createElementNS(SVG_NS, 'text');
+      const labelColor = zone.strokeColor ?? '#38bdf8';
+      text.setAttribute('fill', labelColor);
+      text.setAttribute('font-family', 'sans-serif');
+      text.setAttribute('font-size', '11');
+      text.setAttribute('font-weight', 'bold');
+      text.setAttribute('class', CSS_CLASSES.zoneLabel);
+
+      if (isHorizontal) {
+        text.setAttribute('x', String(minX + 8));
+        text.setAttribute('y', String(minY - 6));
+        text.setAttribute('text-anchor', 'start');
+      } else {
+        text.setAttribute('x', String((minX + maxX) / 2));
+        text.setAttribute('y', String(minY - 6));
+        text.setAttribute('text-anchor', 'middle');
+      }
+
+      text.textContent = zone.label;
+      zoneG.appendChild(text);
+    }
+
+    group.appendChild(zoneG);
   }
 
   /**

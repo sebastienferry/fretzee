@@ -47,6 +47,41 @@ export interface FretboardOptions {
 
   /** Fingering markers to render on the fretboard */
   fingerings?: Fingering[];
+
+  /** Highlighted regions/zones (e.g. triads, scale shapes, CAGED forms) */
+  zones?: Zone[];
+}
+
+/**
+ * Definition of a highlighted region/zone on the fretboard
+ */
+export interface Zone {
+  /** Starting string (1-based, e.g. 1 for High E) */
+  startString: number;
+
+  /** Ending string (1-based, e.g. 3 for G string) */
+  endString: number;
+
+  /** Starting fret number */
+  startFret: number;
+
+  /** Ending fret number */
+  endFret: number;
+
+  /** Fill background color of the zone (e.g. 'rgba(56, 189, 248, 0.15)') */
+  fillColor?: string;
+
+  /** Stroke border color of the zone (e.g. '#38bdf8') */
+  strokeColor?: string;
+
+  /** Stroke dash pattern (e.g. '4 4' for dashed outline) */
+  strokeDashArray?: string;
+
+  /** Corner radius for the zone rectangle (default: 8) */
+  borderRadius?: number;
+
+  /** Optional text label to display on or next to the zone (e.g. 'D Form Triad') */
+  label?: string;
 }
 
 /**

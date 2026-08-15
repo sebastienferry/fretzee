@@ -117,6 +117,7 @@ export class Fretboard {
       titleAlignment: DEFAULT_TITLE_ALIGNMENT,
       tuning: options.tuning ?? [],
       fingerings: [],
+      zones: [],
       ...options,
       startFret: effectiveStartFret
     };

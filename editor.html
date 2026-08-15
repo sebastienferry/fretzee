@@ -404,7 +404,8 @@
   <!-- Presets -->
   <div class="preset-bar">
     <span class="preset-label">Presets:</span>
-    <button class="preset-chip active" onclick="loadPreset('c-major')">C Major (4 Frets, Horizontal)</button>
+    <button class="preset-chip active" onclick="loadPreset('d-form-triad')">D Form Triad (Zone)</button>
+    <button class="preset-chip" onclick="loadPreset('c-major')">C Major (Horizontal)</button>
     <button class="preset-chip" onclick="loadPreset('g-major-vertical')">G Major (Vertical)</button>
     <button class="preset-chip" onclick="loadPreset('barre-fret5')">Am Barre (Fret 5)</button>
     <button class="preset-chip" onclick="loadPreset('a-minor-pentatonic')">A Minor Pentatonic</button>
@@ -454,6 +455,34 @@
   <script>
     // Presets Definition
     const PRESETS = {
+      'd-form-triad': `{
+  title: 'D Form Triad (CAGED)',
+  stringCount: 6,
+  fretCount: 5,
+  orientation: 'horizontal',
+  stringSpacing: 30,
+  fretSpacing: 60,
+  tuning: ['E', 'A', 'D', 'G', 'B', 'E'],
+  fingerings: [
+    { string: 1, fret: 2, text: '3' },
+    { string: 2, fret: 3, text: 'R', color: '#00f5d4', textColor: '#090d16' },
+    { string: 3, fret: 2, text: '5' },
+    { string: 4, fret: 0, text: 'O' },
+    { string: 5, fret: -1, text: 'X' },
+    { string: 6, fret: -1, text: 'X' }
+  ],
+  zones: [
+    {
+      startString: 1,
+      endString: 3,
+      startFret: 2,
+      endFret: 3,
+      label: 'D Form Triad',
+      fillColor: 'rgba(56, 189, 248, 0.15)',
+      strokeColor: '#38bdf8'
+    }
+  ]
+}`,
       'c-major': `{
   stringCount: 6,
   fretCount: 4,
@@ -653,7 +682,7 @@
     codeInput.addEventListener('input', updateFretboard);
 
     // Initial Load
-    codeInput.value = PRESETS['c-major'];
+    codeInput.value = PRESETS['d-form-triad'];
     updateFretboard();
   </script>
 </body>
