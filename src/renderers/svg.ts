@@ -720,7 +720,8 @@ export class SvgRenderer {
       text.setAttribute('fill', fill);
       text.setAttribute('text-anchor', 'middle');
       text.setAttribute('dominant-baseline', 'central');
-      text.setAttribute('font-size', String(Math.round(radius * 1.2)));
+      const fontSize = isNutMarker ? Math.round(radius * 1.5) : Math.round(radius * 1.2);
+      text.setAttribute('font-size', String(fontSize));
       text.setAttribute('font-family', 'sans-serif');
       text.setAttribute('font-weight', 'bold');
       const textClass = isNutMarker ? 'fretzee-fingering-text fretzee-open-marker' : CSS_CLASSES.fingeringText;
