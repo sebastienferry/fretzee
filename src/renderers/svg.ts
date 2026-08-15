@@ -63,7 +63,7 @@ export class SvgRenderer {
     // Additional adjustments for open string / muted string fingerings (fret 0 or fret -1)
     const hasOpenStrings = fingerings.some(f => f.fret === 0 || f.fret === -1);
     const radius = calculateFingeringRadius(this.options.stringSpacing, this.options.fretSpacing);
-    const openOffset = (this.options.fretSpacing * 0.35) + radius + 5;
+    const openOffset = (this.options.fretSpacing * 0.50) + radius + 5;
 
     if (hasOpenStrings) {
       if (isHorizontal) {
@@ -282,7 +282,7 @@ export class SvgRenderer {
     const hasAnyOpenMarker = (this.options.fingerings || []).some(f => f.fret === 0 || f.fret === -1);
     
     // Uniform offset across all strings to keep labels aligned in a straight line
-    const openOffset = (this.options.fretSpacing * 0.35) + radius;
+    const openOffset = (this.options.fretSpacing * 0.50) + radius;
     const uniformOffset = hasAnyOpenMarker ? -(openOffset + 14) : -(radius + 12);
 
     // tuning is provided 6th string to 1st string (lowest string to highest string)
