@@ -247,6 +247,7 @@
       flex: 1;
       position: relative;
       display: flex;
+      overflow: hidden;
     }
 
     .line-numbers {
@@ -260,6 +261,7 @@
       text-align: right;
       user-select: none;
       border-right: 1px solid rgba(255, 255, 255, 0.05);
+      overflow: hidden;
     }
 
     .line-numbers div {
@@ -279,6 +281,8 @@
       resize: none;
       white-space: pre;
       tab-size: 2;
+      overflow-y: auto;
+      overflow-x: auto;
     }
 
     /* Error Banner */
@@ -639,6 +643,11 @@
         this.selectionStart = this.selectionEnd = start + 2;
         updateFretboard();
       }
+    });
+
+    // Synchronize scrolling between code input and line numbers
+    codeInput.addEventListener('scroll', function() {
+      lineNumbers.scrollTop = this.scrollTop;
     });
 
     codeInput.addEventListener('input', updateFretboard);
