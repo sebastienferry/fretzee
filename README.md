@@ -167,7 +167,7 @@ await fretboard.downloadPNG('chord-diagram.png', { scale: 2 });
 
 For an interactive web interface with cloud diagram storage and a visual editor, check out **[Fretzee Studio](https://github.com/sebastienferry/fretzee-studio)**.
 
-[![Fretzee Studio Screenshot](https://raw.githubusercontent.com/sebastienferry/fretzee-studio/main/web-app/public/assets/hero-preview.jpg)](https://github.com/sebastienferry/fretzee-studio)
+[![Fretzee Studio Screenshot](docs/assets/studio-preview.jpg)](https://github.com/sebastienferry/fretzee-studio)
 
 While `@fretzee/core` is **free and open-source** for programmatic integration, **Fretzee Studio** provides:
 - **Interactive editor**: Click-to-add notes, roots (<kbd>R</kbd>), muted strings (<kbd>X</kbd>), custom labels (<kbd>T</kbd>), custom colors (<kbd>C</kbd>), dual-thumb fret range slider, and maple/rosewood themes.
