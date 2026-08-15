@@ -18,7 +18,7 @@
 <p align="center">
   <b><a href="https://sebastienferry.github.io/fretzee/demo.html">Live Showcase / Demos</a></b> &nbsp;•&nbsp; 
   <b><a href="https://sebastienferry.github.io/fretzee/editor.html">Live JS/JSON Editor</a></b> &nbsp;•&nbsp; 
-  <b><a href="https://www.fretzee.com">Fretzee Studio SaaS</a></b>
+  <b><a href="https://www.fretzee.com">Online Fretzee Studio</a></b>
 </p>
 
 ## Table of Contents
@@ -33,7 +33,7 @@
   - [Fretboard Options](#fretboard-options)
   - [Fingering Object Options](#fingering-object-options)
 - [PNG Export](#png-export)
-- [Fretzee Studio Web App](#fretzee-studio-web-app)
+- [Online Fretzee Studio](#online-fretzee-studio)
 - [Support the Project](#support-the-project)
 - [License](#license)
 
@@ -180,19 +180,19 @@ const dataUrl = await fretboard.toPNGDataURL({ scale: 2 });
 await fretboard.downloadPNG('chord-diagram.png', { scale: 2 });
 ```
 
-## Interactive editor : Fretzee Studio
+## Online Fretzee Studio
 
-For an interactive web interface with cloud diagram storage and a visual editor, check out **[Fretzee Studio](https://www.fretzee.com)**.
+For an interactive web interface with cloud diagram storage and a visual editor, check out **[Online Fretzee Studio](https://www.fretzee.com)**.
 
 [![Fretzee Studio Screenshot](docs/assets/studio-preview.jpg)](https://www.fretzee.com)
 
-While `@fretzee/core` is **free and open-source** for programmatic integration, **[Fretzee Studio](https://www.fretzee.com)** is the complete web application SaaS featuring:
+While `@fretzee/core` is **free and open-source** for programmatic integration, **[Online Fretzee Studio](https://www.fretzee.com)** is the complete web application featuring:
 - **Visual Drag & Drop Editor**: Interactive canvas with click-to-add notes, roots (<kbd>R</kbd>), muted strings (<kbd>X</kbd>), custom colors, dual-thumb fret range slider, and wood themes (maple/rosewood).
 - **Chords & Scale Generator**: Instant catalog lookup across chords, scales, modes, arpeggios, inversions, and drop voicings.
 - **Cloud Storage & Collections**: Save, organize, and manage your diagrams in personal cloud collections.
 - **Multi-Format Export**: Export to SVG, high-resolution PNG, JSON, Markdown, and JS code snippets.
 
-[Launch Fretzee Studio Web App](https://www.fretzee.com) *(Free Account required)*
+[Launch Online Fretzee Studio](https://www.fretzee.com) *(Free Account required)*
 
 ## Support the Project
 
