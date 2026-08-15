@@ -390,7 +390,9 @@
       <a href="editor.html" class="nav-link active">Editor</a>
       <a href="demo.html" class="nav-link">Demos</a>
     </nav>
-    <div class="header-actions">
+      <button class="btn btn-secondary" onclick="copyJsonConfig()">
+        Copy JSON
+      </button>
       <button class="btn btn-secondary" onclick="exportPngFile()">
         Export PNG
       </button>
@@ -419,7 +421,10 @@
     <div class="editor-pane">
       <div class="pane-header">
         <span>JavaScript / JSON Configuration</span>
-        <button class="btn btn-secondary" style="padding: 2px 8px; font-size: 11px;" onclick="resetEditor()">Reset</button>
+        <div style="display: flex; gap: 6px;">
+          <button class="btn btn-secondary" style="padding: 2px 8px; font-size: 11px;" onclick="copyJsonConfig()">Copy JSON</button>
+          <button class="btn btn-secondary" style="padding: 2px 8px; font-size: 11px;" onclick="resetEditor()">Reset</button>
+        </div>
       </div>
       <div class="editor-wrapper">
         <div class="line-numbers" id="line-numbers"></div>
@@ -636,6 +641,14 @@
 
     function resetEditor() {
       loadPreset('c-major');
+    }
+
+    function copyJsonConfig() {
+      const text = codeInput.value;
+      if (!text) return;
+      navigator.clipboard.writeText(text).then(() => {
+        alert('Configuration JSON copied to clipboard!');
+      });
     }
 
     function copySvgCode() {
