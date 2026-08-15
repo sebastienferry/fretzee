@@ -712,8 +712,11 @@ export class SvgRenderer {
       const text = document.createElementNS(SVG_NS, 'text');
       text.setAttribute('x', String(pos.x));
       text.setAttribute('y', String(pos.y));
-      // For standalone nut markers (no circle), default fill color to black if non-customized
-      const fill = (isNutMarker && fingering.textColor === DEFAULT_FINGERING_TEXT_COLOR) ? '#000000' : fingering.textColor;
+      // For standalone nut markers (no circle), default fill color if non-customized (#000000 for open 'O', #ef4444 for muted 'X')
+      let fill = fingering.textColor;
+      if (isNutMarker && fingering.textColor === DEFAULT_FINGERING_TEXT_COLOR) {
+        fill = fingering.fret === -1 ? '#ef4444' : '#000000';
+      }
       text.setAttribute('fill', fill);
       text.setAttribute('text-anchor', 'middle');
       text.setAttribute('dominant-baseline', 'central');
