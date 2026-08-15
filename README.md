@@ -16,10 +16,28 @@
 > Zero-dependency, lightweight TypeScript & JavaScript library for rendering customizable, vector SVG guitar and bass chord & scale diagrams.
 
 <p align="center">
-  <b><a href="https://sebastienferry.github.io/fretzee/demo.html">🚀 Live Showcase / Demos</a></b> &nbsp;•&nbsp; 
-  <b><a href="https://sebastienferry.github.io/fretzee/editor.html">⚡ Live JS/JSON Editor</a></b> &nbsp;•&nbsp; 
-  <b><a href="https://www.fretzee.com">🎸 Fretzee Studio SaaS</a></b>
+  <b><a href="https://sebastienferry.github.io/fretzee/demo.html">Live Showcase / Demos</a></b> &nbsp;•&nbsp; 
+  <b><a href="https://sebastienferry.github.io/fretzee/editor.html">Live JS/JSON Editor</a></b> &nbsp;•&nbsp; 
+  <b><a href="https://www.fretzee.com">Fretzee Studio SaaS</a></b>
 </p>
+
+---
+
+## Table of Contents
+
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+  - [Basic Fretboard](#basic-fretboard)
+  - [Chord Diagram with Muted Strings & Roots](#chord-diagram-with-muted-strings--roots)
+  - [Change Starting Fret](#change-starting-fret)
+- [Configuration Reference](#configuration-reference)
+  - [Fretboard Options](#fretboard-options)
+  - [Fingering Object Options](#fingering-object-options)
+- [PNG Export](#png-export)
+- [Fretzee Studio Web App](#fretzee-studio-web-app)
+- [Support the Project](#support-the-project)
+- [License](#license)
 
 ---
 
