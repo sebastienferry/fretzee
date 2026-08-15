@@ -164,17 +164,17 @@ await fretboard.downloadPNG('chord-diagram.png', { scale: 2 });
 
 ## Interactive editor : Fretzee Studio
 
-For an interactive web interface with cloud diagram storage and a visual editor, check out **[Fretzee Studio](https://github.com/sebastienferry/fretzee-studio)**.
+For an interactive web interface with cloud diagram storage and a visual editor, check out **[Fretzee Studio](https://www.fretzee.com)**.
 
-[![Fretzee Studio Screenshot](docs/assets/studio-preview.jpg)](https://github.com/sebastienferry/fretzee-studio)
+[![Fretzee Studio Screenshot](docs/assets/studio-preview.jpg)](https://www.fretzee.com)
 
-While `@fretzee/core` is **free and open-source** for programmatic integration, **[Fretzee Studio](https://github.com/sebastienferry/fretzee-studio)** is the complete web application SaaS featuring:
+While `@fretzee/core` is **free and open-source** for programmatic integration, **[Fretzee Studio](https://www.fretzee.com)** is the complete web application SaaS featuring:
 - **Visual Drag & Drop Editor**: Interactive canvas with click-to-add notes, roots (<kbd>R</kbd>), muted strings (<kbd>X</kbd>), custom colors, dual-thumb fret range slider, and wood themes (maple/rosewood).
 - **Chords & Scale Generator**: Instant catalog lookup across chords, scales, modes, arpeggios, inversions, and drop voicings.
 - **Cloud Storage & Collections**: Save, organize, and manage your diagrams in personal cloud collections.
 - **Multi-Format Export**: Export to SVG, high-resolution PNG, JSON, Markdown, and JS code snippets.
 
-[Launch Fretzee Studio Web App](https://github.com/sebastienferry/fretzee-studio) *(Free Account required)*
+[Launch Fretzee Studio Web App](https://www.fretzee.com) *(Free Account required)*
 
 ---
 
