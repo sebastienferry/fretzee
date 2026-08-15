@@ -168,13 +168,15 @@ For an interactive web interface with cloud diagram storage and a visual editor,
 
 [![Fretzee Studio Screenshot](docs/assets/studio-preview.jpg)](https://github.com/sebastienferry/fretzee-studio)
 
-While `@fretzee/core` is **free and open-source** for programmatic integration, **Fretzee Studio** provides:
-- **Interactive editor**: Click-to-add notes, roots (<kbd>R</kbd>), muted strings (<kbd>X</kbd>), custom labels (<kbd>T</kbd>), custom colors (<kbd>C</kbd>), dual-thumb fret range slider, and maple/rosewood themes.
-- **Chords / Scale generator**: Instant catalog lookup across chords, scales, modes, arpeggios, inversions, and drop voicings.
-- **Cloud storage & personal collections**: Save, organize, and manage your diagrams in personal collections in the cloud, accessible from anywhere with a free account.
-- **Export options**: Download or copy diagrams in SVG, high-resolution PNG, JSON, Markdown, and ready-to-use JavaScript code.
+While `@fretzee/core` is **free and open-source** for programmatic integration, **[Fretzee Studio](https://github.com/sebastienferry/fretzee-studio)** is the complete web application SaaS featuring:
+- **Visual Drag & Drop Editor**: Interactive canvas with click-to-add notes, roots (<kbd>R</kbd>), muted strings (<kbd>X</kbd>), custom colors, dual-thumb fret range slider, and wood themes (maple/rosewood).
+- **Chords & Scale Generator**: Instant catalog lookup across chords, scales, modes, arpeggios, inversions, and drop voicings.
+- **Cloud Storage & Collections**: Save, organize, and manage your diagrams in personal cloud collections.
+- **Multi-Format Export**: Export to SVG, high-resolution PNG, JSON, Markdown, and JS code snippets.
 
-[Launch Fretzee Studio](https://github.com/sebastienferry/fretzee-studio) *(Free Account required)*
+*Note: For a quick offline JS/JSON interactive builder included directly in this repository, open [`studio.html`](studio.html) (or access it via the GitHub Pages demo).*
+
+[Launch Fretzee Studio Web App](https://github.com/sebastienferry/fretzee-studio) *(Free Account required)*
 
 ---
 
