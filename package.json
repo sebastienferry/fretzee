@@ -33,8 +33,12 @@
     "music",
     "visualization"
   ],
-  "author": "",
+  "author": "Sébastien Ferry",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sebastienferry/fretzee.git"
+  },
   "devDependencies": {
     "@rollup/plugin-typescript": "^11.1.6",
     "@types/jest": "^29.5.12",
