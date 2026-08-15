@@ -1,25 +1,45 @@
 # Fretzee
 
-[![CI](https://github.com/sebastienferry/fretzee/actions/workflows/ci.yml/badge.svg)](https://github.com/sebastienferry/fretzee/actions/workflows/ci.yml)
-[![GitHub Pages](https://github.com/sebastienferry/fretzee/actions/workflows/deploy-pages.yml/badge.svg)](https://sebastienferry.github.io/fretzee/)
+<p align="center">
+  <img src="https://raw.githubusercontent.com/sebastienferry/fretzee/main/docs/assets/fretzee-preview.png" alt="Fretzee SVG Fretboard Diagrams Rendering" width="850">
+</p>
 
-A zero-dependency TypeScript library for rendering customizable guitar and bass fretboards as SVG graphics. Supports both horizontal and vertical orientations, position markers, inlays, and fingering diagrams.
+<p align="center">
+  <a href="https://www.npmjs.com/package/fretzee"><img src="https://img.shields.io/npm/v/fretzee.svg" alt="npm version"></a>
+  <a href="https://www.npmjs.com/package/fretzee"><img src="https://img.shields.io/npm/dm/fretzee.svg" alt="npm downloads"></a>
+  <a href="https://github.com/sebastienferry/fretzee/actions/workflows/ci.yml"><img src="https://github.com/sebastienferry/fretzee/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <a href="https://sebastienferry.github.io/fretzee/"><img src="https://img.shields.io/badge/Demo-GitHub%20Pages-00f5d4.svg" alt="GitHub Pages Demo"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="MIT License"></a>
+  <a href="https://ko-fi.com/sebastienferry"><img src="https://img.shields.io/badge/Support-Ko--fi-ff5e5b" alt="Support on Ko-fi"></a>
+</p>
 
-## 🚀 Interactive Live Editor & Web Site
+> Zero-dependency, lightweight TypeScript & JavaScript library for rendering customizable, vector SVG guitar and bass chord & scale diagrams.
 
-Try the live online configurator on [GitHub Pages](https://sebastienferry.github.io/fretzee/) or open [`editor.html`](editor.html) locally to edit JSON/JS configurations and preview SVG diagrams in real-time!
+---
+
+## Features
+
+- **Zero Runtime Dependencies** — Tiny footprint, fast execution.
+- **Vector SVG Graphics** — High resolution, crisp on all displays, responsive scaling.
+- **Horizontal & Vertical Layouts** — Suited for chord boxes, scale paths, and neck-wide diagrams.
+- **Multi-Instrument** — Guitar (6-string), Bass (4-string), 5-string, 7-string, 8-string, and custom tunings.
+- **Advanced Fingerings** — Root note highlights, interval badges, muted strings (<kbd>X</kbd>), open strings (<kbd>O</kbd>), custom text, and custom colors.
+- **Native PNG Export** — Export directly to high-resolution PNG using HTML5 Canvas.
+- **Standalone Music Catalog** — Chord and scale lookup module (`fretzee/music`) included.
+
+---
 
 ## Installation
 
-### NPM
+### NPM / Yarn / PNPM
 
 ```bash
 npm install fretzee
 ```
 
-### Public CDNs (unpkg & jsDelivr)
+### Public CDNs (Browser Script)
 
-Include directly in browser HTML via public script tag:
+Include directly in HTML without a build step:
 
 ```html
 <!-- via unpkg -->
@@ -35,55 +55,56 @@ const fretboard = new Fretzee.Fretboard({ stringCount: 6, fretCount: 12 });
 document.body.appendChild(fretboard.render());
 ```
 
-## Basic Usage
+## Usage
+
+### Basic Fretboard
 
 ```typescript
 import { Fretboard } from 'fretzee';
 
-// Create a standard 6-string guitar fretboard with 12 frets
+// Standard 6-string guitar fretboard with 12 frets
 const fretboard = new Fretboard({
   stringCount: 6,
   fretCount: 12,
   orientation: 'horizontal'
 });
 
-const svg = fretboard.render();
-document.body.appendChild(svg);
+const svgElement = fretboard.render();
+document.body.appendChild(svgElement);
 ```
 
-## Fingering Diagrams
-
-Pass an array of fingering position objects to display finger numbers, note names, and custom colors on the fretboard:
+### Chord Diagram with Muted Strings & Roots
 
 ```typescript
 import { Fretboard } from 'fretzee';
 
-// C Major Chord Diagram
-const fretboard = new Fretboard({
+// C Major Chord Diagram (Vertical)
+const chord = new Fretboard({
+  title: 'C Major',
   stringCount: 6,
   fretCount: 4,
   orientation: 'vertical',
   fingerings: [
-    { string: 1, fret: 0, text: 'O' },              // Open High E
-    { string: 2, fret: 1, text: '1' },              // B string 1st fret
-    { string: 3, fret: 0, text: 'O' },              // Open G
-    { string: 4, fret: 2, text: '2' },              // D string 2nd fret
-    { string: 5, fret: 3, text: '3', color: '#e74c3c', textColor: '#ffffff' } // Root note in red
+    { string: 1, fret: 0, text: 'O' },                                         // Open High E
+    { string: 2, fret: 1, text: '1' },                                         // 1st fret (C)
+    { string: 3, fret: 0, text: 'O' },                                         // Open G
+    { string: 4, fret: 2, text: '2' },                                         // 2nd fret (E)
+    { string: 5, fret: 3, text: '3', color: '#00f5d4', textColor: '#090d16' }, // Root (C)
+    { string: 6, fret: -1, text: 'X', color: '#ef4444' }                       // Muted Low E
   ]
 });
 
-document.body.appendChild(fretboard.render());
+document.body.appendChild(chord.render());
 ```
 
-### Configurable Starting Fret
-
-Render chord diagrams at higher neck positions using the `startFret` option (1-based fret number, range 0–24):
+### Change starting fret
 
 ```typescript
 import { Fretboard } from 'fretzee';
 
 // A Minor Barre Chord at 5th Fret
-const fretboard = new Fretboard({
+const barreChord = new Fretboard({
+  title: 'Am (Barre V)',
   stringCount: 6,
   fretCount: 4,
   startFret: 5,
@@ -93,83 +114,79 @@ const fretboard = new Fretboard({
     { string: 2, fret: 5, text: '1' },
     { string: 3, fret: 5, text: '1' },
     { string: 4, fret: 7, text: '3' },
-    { string: 5, fret: 7, text: '2', color: '#e74c3c' },
-    { string: 6, fret: 5, text: '1' }
+    { string: 5, fret: 7, text: '2' },
+    { string: 6, fret: 5, text: '1', color: '#00f5d4', textColor: '#090d16' } // Root
   ]
 });
 
-document.body.appendChild(fretboard.render());
+document.body.appendChild(barreChord.render());
 ```
 
-### Configuration Options
+## Configuration Reference
 
-| Parameter | Type | Default | Description |
-| --- | --- | --- | --- |
-| `title` | `string` | `undefined` | Optional title text header displayed above diagram |
-| `titleAlignment` | `'center' \| 'left'` | `'center'` | Title alignment relative to fretboard width |
-| `fretCount` | `number` | `12` | Number of frets to display (4–16) |
-| `stringCount` | `number` | `6` | Number of strings (4–8) |
-| `startFret` | `number` | `1` | Starting fret number to display (0–24, 0 treated as 1) |
-| `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` | Layout direction |
-| `showInlays` | `boolean` | `true` | Display fret position numbers/inlays |
-| `inlayPositions` | `number[]` | `[3, 5, 7, 9, 12, ...]` | Fret positions for inlays |
-| `tuning` | `string[]` | `undefined` | Optional tuning note labels (lowest string to highest string, e.g. `['E', 'A', 'D', 'G', 'B', 'E']`) |
+### Fretboard Options
 
-### Fingering Options
+| Option | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `title` | `string` | `undefined` | Optional title header displayed above the fretboard |
+| `titleAlignment` | `'center' \| 'left'` | `'center'` | Title alignment relative to width |
+| `stringCount` | `number` | `6` | Number of strings (4 for bass, 6 for guitar, up to 8) |
+| `fretCount` | `number` | `12` | Number of frets displayed (4 to 24) |
+| `startFret` | `number` | `1` | Starting fret position (1 to 24) |
+| `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` | Layout orientation |
+| `showInlays` | `boolean` | `true` | Show fret number inlays and position markers |
+| `inlayPositions` | `number[]` | `[3, 5, 7, 9, 12, 15, 17, 19, 21, 24]` | Frets where dots are drawn |
+| `tuning` | `string[]` | `undefined` | Tuning labels (e.g. `['E', 'A', 'D', 'G', 'B', 'E']`) |
+| `fingerings` | `Fingering[]` | `[]` | Array of marker positions to render |
 
-| Parameter | Type | Default | Description |
-| --- | --- | --- | --- |
-| `string` | `number` | Required | 1-based string index (1 = top string / high E) |
-| `fret` | `number` | Required | Fret number (-1 = muted string 'X', 0 = open string, 1..N = fretted position) |
-| `text` | `string` | `""` (or `'X'` if `fret: -1`) | Optional label displayed inside marker circle |
-| `color` | `string` | `'#000000'` | Optional HTML/CSS background fill color |
-| `textColor` | `string` | `'#ffffff'` | Optional HTML/CSS font color for text |
+### Fingering Object Options
 
-### PNG Export
+| Property | Type | Required | Description |
+| :--- | :--- | :---: | :--- |
+| `string` | `number` | Yes | 1-based string number (1 = highest pitch string) |
+| `fret` | `number` | Yes | Fret index (`-1` = Muted 'X', `0` = Open 'O', `1..24` = Fretted position) |
+| `text` | `string` | No | Character/interval displayed in marker (e.g. `'R'`, `'3'`, `'5'`, `'X'`, `'O'`) |
+| `color` | `string` | No | Hex / CSS background fill color (e.g. `'#00f5d4'`) |
+| `textColor` | `string` | No | Hex / CSS text font color (default `'#ffffff'`) |
+## PNG Export
 
-Export fretboard diagrams as high-resolution PNG images natively using HTML5 Canvas with zero runtime dependencies:
+Export fretboard diagrams as PNG images without extra dependencies:
 
 ```typescript
-// Export to PNG Blob
+// Export to Blob
 const pngBlob = await fretboard.toPNGBlob({ scale: 2 });
 
-// Export to PNG Data URL
+// Export to Data URL (base64)
 const dataUrl = await fretboard.toPNGDataURL({ scale: 2 });
 
-// Trigger direct browser file download
-await fretboard.downloadPNG('fretboard.png', { scale: 2 });
+// Direct browser file download
+await fretboard.downloadPNG('chord-diagram.png', { scale: 2 });
 ```
 
-### Standalone Music Catalog (`FretzeeMusic`)
+## Interactive editor : Fretzee Studio
 
-For chord library lookups, the standalone `FretzeeMusic` module (`dist/music.umd.js` / `dist/music.esm.js`) can be used independently without coupling to the SVG renderer:
+For an interactive web interface with cloud diagram storage and a visual editor, check out **[Fretzee Studio](https://github.com/sebastienferry/fretzee-studio)**.
 
-```typescript
-import * as FretzeeMusic from 'fretzee/music'; // or include dist/music.umd.js
+[![Fretzee Studio Screenshot](https://raw.githubusercontent.com/sebastienferry/fretzee-studio/main/web-app/public/assets/hero-preview.jpg)](https://github.com/sebastienferry/fretzee-studio)
 
-// Query chord definitions from catalog
-const cMajor = FretzeeMusic.getChord('C');
+While `@fretzee/core` is **free and open-source** for programmatic integration, **Fretzee Studio** provides:
+- **Interactive editor**: Click-to-add notes, roots (<kbd>R</kbd>), muted strings (<kbd>X</kbd>), custom labels (<kbd>T</kbd>), custom colors (<kbd>C</kbd>), dual-thumb fret range slider, and maple/rosewood themes.
+- **Chords / Scale generator**: Instant catalog lookup across chords, scales, modes, arpeggios, inversions, and drop voicings.
+- **Cloud storage & personal collections**: Save, organize, and manage your diagrams in personal collections in the cloud, accessible from anywhere with a free account.
+- **Export options**: Download or copy diagrams in SVG, high-resolution PNG, JSON, Markdown, and ready-to-use JavaScript code.
 
-// Feed fingerings into Fretboard SVG renderer
-const fretboard = new Fretboard({
-  fingerings: cMajor.fingerings
-});
-```
+[Launch Fretzee Studio](https://github.com/sebastienferry/fretzee-studio) *(Free Account required)*
 
-## Development & Releases
+---
 
-```bash
-# Install dependencies
-npm ci
+## Support the Project
 
-# Run build, lint, and test suite
-npm run build
-npm run lint
-npm test
-```
+Fretzee is an independent open-source project. If you find it useful, you can support its development and maintenance on Ko-fi:
 
-Releases are automatically published to GitHub Releases and NPM whenever a maintainer pushes a version tag (e.g. `v1.0.0`).
+[![Support on Ko-fi](https://img.shields.io/badge/Support%20on-Ko--fi-ff5e5b?style=for-the-badge)](https://ko-fi.com/sebastienferry)
+
+---
 
 ## License
 
-MIT
+[MIT License](LICENSE) © Sébastien Ferry
