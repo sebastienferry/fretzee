@@ -61,7 +61,7 @@ export class SvgRenderer {
     height += padding * 2;
 
     // Additional adjustments for open string / muted string fingerings (fret 0 or fret -1)
-    const hasOpenStrings = (this.options.startFret <= 1) && fingerings.some(f => f.fret === 0 || f.fret === -1);
+    const hasOpenStrings = fingerings.some(f => f.fret === 0 || f.fret === -1);
     const radius = calculateFingeringRadius(this.options.stringSpacing, this.options.fretSpacing);
     const openOffset = (this.options.fretSpacing * 0.35) + radius + 5;
 
@@ -279,7 +279,7 @@ export class SvgRenderer {
     const tuning = this.options.tuning;
 
     const radius = calculateFingeringRadius(this.options.stringSpacing, this.options.fretSpacing);
-    const hasAnyOpenMarker = (this.options.startFret <= 1) && (this.options.fingerings || []).some(f => f.fret === 0 || f.fret === -1);
+    const hasAnyOpenMarker = (this.options.fingerings || []).some(f => f.fret === 0 || f.fret === -1);
     
     // Uniform offset across all strings to keep labels aligned in a straight line
     const openOffset = (this.options.fretSpacing * 0.35) + radius;
@@ -675,11 +675,11 @@ export class SvgRenderer {
     const startFret = this.options.startFret;
     const endFret = startFret + this.options.fretCount - 1;
 
-    // Filter out fingerings outside the visible range
-    if (fingering.fret === 0 || fingering.fret === -1) {
-      if (startFret > 1) return;
-    } else if (fingering.fret < startFret || fingering.fret > endFret) {
-      return;
+    // Filter out fingerings outside the visible range (open/muted markers fret 0 or -1 are always allowed)
+    if (fingering.fret !== 0 && fingering.fret !== -1) {
+      if (fingering.fret < startFret || fingering.fret > endFret) {
+        return;
+      }
     }
 
     const pos = getFingeringPosition(

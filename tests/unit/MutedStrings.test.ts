@@ -2,11 +2,11 @@ import { Fretboard } from '../../src/fretboard/Fretboard';
 import { Fingering } from '../../src/fretboard/Fingering';
 
 describe('Muted Open Strings (fret: -1)', () => {
-  it('defaults text to X and textColor to red (#ef4444) when fret is -1', () => {
+  it('defaults text to X and textColor to black (#000000) when fret is -1', () => {
     const fingering = new Fingering({ string: 6, fret: -1 });
     expect(fingering.fret).toBe(-1);
     expect(fingering.text).toBe('X');
-    expect(fingering.textColor).toBe('#ef4444');
+    expect(fingering.textColor).toBe('#000000');
   });
 
   it('allows custom text when fret is -1', () => {
@@ -14,7 +14,7 @@ describe('Muted Open Strings (fret: -1)', () => {
     expect(fingering.text).toBe('x');
   });
 
-  it('renders standalone red X text without background circle element', () => {
+  it('renders standalone black X text without background circle element', () => {
     const fretboard = new Fretboard({
       fingerings: [
         { string: 6, fret: -1 },
@@ -31,7 +31,7 @@ describe('Muted Open Strings (fret: -1)', () => {
     const mutedText = mutedGroup?.querySelector('text');
     expect(mutedText).not.toBeNull();
     expect(mutedText?.textContent).toBe('X');
-    expect(mutedText?.getAttribute('fill')).toBe('#ef4444');
+    expect(mutedText?.getAttribute('fill')).toBe('#000000');
   });
 
   it('renders muted open string markers in vertical orientation', () => {

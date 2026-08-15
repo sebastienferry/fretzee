@@ -106,16 +106,19 @@ describe('Configurable Starting Fret', () => {
       expect(fingerings.length).toBe(1);
     });
 
-    it('should omit open string fingerings (fret 0) when startFret > 1', () => {
+    it('should render open (fret 0) and muted (fret -1) string fingerings even when startFret > 1', () => {
       const fretboard = new Fretboard({
         startFret: 5,
         fretCount: 4,
-        fingerings: [{ string: 1, fret: 0, text: 'E' }]
+        fingerings: [
+          { string: 1, fret: 0, text: 'O' },
+          { string: 6, fret: -1, text: 'X' }
+        ]
       });
       const svg = fretboard.render();
       const fingerings = svg.querySelectorAll('.fretzee-fingering');
 
-      expect(fingerings.length).toBe(0);
+      expect(fingerings.length).toBe(2);
     });
   });
 
