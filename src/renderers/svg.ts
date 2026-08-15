@@ -773,15 +773,27 @@ export class SvgRenderer {
         const midX = (x1 + x2) / 2;
         const heightVal = 10;
 
-        minX = x1; maxX = x2; minY = y - heightVal; maxY = y;
+        // Authentic mathematical curly brace accolade:
+        // Left curve ({), central peak (v), right curve (})
+        const braceHeight = 12;
+        const r = 6; // Corner radius for curves
+        const pathD = `
+          M ${x1} ${y} 
+          Q ${x1} ${y - r} ${x1 + r} ${y - r} 
+          H ${midX - r} 
+          Q ${midX} ${y - r} ${midX} ${y - braceHeight} 
+          Q ${midX} ${y - r} ${midX + r} ${y - r} 
+          H ${x2 - r} 
+          Q ${x2} ${y - r} ${x2} ${y}
+        `.replace(/\s+/g, ' ').trim();
 
-        // SVG path for horizontal curly brace pointing upwards
-        const pathD = `M ${x1} ${y} Q ${x1} ${y - heightVal} ${x1 + 10} ${y - heightVal} L ${midX - 10} ${y - heightVal} Q ${midX} ${y - heightVal} ${midX} ${y - heightVal - 4} Q ${midX} ${y - heightVal} ${midX + 10} ${y - heightVal} L ${x2 - 10} ${y - heightVal} Q ${x2} ${y - heightVal} ${x2} ${y}`;
         const bracePath = document.createElementNS(SVG_NS, 'path');
         bracePath.setAttribute('d', pathD);
         bracePath.setAttribute('fill', 'none');
         bracePath.setAttribute('stroke', zone.strokeColor ?? '#38bdf8');
         bracePath.setAttribute('stroke-width', '2');
+        bracePath.setAttribute('stroke-linecap', 'round');
+        bracePath.setAttribute('stroke-linejoin', 'round');
         bracePath.setAttribute('class', CSS_CLASSES.zoneRect);
         zoneG.appendChild(bracePath);
       }
