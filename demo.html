@@ -358,37 +358,14 @@
         </div>
       </div>
     </div>
-    <!-- Example 6: Standalone Music Catalog (FretzeeMusic) -->
-    <div class="demo-card">
-      <div class="demo-card-header">
-        <div class="demo-card-info">
-          <h2 class="demo-card-title">6. Decoupled Music Catalog (FretzeeMusic)</h2>
-          <p class="demo-card-desc">Query real chord definitions independently from the standalone <code>FretzeeMusic</code> catalog library (<code>dist/music.umd.js</code>) and pass them to <code>Fretboard</code>.</p>
-        </div>
-        <button class="copy-btn" onclick="copySnippet('ex6', this)">📋 Copy JS</button>
-      </div>
-      <div class="demo-card-body">
-        <div class="vertical-grid">
-          <div class="vertical-card">
-            <span class="vertical-card-title">Fmaj7 (from FretzeeMusic)</span>
-            <div id="demo-catalog-fmaj7"></div>
-          </div>
-          <div class="vertical-card">
-            <span class="vertical-card-title">E7 (from FretzeeMusic)</span>
-            <div id="demo-catalog-e7"></div>
-          </div>
-        </div>
-      </div>
-    </div>
   </main>
 
   <footer>
     <p>Released under the MIT License • View on <a href="https://github.com/sebastienferry/fretzee" target="_blank" rel="noopener">GitHub</a></p>
   </footer>
 
-  <!-- Include Fretzee UMD Library Bundle & Decoupled FretzeeMusic Catalog Bundle -->
+  <!-- Include Fretzee UMD Library Bundle -->
   <script src="./dist/index.umd.js"></script>
-  <script src="./dist/music.umd.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const fretzeeLib = window.fretzee || window.Fretzee;
@@ -534,35 +511,6 @@
         ]
       });
       document.getElementById('demo-title-left').appendChild(titleLeft.render());
-
-      // 6. Standalone Music Catalog (FretzeeMusic)
-      if (window.FretzeeMusic && window.FretzeeMusic.getChord) {
-        const fmaj7Data = window.FretzeeMusic.getChord('Fmaj7');
-        if (fmaj7Data) {
-          const catalogFmaj7 = new fretzeeLib.Fretboard({
-            title: fmaj7Data.name,
-            stringCount: 6,
-            fretCount: 4,
-            orientation: 'vertical',
-            tuning: ['E', 'A', 'D', 'G', 'B', 'E'],
-            fingerings: fmaj7Data.fingerings
-          });
-          document.getElementById('demo-catalog-fmaj7').appendChild(catalogFmaj7.render());
-        }
-
-        const e7Data = window.FretzeeMusic.getChord('E7');
-        if (e7Data) {
-          const catalogE7 = new fretzeeLib.Fretboard({
-            title: e7Data.name,
-            stringCount: 6,
-            fretCount: 4,
-            orientation: 'vertical',
-            tuning: ['E', 'A', 'D', 'G', 'B', 'E'],
-            fingerings: e7Data.fingerings
-          });
-          document.getElementById('demo-catalog-e7').appendChild(catalogE7.render());
-        }
-      }
     });
 
     // Snippets for copying
@@ -641,20 +589,7 @@ document.body.appendChild(startingFretAm.render());`,
     { string: 6, fret: -1 }
   ]
 });
-document.body.appendChild(titleCentered.render());`,
-
-      ex6: `// Load chord from standalone FretzeeMusic catalog
-const fmaj7Data = FretzeeMusic.getChord('Fmaj7');
-
-const catalogFmaj7 = new fretzee.Fretboard({
-  title: fmaj7Data.name,
-  stringCount: 6,
-  fretCount: 4,
-  orientation: 'vertical',
-  tuning: ['E', 'A', 'D', 'G', 'B', 'E'],
-  fingerings: fmaj7Data.fingerings
-});
-document.body.appendChild(catalogFmaj7.render());`
+document.body.appendChild(titleCentered.render());`
     };
 
     function copySnippet(key, btn) {
