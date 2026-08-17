@@ -92,7 +92,8 @@ describe('Highlighted Fretboard Zones', () => {
             { string: 2, fret: 3 },
             { string: 3, fret: 2 }
           ],
-          label: 'Convex Hull'
+          label: 'Convex Hull',
+          strokeWidth: 5
         }
       ]
     });
@@ -101,6 +102,7 @@ describe('Highlighted Fretboard Zones', () => {
     const polygon = svg.querySelector('polygon.fretzee-zone-rect');
     expect(polygon).not.toBeNull();
     expect(polygon?.getAttribute('points')).toBeTruthy();
+    expect(polygon?.getAttribute('stroke-width')).toBe('5');
   });
 
   it('should support path shape connecting sequential points', () => {
@@ -122,5 +124,63 @@ describe('Highlighted Fretboard Zones', () => {
     const path = svg.querySelector('path.fretzee-zone-rect');
     expect(path).not.toBeNull();
     expect(path?.getAttribute('d')).toContain('M');
+  });
+
+  it('should support curly brace shape in vertical orientation', () => {
+    const fretboard = new Fretboard({
+      orientation: 'vertical',
+      zones: [
+        {
+          type: 'brace',
+          startFret: 1,
+          endFret: 3,
+          label: 'Fret Range'
+        }
+      ]
+    });
+
+    const svg = fretboard.render();
+    const brace = svg.querySelector('path.fretzee-zone-rect');
+    expect(brace).not.toBeNull();
+    expect(brace?.getAttribute('d')).toContain('M');
+
+    const label = svg.querySelector('text.fretzee-zone-label');
+    expect(label).not.toBeNull();
+    expect(label?.getAttribute('writing-mode')).toBe('tb');
+    expect(label?.textContent).toBe('Fret Range');
+  });
+
+  it('should support strokeStyle presets (dashed/dotted) and custom labelFontSize', () => {
+    const fretboard = new Fretboard({
+      zones: [
+        {
+          type: 'box',
+          startString: 1,
+          endString: 3,
+          startFret: 1,
+          endFret: 3,
+          strokeStyle: 'dashed',
+          label: 'Custom Style Box',
+          labelFontSize: 14
+        },
+        {
+          type: 'path',
+          points: [{ string: 1, fret: 1 }, { string: 2, fret: 2 }],
+          strokeStyle: 'dotted',
+          strokeWidth: 3
+        }
+      ]
+    });
+
+    const svg = fretboard.render();
+    const rect = svg.querySelector('rect.fretzee-zone-rect');
+    expect(rect?.getAttribute('stroke-dasharray')).toBe('4 4');
+
+    const path = svg.querySelector('path.fretzee-zone-rect');
+    expect(path?.getAttribute('stroke-dasharray')).toBe('2 2');
+    expect(path?.getAttribute('stroke-width')).toBe('3');
+
+    const label = svg.querySelector('text.fretzee-zone-label');
+    expect(label?.getAttribute('font-size')).toBe('14');
   });
 });

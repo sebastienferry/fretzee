@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Fretzee Zones & Instructional Features Showcase - Demonstration of highlighted fretboard regions, D Form triads, convex hulls, paths, and range braces.">
-  <title>Instructional Zones Showcase - Fretzee Core</title>
+  <title>Advanced Customization - Fretzee Core</title>
 
   <!-- Google Fonts: Inter & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -243,7 +243,7 @@
       <a href="index.html" class="nav-link">Home</a>
       <a href="editor.html" class="nav-link">Editor</a>
       <a href="demo.html" class="nav-link">Demos</a>
-      <a href="zones-showcase.html" class="nav-link active">Zones Feature</a>
+      <a href="advanced.html" class="nav-link active">Advanced Customization</a>
     </nav>
     <div class="header-actions">
       <a href="https://github.com/sebastienferry/fretzee" target="_blank" rel="noopener" class="btn-github" title="GitHub Repository">
@@ -254,7 +254,7 @@
   </header>
 
   <main class="main-container">
-    <h1 class="page-title">Instructional Zones & Form Highlights</h1>
+    <h1 class="page-title">Advanced Customization</h1>
     <p class="page-subtitle">Visual showcase of highlighted fretboard regions, D Form triads, convex hulls, sequence paths, and range braces for guitar instructors.</p>
 
     <div class="demo-grid">
@@ -310,6 +310,15 @@
           <p class="demo-card-desc">Vertical accolade brace spanning along the right side of frets 5 to 8.</p>
         </div>
         <div class="demo-card-body" id="demo-vertical-brace"></div>
+      </div>
+
+      <!-- Demo 7: Advanced Zone Options & Custom Strings -->
+      <div class="demo-card">
+        <div class="demo-card-header">
+          <h2 class="demo-card-title">7. Advanced Styling (Stroke Styles, Custom Width & String Colors)</h2>
+          <p class="demo-card-desc">Demonstrating strokeStyle ('dashed' / 'dotted'), custom strokeWidth, labelFontSize, and per-string colors.</p>
+        </div>
+        <div class="demo-card-body" id="demo-advanced-options"></div>
       </div>
     </div>
   </main>
@@ -495,6 +504,47 @@
         ]
       });
       document.getElementById('demo-vertical-brace').appendChild(vBrace.render());
+
+      // Demo 7: Advanced Zone Options & Custom Strings
+      const advOptions = new Fretboard({
+        title: 'Advanced Customization Options',
+        stringCount: 6,
+        fretCount: 5,
+        startFret: 1,
+        orientation: 'horizontal',
+        stringColor: ['#ef4444', '#f59e0b', '#10b981', '#06b6d4', '#6366f1', '#8b5cf6'],
+        tuning: ['E', 'A', 'D', 'G', 'B', 'E'],
+        fingerings: [
+          { string: 1, fret: 3, text: 'G', color: '#38bdf8' },
+          { string: 2, fret: 1, text: 'C', color: '#38bdf8' },
+          { string: 3, fret: 2, text: 'A', color: '#a855f7' },
+          { string: 4, fret: 3, text: 'F', color: '#a855f7' }
+        ],
+        zones: [
+          {
+            type: 'box',
+            startString: 1,
+            endString: 2,
+            startFret: 1,
+            endFret: 3,
+            label: 'Dashed Box (Size 13)',
+            strokeColor: '#38bdf8',
+            strokeStyle: 'dashed',
+            strokeWidth: 2.5,
+            labelFontSize: 13
+          },
+          {
+            type: 'hull',
+            points: [{ string: 3, fret: 2 }, { string: 4, fret: 3 }],
+            label: 'Dotted Hull',
+            strokeColor: '#a855f7',
+            strokeStyle: 'dotted',
+            strokeWidth: 3,
+            labelFontSize: 11
+          }
+        ]
+      });
+      document.getElementById('demo-advanced-options').appendChild(advOptions.render());
     });
   </script>
 </body>

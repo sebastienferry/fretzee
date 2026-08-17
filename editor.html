@@ -106,6 +106,12 @@
       font-weight: 600;
     }
 
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
     .btn-github {
       color: var(--text-muted);
       display: inline-flex;
@@ -389,14 +395,9 @@
       <a href="index.html" class="nav-link">Home</a>
       <a href="editor.html" class="nav-link active">Editor</a>
       <a href="demo.html" class="nav-link">Demos</a>
+      <a href="advanced.html" class="nav-link">Advanced Customization</a>
     </nav>
     <div class="header-actions">
-      <button class="btn btn-secondary" onclick="copyJsonConfig()">
-        Copy JSON
-      </button>
-      <button class="btn btn-secondary" onclick="exportPngFile()">
-        Export PNG
-      </button>
       <a href="https://github.com/sebastienferry/fretzee" target="_blank" rel="noopener" class="btn-github" title="GitHub Repository">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
       </a>
@@ -407,13 +408,8 @@
   <!-- Presets -->
   <div class="preset-bar">
     <span class="preset-label">Presets:</span>
-    <button class="preset-chip active" onclick="loadPreset('d-form-triad')">D Form Triad (Zone)</button>
-    <button class="preset-chip" onclick="loadPreset('c-major')">C Major (Horizontal)</button>
-    <button class="preset-chip" onclick="loadPreset('g-major-vertical')">G Major (Vertical)</button>
-    <button class="preset-chip" onclick="loadPreset('barre-fret5')">Am Barre (Fret 5)</button>
-    <button class="preset-chip" onclick="loadPreset('a-minor-pentatonic')">A Minor Pentatonic</button>
-    <button class="preset-chip" onclick="loadPreset('bass-4string')">4-String Bass (A Minor)</button>
-    <button class="preset-chip" onclick="loadPreset('7string-metal')">7-String Drop A</button>
+    <button class="preset-chip active" onclick="loadPreset('c-major', this)">Basic Example (C Major)</button>
+    <button class="preset-chip" onclick="loadPreset('advanced', this)">Advanced Customization (Zones & Strings)</button>
   </div>
 
   <!-- Workspace -->
@@ -438,7 +434,10 @@
     <div class="preview-pane">
       <div class="pane-header">
         <span>Live Fretboard Preview</span>
-        <span id="dimensions-badge" style="color: var(--accent-blue); font-family: 'JetBrains Mono', monospace;"></span>
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span id="dimensions-badge" style="color: var(--accent-blue); font-family: 'JetBrains Mono', monospace;"></span>
+          <button class="btn btn-secondary" style="padding: 2px 8px; font-size: 11px;" onclick="exportPngFile()">Export PNG</button>
+        </div>
       </div>
       <div class="preview-canvas">
         <div class="svg-container" id="svg-output"></div>
@@ -461,120 +460,50 @@
   <script>
     // Presets Definition
     const PRESETS = {
-      'd-form-triad': `{
-  title: 'D Form Triad (CAGED)',
-  stringCount: 6,
-  fretCount: 5,
-  orientation: 'horizontal',
-  stringSpacing: 30,
-  fretSpacing: 60,
-  tuning: ['E', 'A', 'D', 'G', 'B', 'E'],
-  fingerings: [
-    { string: 1, fret: 2, text: '3' },
-    { string: 2, fret: 3, text: 'R', color: '#00f5d4', textColor: '#090d16' },
-    { string: 3, fret: 2, text: '5' },
-    { string: 4, fret: 0, text: 'O' },
-    { string: 5, fret: -1, text: 'X' },
-    { string: 6, fret: -1, text: 'X' }
-  ],
-  zones: [
-    {
-      startString: 1,
-      endString: 3,
-      startFret: 2,
-      endFret: 3,
-      label: 'D Form Triad',
-      fillColor: 'rgba(56, 189, 248, 0.15)',
-      strokeColor: '#38bdf8'
-    }
-  ]
-}`,
       'c-major': `{
+  title: 'C Major Chord',
   stringCount: 6,
   fretCount: 4,
-  orientation: 'horizontal',
+  orientation: 'vertical',
   stringSpacing: 30,
-  fretSpacing: 60,
+  fretSpacing: 55,
   tuning: ['E', 'A', 'D', 'G', 'B', 'E'],
   fingerings: [
     { string: 1, fret: 0, text: 'O' },
     { string: 2, fret: 1, text: '1' },
     { string: 3, fret: 0, text: 'O' },
     { string: 4, fret: 2, text: '2' },
-    { string: 5, fret: 3, text: '3', color: '#e74c3c', textColor: '#ffffff' },
-    { string: 6, fret: -1 }
+    { string: 5, fret: 3, text: '3', color: '#00f5d4', textColor: '#090d16' },
+    { string: 6, fret: -1, text: 'X', color: '#ef4444' }
   ]
 }`,
-      'g-major-vertical': `{
+      'advanced': `{
+  title: 'Advanced Customization (Zones & Strings)',
   stringCount: 6,
-  fretCount: 4,
-  orientation: 'vertical',
-  stringSpacing: 30,
-  fretSpacing: 55,
-  fingerings: [
-    { string: 6, fret: 3, text: '3', color: '#e74c3c' },
-    { string: 5, fret: 2, text: '2' },
-    { string: 4, fret: 0, text: 'O' },
-    { string: 3, fret: 0, text: 'O' },
-    { string: 2, fret: 0, text: 'O' },
-    { string: 1, fret: 3, text: '4', color: '#e74c3c' }
-  ]
-}`,
-      'barre-fret5': `{
-  stringCount: 6,
-  fretCount: 4,
-  startFret: 5,
-  orientation: 'vertical',
-  stringSpacing: 30,
-  fretSpacing: 55,
-  fingerings: [
-    { string: 1, fret: 5, text: '1' },
-    { string: 2, fret: 5, text: '1' },
-    { string: 3, fret: 5, text: '1' },
-    { string: 4, fret: 7, text: '3' },
-    { string: 5, fret: 7, text: '2', color: '#e74c3c' },
-    { string: 6, fret: 5, text: '1' }
-  ]
-}`,
-      'a-minor-pentatonic': `{
-  stringCount: 6,
-  fretCount: 6,
-  orientation: 'horizontal',
-  stringSpacing: 28,
-  fretSpacing: 50,
-  fingerings: [
-    { string: 6, fret: 5, text: 'R', color: '#e74c3c' },
-    { string: 5, fret: 5, text: '4', color: '#3498db' },
-    { string: 4, fret: 5, text: 'b7', color: '#f39c12' },
-    { string: 3, fret: 5, text: 'b3', color: '#2ecc71' },
-    { string: 2, fret: 5, text: '5', color: '#9b59b6' },
-    { string: 1, fret: 5, text: 'R', color: '#e74c3c' }
-  ]
-}`,
-      'bass-4string': `{
-  stringCount: 4,
   fretCount: 5,
   orientation: 'horizontal',
-  stringSpacing: 32,
+  stringSpacing: 30,
   fretSpacing: 60,
-  stringThickness: 2.5,
+  stringColor: ['#ef4444', '#f59e0b', '#10b981', '#06b6d4', '#6366f1', '#8b5cf6'],
+  tuning: ['E', 'A', 'D', 'G', 'B', 'E'],
   fingerings: [
-    { string: 4, fret: 5, text: 'A', color: '#e74c3c' },
-    { string: 3, fret: 2, text: 'E', color: '#3498db' },
-    { string: 2, fret: 2, text: 'A', color: '#e74c3c' },
-    { string: 1, fret: 2, text: 'C#', color: '#2ecc71' }
-  ]
-}`,
-      '7string-metal': `{
-  stringCount: 7,
-  fretCount: 5,
-  orientation: 'vertical',
-  stringSpacing: 26,
-  fretSpacing: 50,
-  fingerings: [
-    { string: 7, fret: 0, text: 'A', color: '#e74c3c' },
-    { string: 6, fret: 0, text: 'E', color: '#3498db' },
-    { string: 5, fret: 0, text: 'A', color: '#e74c3c' }
+    { string: 1, fret: 2, text: '3' },
+    { string: 2, fret: 3, text: 'R', color: '#00f5d4', textColor: '#090d16' },
+    { string: 3, fret: 2, text: '5' }
+  ],
+  zones: [
+    {
+      type: 'box',
+      startString: 1,
+      endString: 3,
+      startFret: 2,
+      endFret: 3,
+      label: 'D Form Triad',
+      fillColor: 'rgba(56, 189, 248, 0.15)',
+      strokeColor: '#38bdf8',
+      strokeStyle: 'dashed',
+      labelFontSize: 12
+    }
   ]
 }`
     };
@@ -629,13 +558,18 @@
       }
     }
 
-    function loadPreset(key) {
+    function loadPreset(key, element) {
       if (!PRESETS[key]) return;
       currentPreset = key;
       codeInput.value = PRESETS[key];
 
       document.querySelectorAll('.preset-chip').forEach(btn => btn.classList.remove('active'));
-      event.target.classList.add('active');
+      if (element) {
+        element.classList.add('active');
+      } else {
+        const defaultBtn = document.querySelector(`.preset-chip[onclick*="'${key}'"]`);
+        if (defaultBtn) defaultBtn.classList.add('active');
+      }
 
       updateFretboard();
     }
@@ -696,8 +630,7 @@
     codeInput.addEventListener('input', updateFretboard);
 
     // Initial Load
-    codeInput.value = PRESETS['d-form-triad'];
-    updateFretboard();
+    loadPreset('c-major');
   </script>
 </body>
 </html>

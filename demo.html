@@ -108,6 +108,12 @@
       font-weight: 600;
     }
 
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
     .btn-github {
       color: var(--text-muted);
       display: inline-flex;
@@ -131,7 +137,16 @@
       font-size: 13px;
       font-weight: 600;
       padding: 8px 16px;
-      width: 100%;
+      border-radius: 8px;
+      transition: opacity 0.15s ease, transform 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .btn-studio:hover {
+      opacity: 0.92;
+      transform: translateY(-1px);
     }
 
     .page-title {
@@ -275,6 +290,7 @@
       <a href="index.html" class="nav-link">Home</a>
       <a href="editor.html" class="nav-link">Editor</a>
       <a href="demo.html" class="nav-link active">Demos</a>
+      <a href="advanced.html" class="nav-link">Advanced Customization</a>
     </nav>
     <div class="header-actions">
       <a href="https://github.com/sebastienferry/fretzee" target="_blank" rel="noopener" class="btn-github" title="GitHub Repository">

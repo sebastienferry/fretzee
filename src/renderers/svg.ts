@@ -104,6 +104,9 @@ export class SvgRenderer {
       viewBoxX -= inlayOffset + extraThickness; // Extend left for inlays + thickness
       width += inlayOffset + extraThickness; // Space for text
     }
+    if (!isHorizontal && hasBraces) {
+      width += 30; // Extra right side padding for curly brace accolade in vertical mode
+    }
     if (isHorizontal && this.options.showInlays) {
       const extraThickness = this.options.stringThickness * (this.options.stringCount - 1);
       height += inlayOffset + extraThickness; // Space for text below + thickness
@@ -411,7 +414,17 @@ export class SvgRenderer {
     line.setAttribute('y1', String(str.y + str.thickness / 2));
     line.setAttribute('x2', String(width));
     line.setAttribute('y2', String(str.y + str.thickness / 2));
-    line.setAttribute('stroke', '#000000');
+    
+    // Determine stroke color (global string or per-string array)
+    const colorOpt = this.options.stringColor ?? '#6b7280';
+    let strokeColor = '#6b7280';
+    if (Array.isArray(colorOpt)) {
+      strokeColor = colorOpt[str.index] ?? colorOpt[colorOpt.length - 1] ?? '#6b7280';
+    } else if (typeof colorOpt === 'string') {
+      strokeColor = colorOpt;
+    }
+
+    line.setAttribute('stroke', strokeColor);
     line.setAttribute('stroke-width', String(str.thickness));
     line.setAttribute('class', CSS_CLASSES.string(str.index));
     group.appendChild(line);
@@ -563,7 +576,17 @@ export class SvgRenderer {
     line.setAttribute('y1', String(y1));
     line.setAttribute('x2', String(str.x + str.thickness / 2));
     line.setAttribute('y2', String(height));
-    line.setAttribute('stroke', '#000000');
+    
+    // Determine stroke color (global string or per-string array)
+    const colorOpt = this.options.stringColor ?? '#6b7280';
+    let strokeColor = '#6b7280';
+    if (Array.isArray(colorOpt)) {
+      strokeColor = colorOpt[str.index] ?? colorOpt[colorOpt.length - 1] ?? '#6b7280';
+    } else if (typeof colorOpt === 'string') {
+      strokeColor = colorOpt;
+    }
+
+    line.setAttribute('stroke', strokeColor);
     line.setAttribute('stroke-width', String(str.thickness));
     line.setAttribute('class', CSS_CLASSES.string(str.index));
     group.appendChild(line);
@@ -707,6 +730,16 @@ export class SvgRenderer {
     let minY = Infinity;
     let maxY = -Infinity;
 
+    // Helper to resolve stroke dash array based on strokeDashArray or strokeStyle preset
+    const resolveStrokeDashArray = (z: Zone): string | null => {
+      if (z.strokeDashArray) return z.strokeDashArray;
+      if (z.strokeStyle === 'dashed') return '4 4';
+      if (z.strokeStyle === 'dotted') return '2 2';
+      return null;
+    };
+
+    const strokeDash = resolveStrokeDashArray(zone);
+
     if (zoneType === 'hull' || zoneType === 'path') {
       const points = zone.points || [];
       if (points.length === 0) return;
@@ -737,11 +770,11 @@ export class SvgRenderer {
         polygon.setAttribute('points', pointsString);
         polygon.setAttribute('fill', zone.fillColor ?? 'rgba(56, 189, 248, 0.15)');
         polygon.setAttribute('stroke', zone.strokeColor ?? '#38bdf8');
-        polygon.setAttribute('stroke-width', String(padding * 2));
+        polygon.setAttribute('stroke-width', String(zone.strokeWidth ?? (padding * 1.2)));
         polygon.setAttribute('stroke-linejoin', 'round');
         polygon.setAttribute('stroke-linecap', 'round');
-        if (zone.strokeDashArray) {
-          polygon.setAttribute('stroke-dasharray', zone.strokeDashArray);
+        if (strokeDash) {
+          polygon.setAttribute('stroke-dasharray', strokeDash);
         }
         polygon.setAttribute('class', CSS_CLASSES.zoneRect);
         zoneG.appendChild(polygon);
@@ -752,11 +785,11 @@ export class SvgRenderer {
         path.setAttribute('d', d);
         path.setAttribute('fill', 'none');
         path.setAttribute('stroke', zone.strokeColor ?? '#38bdf8');
-        path.setAttribute('stroke-width', '4');
+        path.setAttribute('stroke-width', String(zone.strokeWidth ?? 4));
         path.setAttribute('stroke-linecap', 'round');
         path.setAttribute('stroke-linejoin', 'round');
-        if (zone.strokeDashArray) {
-          path.setAttribute('stroke-dasharray', zone.strokeDashArray);
+        if (strokeDash) {
+          path.setAttribute('stroke-dasharray', strokeDash);
         }
         path.setAttribute('class', CSS_CLASSES.zoneRect);
         zoneG.appendChild(path);
@@ -779,7 +812,6 @@ export class SvgRenderer {
         const x2 = Math.max(pos1.x, pos2.x) + radius;
         const y = -14;
         const midX = (x1 + x2) / 2;
-        const heightVal = 10;
 
         // Authentic mathematical curly brace accolade:
         // Left curve ({), central peak (v), right curve (})
@@ -799,9 +831,12 @@ export class SvgRenderer {
         bracePath.setAttribute('d', pathD);
         bracePath.setAttribute('fill', 'none');
         bracePath.setAttribute('stroke', zone.strokeColor ?? '#38bdf8');
-        bracePath.setAttribute('stroke-width', '2');
+        bracePath.setAttribute('stroke-width', String(zone.strokeWidth ?? 2));
         bracePath.setAttribute('stroke-linecap', 'round');
         bracePath.setAttribute('stroke-linejoin', 'round');
+        if (strokeDash) {
+          bracePath.setAttribute('stroke-dasharray', strokeDash);
+        }
         bracePath.setAttribute('class', CSS_CLASSES.zoneRect);
         zoneG.appendChild(bracePath);
       } else {
@@ -830,9 +865,12 @@ export class SvgRenderer {
         bracePath.setAttribute('d', pathD);
         bracePath.setAttribute('fill', 'none');
         bracePath.setAttribute('stroke', zone.strokeColor ?? '#38bdf8');
-        bracePath.setAttribute('stroke-width', '2');
+        bracePath.setAttribute('stroke-width', String(zone.strokeWidth ?? 2));
         bracePath.setAttribute('stroke-linecap', 'round');
         bracePath.setAttribute('stroke-linejoin', 'round');
+        if (strokeDash) {
+          bracePath.setAttribute('stroke-dasharray', strokeDash);
+        }
         bracePath.setAttribute('class', CSS_CLASSES.zoneRect);
         zoneG.appendChild(bracePath);
       }
@@ -891,9 +929,9 @@ export class SvgRenderer {
       rect.setAttribute('ry', String(zone.borderRadius ?? 8));
       rect.setAttribute('fill', zone.fillColor ?? 'rgba(56, 189, 248, 0.15)');
       rect.setAttribute('stroke', zone.strokeColor ?? '#38bdf8');
-      rect.setAttribute('stroke-width', '2');
-      if (zone.strokeDashArray) {
-        rect.setAttribute('stroke-dasharray', zone.strokeDashArray);
+      rect.setAttribute('stroke-width', String(zone.strokeWidth ?? 2));
+      if (strokeDash) {
+        rect.setAttribute('stroke-dasharray', strokeDash);
       }
       rect.setAttribute('class', CSS_CLASSES.zoneRect);
       zoneG.appendChild(rect);
@@ -905,14 +943,16 @@ export class SvgRenderer {
       const labelColor = zone.strokeColor ?? '#38bdf8';
       text.setAttribute('fill', labelColor);
       text.setAttribute('font-family', 'sans-serif');
-      text.setAttribute('font-size', '11');
+      text.setAttribute('font-size', String(zone.labelFontSize ?? 11));
       text.setAttribute('font-weight', 'bold');
       text.setAttribute('class', CSS_CLASSES.zoneLabel);
 
       if (zoneType === 'brace' && !isHorizontal) {
+        text.setAttribute('writing-mode', 'tb');
+        text.setAttribute('glyph-orientation-vertical', '0');
         text.setAttribute('x', String(maxX + 6));
         text.setAttribute('y', String((minY + maxY) / 2));
-        text.setAttribute('text-anchor', 'start');
+        text.setAttribute('text-anchor', 'middle');
         text.setAttribute('dominant-baseline', 'central');
       } else if (isHorizontal) {
         text.setAttribute('x', String(minX + 8));

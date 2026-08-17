@@ -8,6 +8,7 @@ export const DEFAULT_STRING_COUNT = 6;
 export const DEFAULT_ORIENTATION: 'horizontal' | 'vertical' = 'horizontal';
 export const DEFAULT_STRING_SPACING = 30;
 export const DEFAULT_STRING_THICKNESS = 1;
+export const DEFAULT_STRING_COLOR = '#6b7280';
 export const DEFAULT_FRET_SPACING = 60;
 export const DEFAULT_FRET_THICKNESS = 3;
 export const DEFAULT_SHOW_INLAYS = true;

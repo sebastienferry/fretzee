@@ -20,6 +20,9 @@ export interface FretboardOptions {
   
   /** Visual thickness of strings in pixels */
   stringThickness?: number;
+
+  /** Color of strings: single global color string (e.g. '#6b7280') or an array per string (low E to high E or 1st to Nth) */
+  stringColor?: string | string[];
   
   /** Distance between fret centers in pixels */
   fretSpacing?: number;
@@ -80,14 +83,23 @@ export interface Zone {
   /** Stroke border color of the zone (e.g. '#38bdf8') */
   strokeColor?: string;
 
-  /** Stroke dash pattern (e.g. '4 4' for dashed outline) */
+  /** Stroke style preset: 'solid' (default), 'dashed', or 'dotted' */
+  strokeStyle?: 'solid' | 'dashed' | 'dotted';
+
+  /** Stroke dash pattern (e.g. '4 4' for custom dashed outline) */
   strokeDashArray?: string;
+
+  /** Stroke width of the zone outline/path (optional custom width in pixels) */
+  strokeWidth?: number;
 
   /** Corner radius for the zone rectangle (default: 8) */
   borderRadius?: number;
 
   /** Optional text label to display on or next to the zone (e.g. 'D Form Triad') */
   label?: string;
+
+  /** Font size in pixels for the zone label (default: 11) */
+  labelFontSize?: number;
 }
 
 /**
