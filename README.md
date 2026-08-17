@@ -149,6 +149,7 @@ document.body.appendChild(barreChord.render());
 | :--- | :--- | :--- | :--- |
 | `title` | `string` | `undefined` | Optional title header displayed above the fretboard |
 | `titleAlignment` | `'center' \| 'left'` | `'center'` | Title alignment relative to width |
+| `titleOffsetY` | `number` | `0` | Vertical offset in pixels to shift title higher/lower |
 | `stringCount` | `number` | `6` | Number of strings (4 for bass, 6 for guitar, up to 8) |
 | `fretCount` | `number` | `12` | Number of frets displayed (4 to 24) |
 | `startFret` | `number` | `1` | Starting fret position (1 to 24) |
@@ -164,6 +165,8 @@ document.body.appendChild(barreChord.render());
 | Property | Type | Default | Description |
 | :--- | :--- | :--- | :--- |
 | `type` | `'box' \| 'hull' \| 'path' \| 'brace'` | `'box'` | Shape type of the zone highlight |
+| `position` | `'top' \| 'bottom'` | `'top'` | Placement side (`'top'`=top/right, `'bottom'`=bottom/left) |
+| `offsetY` | `number` | `0` | Vertical offset in pixels to slide/stack zone or brace higher/lower |
 | `startString` | `number` | `1` | Starting string (1-based) for `'box'` shape |
 | `endString` | `number` | `1` | Ending string (1-based) for `'box'` shape |
 | `startFret` | `number` | `1` | Starting fret for `'box'` or `'brace'` shape |
@@ -175,8 +178,9 @@ document.body.appendChild(barreChord.render());
 | `strokeStyle` | `'solid' \| 'dashed' \| 'dotted'` | `'solid'` | Preset stroke line style |
 | `strokeDashArray` | `string` | `undefined` | Custom SVG stroke-dasharray (e.g. `'4 4'`) |
 | `borderRadius` | `number` | `8` | Corner radius for `'box'` rectangle |
-| `label` | `string` | `undefined` | Optional text label for the zone |
+| `label` | `string` | `undefined` | Optional text label for the zone (supports `\n` linebreaks) |
 | `labelFontSize` | `number` | `11` | Font size in pixels for the zone label |
+| `labelFontWeight` | `string` | `'bold'` | Font weight for zone label (e.g. `'normal'`, `'bold'`, `'600'`) |
 
 ### Fingering Object Options
 

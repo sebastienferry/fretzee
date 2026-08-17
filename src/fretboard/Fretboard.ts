@@ -118,6 +118,7 @@ export class Fretboard {
       showInlays: DEFAULT_SHOW_INLAYS,
       title: options.title ?? DEFAULT_TITLE,
       titleAlignment: DEFAULT_TITLE_ALIGNMENT,
+      titleOffsetY: options.titleOffsetY ?? 0,
       tuning: options.tuning ?? [],
       fingerings: [],
       zones: [],

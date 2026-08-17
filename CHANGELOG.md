@@ -5,6 +5,15 @@ All notable changes to the **Fretzee** core library will be documented in this f
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.2] - 2026-08-17
+
+### Added
+- Add `titleOffsetY` option to shift diagram title vertically.
+- Add `position` (`'top'` | `'bottom'`) option for zone and curly brace placement (top/bottom in horizontal, right/left in vertical).
+- Add `offsetY` option to slide/stack zones and braces vertically.
+- Add `labelFontWeight` option and multi-line support (`\n` linebreaks) for zone labels.
+- Add white text stroke outline on zone labels for high-contrast legibility.
+
 ## [0.3.1] - 2026-08-17
 
 ### Fixed

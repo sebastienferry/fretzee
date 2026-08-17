@@ -60,22 +60,19 @@ export class SvgRenderer {
     width += padding * 2;
     height += padding * 2;
 
-    // Additional adjustments for open string / muted string fingerings (fret 0 or fret -1)
-    const hasOpenStrings = fingerings.some(f => f.fret === 0 || f.fret === -1);
+    // Always reserve clearance for open string / muted string fingerings (fret 0 or fret -1)
     const radius = calculateFingeringRadius(this.options.stringSpacing, this.options.fretSpacing);
     const openOffset = (this.options.fretSpacing * 0.50) + radius + 5;
 
-    if (hasOpenStrings) {
-      if (isHorizontal) {
-        viewBoxX -= openOffset;
-        width += openOffset;
-      } else {
-        viewBoxY -= openOffset;
-        height += openOffset;
-      }
+    if (isHorizontal) {
+      viewBoxX -= openOffset;
+      width += openOffset;
+    } else {
+      viewBoxY -= openOffset;
+      height += openOffset;
     }
 
-    // Additional adjustment for fingerings on string 1 (top string in horizontal mode)
+    // Reserved top clearance for fingerings on string 1 (top string in horizontal mode)
     const hasTopStringFingerings = isHorizontal && fingerings.some(f => f.string === 1);
     const topMarkerOffset = hasTopStringFingerings ? radius + 5 : 0;
     if (hasTopStringFingerings) {
@@ -84,18 +81,37 @@ export class SvgRenderer {
     }
 
     // Additional adjustment for title or zone labels/braces
-    const hasBraces = Boolean(this.options.zones && this.options.zones.some(z => z.type === 'brace'));
     const hasZoneLabels = Boolean(this.options.zones && this.options.zones.some(z => z.label && z.label.trim().length > 0));
+    const titleLines = (this.options.title || '').replace(/\\n/g, '\n').split(/\r?\n/);
     const hasTitle = Boolean(this.options.title && this.options.title.trim().length > 0);
-    
+    const titleLineCount = hasTitle ? titleLines.length : 0;
     let extraTopSpace = 0;
-    if (hasTitle) extraTopSpace += TITLE_FONT_SIZE + TITLE_PADDING + 8;
-    if (hasBraces) extraTopSpace += 26; // Dedicated vertical clearance for curly brace accolade & label
-    else if (hasZoneLabels && isHorizontal) extraTopSpace += 16;
+    if (hasTitle) {
+      extraTopSpace += (TITLE_FONT_SIZE * 1.2 * titleLineCount) + TITLE_PADDING + 16;
+    }
+
+    const hasTopBraces = Boolean(this.options.zones && this.options.zones.some(z => z.type === 'brace' && (z.position !== 'bottom')));
+    const hasBottomBraces = Boolean(this.options.zones && this.options.zones.some(z => z.type === 'brace' && z.position === 'bottom'));
+    const maxTopOffset = (this.options.zones || []).filter(z => z.position !== 'bottom').reduce((max, z) => Math.max(max, Math.abs(z.offsetY || 0)), 0);
+    const maxBottomOffset = (this.options.zones || []).filter(z => z.position === 'bottom').reduce((max, z) => Math.max(max, Math.abs(z.offsetY || 0)), 0);
+
+    if (hasTopBraces) extraTopSpace += 26 + maxTopOffset;
+    else if (hasZoneLabels && isHorizontal) extraTopSpace += 16 + maxTopOffset;
 
     if (extraTopSpace > 0) {
       viewBoxY -= extraTopSpace;
       height += extraTopSpace;
+    }
+
+    if (isHorizontal && hasBottomBraces) {
+      const extraBottomSpace = 26 + maxBottomOffset;
+      height += extraBottomSpace;
+    }
+
+    if (!isHorizontal && hasBottomBraces) {
+      const extraLeftSpace = 30 + maxBottomOffset;
+      viewBoxX -= extraLeftSpace;
+      width += extraLeftSpace;
     }
     
     // Additional adjustments for inlays
@@ -104,7 +120,7 @@ export class SvgRenderer {
       viewBoxX -= inlayOffset + extraThickness; // Extend left for inlays + thickness
       width += inlayOffset + extraThickness; // Space for text
     }
-    if (!isHorizontal && hasBraces) {
+    if (!isHorizontal && hasTopBraces) {
       width += 30; // Extra right side padding for curly brace accolade in vertical mode
     }
     if (isHorizontal && this.options.showInlays) {
@@ -137,7 +153,9 @@ export class SvgRenderer {
     if (isHorizontal) {
       this.renderHorizontal(strings, frets, inlays, markers, fingerings, svg, width, height, topMarkerOffset);
     } else {
-      this.renderVertical(strings, frets, inlays, markers, fingerings, svg, width, height, (hasOpenStrings ? openOffset : 0) + tuningOffset);
+      const hasOpenFingerings = fingerings.some(f => f.fret <= 0);
+      const verticalTopOffset = (hasOpenFingerings ? openOffset : 0) + tuningOffset;
+      this.renderVertical(strings, frets, inlays, markers, fingerings, svg, width, height, verticalTopOffset);
     }
 
     return svg;
@@ -299,11 +317,9 @@ export class SvgRenderer {
     const tuning = this.options.tuning;
 
     const radius = calculateFingeringRadius(this.options.stringSpacing, this.options.fretSpacing);
-    const hasAnyOpenMarker = (this.options.fingerings || []).some(f => f.fret === 0 || f.fret === -1);
-    
     // Uniform offset across all strings to keep labels aligned in a straight line
     const openOffset = (this.options.fretSpacing * 0.50) + radius;
-    const uniformOffset = hasAnyOpenMarker ? -(openOffset + 14) : -(radius + 12);
+    const uniformOffset = -(openOffset + 14);
 
     // tuning is provided 6th string to 1st string (lowest string to highest string)
     for (let i = 0; i < stringCount; i++) {
@@ -391,14 +407,30 @@ export class SvgRenderer {
       }
     }
 
-    // Y position is above the fretboard area, top string/nut markers, and any zone labels/braces
     const hasZoneOverlay = Boolean(this.options.zones && this.options.zones.some(z => (z.type === 'brace') || (z.label && z.label.trim().length > 0)));
     const zoneOffset = hasZoneOverlay ? 22 : 0;
-    const yPosition = -(TITLE_PADDING + topOffset + zoneOffset);
+
+    const titleLines = (this.options.title || '').replace(/\\n/g, '\n').split(/\r?\n/);
+    const titleOffset = this.options.titleOffsetY ?? 0;
+    const multiLineOffset = (titleLines.length - 1) * (TITLE_FONT_SIZE * 1.1);
+    const yPosition = -(TITLE_PADDING + topOffset + zoneOffset + multiLineOffset) + titleOffset;
 
     text.setAttribute('x', String(xPosition));
     text.setAttribute('y', String(yPosition));
-    text.textContent = this.options.title;
+
+    if (titleLines.length === 1) {
+      text.textContent = titleLines[0];
+    } else {
+      titleLines.forEach((lineText, i) => {
+        const tspan = document.createElementNS(SVG_NS, 'tspan');
+        tspan.setAttribute('x', String(xPosition));
+        if (i > 0) {
+          tspan.setAttribute('dy', '1.2em');
+        }
+        tspan.textContent = lineText;
+        text.appendChild(tspan);
+      });
+    }
 
     svg.appendChild(text);
   }
@@ -807,30 +839,44 @@ export class SvgRenderer {
       const pos1 = getFingeringPosition(1, effectiveStartFret, this.options.orientation, this.options.stringSpacing, this.options.fretSpacing, this.options.stringCount, this.options.stringThickness, this.options.fretThickness, startFret);
       const pos2 = getFingeringPosition(1, effectiveEndFret, this.options.orientation, this.options.stringSpacing, this.options.fretSpacing, this.options.stringCount, this.options.stringThickness, this.options.fretThickness, startFret);
 
+      const zoneOffsetY = zone.offsetY ?? 0;
+      const isBottomPos = zone.position === 'bottom';
+
       if (isHorizontal) {
         const x1 = Math.min(pos1.x, pos2.x) - radius;
         const x2 = Math.max(pos1.x, pos2.x) + radius;
-        const y = -14;
         const midX = (x1 + x2) / 2;
-
-        // Authentic mathematical curly brace accolade:
-        // Left curve ({), central peak (v), right curve (})
         const braceHeight = 12;
-        const r = 6; // Corner radius for curves
-        const pathD = `
-          M ${x1} ${y} 
-          Q ${x1} ${y - r} ${x1 + r} ${y - r} 
-          H ${midX - r} 
-          Q ${midX} ${y - r} ${midX} ${y - braceHeight} 
-          Q ${midX} ${y - r} ${midX + r} ${y - r} 
-          H ${x2 - r} 
-          Q ${x2} ${y - r} ${x2} ${y}
-        `.replace(/\s+/g, ' ').trim();
+        const r = 6;
 
-        minX = x1;
-        maxX = x2;
-        minY = y - braceHeight;
-        maxY = y;
+        let y: number;
+        let pathD: string;
+
+        if (isBottomPos) {
+          y = (this.options.stringCount - 1) * this.options.stringSpacing + 14 + zoneOffsetY;
+          pathD = `
+            M ${x1} ${y} 
+            Q ${x1} ${y + r} ${x1 + r} ${y + r} 
+            H ${midX - r} 
+            Q ${midX} ${y + r} ${midX} ${y + braceHeight} 
+            Q ${midX} ${y + r} ${midX + r} ${y + r} 
+            H ${x2 - r} 
+            Q ${x2} ${y + r} ${x2} ${y}
+          `.replace(/\s+/g, ' ').trim();
+          minX = x1; maxX = x2; minY = y; maxY = y + braceHeight;
+        } else {
+          y = -14 - zoneOffsetY;
+          pathD = `
+            M ${x1} ${y} 
+            Q ${x1} ${y - r} ${x1 + r} ${y - r} 
+            H ${midX - r} 
+            Q ${midX} ${y - r} ${midX} ${y - braceHeight} 
+            Q ${midX} ${y - r} ${midX + r} ${y - r} 
+            H ${x2 - r} 
+            Q ${x2} ${y - r} ${x2} ${y}
+          `.replace(/\s+/g, ' ').trim();
+          minX = x1; maxX = x2; minY = y - braceHeight; maxY = y;
+        }
 
         const bracePath = document.createElementNS(SVG_NS, 'path');
         bracePath.setAttribute('d', pathD);
@@ -845,26 +891,42 @@ export class SvgRenderer {
         bracePath.setAttribute('class', CSS_CLASSES.zoneRect);
         zoneG.appendChild(bracePath);
       } else {
-        // Vertical orientation: curly brace spanning frets vertically along right edge
+        // Vertical orientation: curly brace spanning frets vertically on right (default) or left (bottom pos)
         const y1 = Math.min(pos1.y, pos2.y) - radius;
         const y2 = Math.max(pos1.y, pos2.y) + radius;
-        const widthVal = calculateVerticalWidth(this.options.stringCount, this.options.stringSpacing, this.options.stringThickness);
-        const x = widthVal + 14;
         const midY = (y1 + y2) / 2;
         const braceWidth = 12;
         const r = 6;
 
-        minX = x; maxX = x + braceWidth; minY = y1; maxY = y2;
+        let x: number;
+        let pathD: string;
 
-        const pathD = `
-          M ${x} ${y1} 
-          Q ${x + r} ${y1} ${x + r} ${y1 + r} 
-          V ${midY - r} 
-          Q ${x + r} ${midY} ${x + braceWidth} ${midY} 
-          Q ${x + r} ${midY} ${x + r} ${midY + r} 
-          V ${y2 - r} 
-          Q ${x + r} ${y2} ${x} ${y2}
-        `.replace(/\s+/g, ' ').trim();
+        if (isBottomPos) {
+          x = -14 - zoneOffsetY;
+          minX = x - braceWidth; maxX = x; minY = y1; maxY = y2;
+          pathD = `
+            M ${x} ${y1} 
+            Q ${x - r} ${y1} ${x - r} ${y1 + r} 
+            V ${midY - r} 
+            Q ${x - r} ${midY} ${x - braceWidth} ${midY} 
+            Q ${x - r} ${midY} ${x - r} ${midY + r} 
+            V ${y2 - r} 
+            Q ${x - r} ${y2} ${x} ${y2}
+          `.replace(/\s+/g, ' ').trim();
+        } else {
+          const widthVal = calculateVerticalWidth(this.options.stringCount, this.options.stringSpacing, this.options.stringThickness);
+          x = widthVal + 14 + zoneOffsetY;
+          minX = x; maxX = x + braceWidth; minY = y1; maxY = y2;
+          pathD = `
+            M ${x} ${y1} 
+            Q ${x + r} ${y1} ${x + r} ${y1 + r} 
+            V ${midY - r} 
+            Q ${x + r} ${midY} ${x + braceWidth} ${midY} 
+            Q ${x + r} ${midY} ${x + r} ${midY + r} 
+            V ${y2 - r} 
+            Q ${x + r} ${y2} ${x} ${y2}
+          `.replace(/\s+/g, ' ').trim();
+        }
 
         const bracePath = document.createElementNS(SVG_NS, 'path');
         bracePath.setAttribute('d', pathD);
@@ -949,31 +1011,58 @@ export class SvgRenderer {
       text.setAttribute('fill', labelColor);
       text.setAttribute('font-family', 'sans-serif');
       text.setAttribute('font-size', String(zone.labelFontSize ?? 11));
-      text.setAttribute('font-weight', 'bold');
+      text.setAttribute('font-weight', String(zone.labelFontWeight ?? 'bold'));
+      text.setAttribute('paint-order', 'stroke fill');
+      text.setAttribute('stroke', '#ffffff');
+      text.setAttribute('stroke-width', '3px');
+      text.setAttribute('stroke-linejoin', 'round');
       text.setAttribute('class', CSS_CLASSES.zoneLabel);
 
       if (zoneType === 'brace' && isHorizontal) {
         text.setAttribute('x', String((minX + maxX) / 2));
-        text.setAttribute('y', String(minY - 4));
+        if (zone.position === 'bottom') {
+          text.setAttribute('y', String(maxY + (zone.labelFontSize ?? 11) + 2));
+        } else {
+          text.setAttribute('y', String(minY - 4));
+        }
         text.setAttribute('text-anchor', 'middle');
       } else if (zoneType === 'brace' && !isHorizontal) {
         text.setAttribute('writing-mode', 'tb');
         text.setAttribute('glyph-orientation-vertical', '0');
-        text.setAttribute('x', String(maxX + 6));
+        if (zone.position === 'bottom') {
+          text.setAttribute('x', String(minX - 6));
+        } else {
+          text.setAttribute('x', String(maxX + 6));
+        }
         text.setAttribute('y', String((minY + maxY) / 2));
         text.setAttribute('text-anchor', 'middle');
         text.setAttribute('dominant-baseline', 'central');
       } else if (isHorizontal) {
         text.setAttribute('x', String(minX + 8));
-        text.setAttribute('y', String(minY - 6));
+        text.setAttribute('y', String(minY + (zone.labelFontSize ?? 11) + 2));
         text.setAttribute('text-anchor', 'start');
       } else {
         text.setAttribute('x', String((minX + maxX) / 2));
-        text.setAttribute('y', String(minY - 6));
+        text.setAttribute('y', String(minY + (zone.labelFontSize ?? 11) + 2));
         text.setAttribute('text-anchor', 'middle');
       }
 
-      text.textContent = zone.label;
+      const labelLines = (zone.label || '').replace(/\\n/g, '\n').split(/\r?\n/);
+      if (labelLines.length === 1) {
+        text.textContent = labelLines[0];
+      } else {
+        const labelX = text.getAttribute('x') || '0';
+        labelLines.forEach((lineText, i) => {
+          const tspan = document.createElementNS(SVG_NS, 'tspan');
+          tspan.setAttribute('x', labelX);
+          if (i > 0) {
+            tspan.setAttribute('dy', '1.2em');
+          }
+          tspan.textContent = lineText;
+          text.appendChild(tspan);
+        });
+      }
+
       zoneG.appendChild(text);
     }
 
