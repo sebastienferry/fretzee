@@ -827,6 +827,11 @@ export class SvgRenderer {
           Q ${x2} ${y - r} ${x2} ${y}
         `.replace(/\s+/g, ' ').trim();
 
+        minX = x1;
+        maxX = x2;
+        minY = y - braceHeight;
+        maxY = y;
+
         const bracePath = document.createElementNS(SVG_NS, 'path');
         bracePath.setAttribute('d', pathD);
         bracePath.setAttribute('fill', 'none');
@@ -947,7 +952,11 @@ export class SvgRenderer {
       text.setAttribute('font-weight', 'bold');
       text.setAttribute('class', CSS_CLASSES.zoneLabel);
 
-      if (zoneType === 'brace' && !isHorizontal) {
+      if (zoneType === 'brace' && isHorizontal) {
+        text.setAttribute('x', String((minX + maxX) / 2));
+        text.setAttribute('y', String(minY - 4));
+        text.setAttribute('text-anchor', 'middle');
+      } else if (zoneType === 'brace' && !isHorizontal) {
         text.setAttribute('writing-mode', 'tb');
         text.setAttribute('glyph-orientation-vertical', '0');
         text.setAttribute('x', String(maxX + 6));

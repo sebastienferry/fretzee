@@ -150,6 +150,29 @@ describe('Highlighted Fretboard Zones', () => {
     expect(label?.textContent).toBe('Fret Range');
   });
 
+  it('should support curly brace shape in horizontal orientation', () => {
+    const fretboard = new Fretboard({
+      orientation: 'horizontal',
+      zones: [
+        {
+          type: 'brace',
+          startFret: 1,
+          endFret: 3,
+          label: 'Horizontal Brace Range'
+        }
+      ]
+    });
+
+    const svg = fretboard.render();
+    const brace = svg.querySelector('path.fretzee-zone-rect');
+    expect(brace).not.toBeNull();
+
+    const label = svg.querySelector('text.fretzee-zone-label');
+    expect(label).not.toBeNull();
+    expect(label?.getAttribute('text-anchor')).toBe('middle');
+    expect(label?.textContent).toBe('Horizontal Brace Range');
+  });
+
   it('should support strokeStyle presets (dashed/dotted) and custom labelFontSize', () => {
     const fretboard = new Fretboard({
       zones: [
