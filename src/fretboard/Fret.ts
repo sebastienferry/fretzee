@@ -39,10 +39,10 @@ export class Fret implements FretInterface {
    * const firstFret = new Fret(1, 0, 2);
    * ```
    */
-  constructor(index: number, x: number, thickness: number) {
+  constructor(index: number, x: number, thickness: number, y: number = 0) {
     this.index = index;
     this.x = x;
-    this.y = 0; // Will be set based on orientation
+    this.y = y;
     this.thickness = thickness;
   }
 

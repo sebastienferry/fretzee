@@ -13,6 +13,7 @@ export const DEFAULT_FRET_SPACING = 60;
 export const DEFAULT_FRET_THICKNESS = 3;
 export const DEFAULT_SHOW_INLAYS = true;
 export const DEFAULT_START_FRET = 1;
+export const DEFAULT_TITLE = '';
 export const DEFAULT_TITLE_ALIGNMENT: 'center' | 'left' = 'center';
 export const TITLE_FONT_SIZE = 16;
 export const TITLE_PADDING = 8;
