@@ -48,12 +48,13 @@ export class String implements StringInterface {
     index: number,
     y: number,
     thickness: number,
-    stringCount: number = 6
+    stringCount: number = 6,
+    x: number = 0
   ) {
     this.index = index;
     this.y = y;
     this.thickness = thickness;
-    this.x = 0; // Will be set based on orientation
+    this.x = x;
     
     // Assign tuning note if within standard 6-string range
     if (index < STANDARD_TUNING.length && index < stringCount) {

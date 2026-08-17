@@ -8,10 +8,12 @@ export const DEFAULT_STRING_COUNT = 6;
 export const DEFAULT_ORIENTATION: 'horizontal' | 'vertical' = 'horizontal';
 export const DEFAULT_STRING_SPACING = 30;
 export const DEFAULT_STRING_THICKNESS = 1;
+export const DEFAULT_STRING_COLOR = '#6b7280';
 export const DEFAULT_FRET_SPACING = 60;
 export const DEFAULT_FRET_THICKNESS = 3;
 export const DEFAULT_SHOW_INLAYS = true;
 export const DEFAULT_START_FRET = 1;
+export const DEFAULT_TITLE = '';
 export const DEFAULT_TITLE_ALIGNMENT: 'center' | 'left' = 'center';
 export const TITLE_FONT_SIZE = 16;
 export const TITLE_PADDING = 8;
@@ -55,7 +57,11 @@ export const CSS_CLASSES = {
   fingeringCircle: 'fretzee-fingering-circle',
   fingeringText: 'fretzee-fingering-text',
   tuning: 'fretzee-tuning',
-  tuningLabel: 'fretzee-tuning-label'
+  tuningLabel: 'fretzee-tuning-label',
+  zones: 'fretzee-zones',
+  zone: 'fretzee-zone',
+  zoneRect: 'fretzee-zone-rect',
+  zoneLabel: 'fretzee-zone-label'
 };
 
 // Error messages

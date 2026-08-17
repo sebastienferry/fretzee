@@ -20,6 +20,9 @@ export interface FretboardOptions {
   
   /** Visual thickness of strings in pixels */
   stringThickness?: number;
+
+  /** Color of strings: single global color string (e.g. '#6b7280') or an array per string (low E to high E or 1st to Nth) */
+  stringColor?: string | string[];
   
   /** Distance between fret centers in pixels */
   fretSpacing?: number;
@@ -47,6 +50,56 @@ export interface FretboardOptions {
 
   /** Fingering markers to render on the fretboard */
   fingerings?: Fingering[];
+
+  /** Highlighted regions/zones (e.g. triads, scale shapes, CAGED forms) */
+  zones?: Zone[];
+}
+
+/**
+ * Definition of a highlighted region/zone on the fretboard
+ */
+export interface Zone {
+  /** Zone shape type: 'box' (default bounding box), 'hull' (convex polygon), 'path' (line sequence), or 'brace' (curly brace accolade) */
+  type?: 'box' | 'hull' | 'path' | 'brace';
+
+  /** Starting string for box shape (1-based, e.g. 1 for High E) */
+  startString?: number;
+
+  /** Ending string for box shape (1-based, e.g. 3 for G string) */
+  endString?: number;
+
+  /** Starting fret number for box shape */
+  startFret?: number;
+
+  /** Ending fret number for box shape */
+  endFret?: number;
+
+  /** Array of point positions [{ string: 1, fret: 2 }, ...] to enclose with a hull or connect with a path */
+  points?: Array<{ string: number; fret: number }>;
+
+  /** Fill background color of the zone (e.g. 'rgba(56, 189, 248, 0.15)') */
+  fillColor?: string;
+
+  /** Stroke border color of the zone (e.g. '#38bdf8') */
+  strokeColor?: string;
+
+  /** Stroke style preset: 'solid' (default), 'dashed', or 'dotted' */
+  strokeStyle?: 'solid' | 'dashed' | 'dotted';
+
+  /** Stroke dash pattern (e.g. '4 4' for custom dashed outline) */
+  strokeDashArray?: string;
+
+  /** Stroke width of the zone outline/path (optional custom width in pixels) */
+  strokeWidth?: number;
+
+  /** Corner radius for the zone rectangle (default: 8) */
+  borderRadius?: number;
+
+  /** Optional text label to display on or next to the zone (e.g. 'D Form Triad') */
+  label?: string;
+
+  /** Font size in pixels for the zone label (default: 11) */
+  labelFontSize?: number;
 }
 
 /**

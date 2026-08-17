@@ -44,6 +44,8 @@
 - **Horizontal & Vertical Layouts** — Suited for chord boxes, scale paths, and neck-wide diagrams.
 - **Multi-Instrument** — Guitar (6-string), Bass (4-string), 5-string, 7-string, 8-string, and custom tunings.
 - **Advanced Fingerings** — Root note highlights, interval badges, muted strings (<kbd>X</kbd>), open strings (<kbd>O</kbd>), custom text, and custom colors.
+- **Instructional Zones** — Highlight fretboard regions with Boxes, Convex Hulls, Sequence Paths, and Curly Brace Accolades with custom stroke styles, width, and label sizes.
+- **Custom String Styling** — Global string colors or per-string color arrays with soft gray defaults.
 - **Native PNG Export** — Export directly to high-resolution PNG using HTML5 Canvas.
 
 ## Installation
@@ -152,9 +154,29 @@ document.body.appendChild(barreChord.render());
 | `startFret` | `number` | `1` | Starting fret position (1 to 24) |
 | `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` | Layout orientation |
 | `showInlays` | `boolean` | `true` | Show fret number inlays and position markers |
-| `inlayPositions` | `number[]` | `[3, 5, 7, 9, 12, 15, 17, 19, 21, 24]` | Frets where dots are drawn |
+| `stringColor` | `string \| string[]` | `'#6b7280'` | Color for strings (single global color or array per string) |
 | `tuning` | `string[]` | `undefined` | Tuning labels (e.g. `['E', 'A', 'D', 'G', 'B', 'E']`) |
 | `fingerings` | `Fingering[]` | `[]` | Array of marker positions to render |
+| `zones` | `Zone[]` | `[]` | Array of highlighted regions (`box`, `hull`, `path`, `brace`) |
+
+### Zone Object Options
+
+| Property | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `type` | `'box' \| 'hull' \| 'path' \| 'brace'` | `'box'` | Shape type of the zone highlight |
+| `startString` | `number` | `1` | Starting string (1-based) for `'box'` shape |
+| `endString` | `number` | `1` | Ending string (1-based) for `'box'` shape |
+| `startFret` | `number` | `1` | Starting fret for `'box'` or `'brace'` shape |
+| `endFret` | `number` | `startFret` | Ending fret for `'box'` or `'brace'` shape |
+| `points` | `Array<{ string, fret }>` | `[]` | Sequence of points for `'hull'` or `'path'` shapes |
+| `fillColor` | `string` | `'rgba(56, 189, 248, 0.15)'` | Background fill color |
+| `strokeColor` | `string` | `'#38bdf8'` | Outline / line stroke color |
+| `strokeWidth` | `number` | *dynamic* | Stroke width in pixels (defaults: hull: dynamic, path: 4, box/brace: 2) |
+| `strokeStyle` | `'solid' \| 'dashed' \| 'dotted'` | `'solid'` | Preset stroke line style |
+| `strokeDashArray` | `string` | `undefined` | Custom SVG stroke-dasharray (e.g. `'4 4'`) |
+| `borderRadius` | `number` | `8` | Corner radius for `'box'` rectangle |
+| `label` | `string` | `undefined` | Optional text label for the zone |
+| `labelFontSize` | `number` | `11` | Font size in pixels for the zone label |
 
 ### Fingering Object Options
 

@@ -35,11 +35,13 @@ import {
   DEFAULT_ORIENTATION,
   DEFAULT_STRING_SPACING,
   DEFAULT_STRING_THICKNESS,
+  DEFAULT_STRING_COLOR,
   DEFAULT_FRET_SPACING,
   DEFAULT_FRET_THICKNESS,
   DEFAULT_SHOW_INLAYS,
   DEFAULT_INLAY_POSITIONS,
   DEFAULT_START_FRET,
+  DEFAULT_TITLE,
   DEFAULT_TITLE_ALIGNMENT
 } from './constants';
 import { validateOptions } from '../utils/validation';
@@ -109,14 +111,16 @@ export class Fretboard {
       orientation: DEFAULT_ORIENTATION,
       stringSpacing: DEFAULT_STRING_SPACING,
       stringThickness: DEFAULT_STRING_THICKNESS,
+      stringColor: DEFAULT_STRING_COLOR,
       fretSpacing: DEFAULT_FRET_SPACING,
       fretThickness: DEFAULT_FRET_THICKNESS,
       inlayPositions: [...DEFAULT_INLAY_POSITIONS],
       showInlays: DEFAULT_SHOW_INLAYS,
-      title: undefined as any,
+      title: options.title ?? DEFAULT_TITLE,
       titleAlignment: DEFAULT_TITLE_ALIGNMENT,
       tuning: options.tuning ?? [],
       fingerings: [],
+      zones: [],
       ...options,
       startFret: effectiveStartFret
     };
@@ -167,10 +171,9 @@ export class Fretboard {
           i,
           0, // y not used in vertical orientation
           this.options.stringThickness * (i + 1), // Vary thickness for visual effect
-          this.options.stringCount
+          this.options.stringCount,
+          x
         );
-        // Override x coordinate for vertical orientation
-        (str as any).x = x;
         this.strings.push(str);
       }
     }
@@ -195,9 +198,7 @@ export class Fretboard {
         this.frets.push(fret);
       } else {
         const y = getVerticalFretY(i, this.options.fretSpacing);
-        const fret = new Fret(fretIndex, 0, this.options.fretThickness); // x not used in vertical orientation
-        // Override y coordinate for vertical orientation
-        (fret as any).y = y;
+        const fret = new Fret(fretIndex, 0, this.options.fretThickness, y);
         this.frets.push(fret);
       }
     }

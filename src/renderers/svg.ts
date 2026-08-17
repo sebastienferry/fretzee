@@ -2,7 +2,7 @@
  * SVG renderer for Fretboard Renderer Library
  */
 
-import type { FretboardOptions, Marker as MarkerInterface } from '../fretboard/types';
+import type { FretboardOptions, Marker as MarkerInterface, Zone } from '../fretboard/types';
 import { SVG_NS, CSS_CLASSES, TITLE_FONT_SIZE, TITLE_PADDING, DEFAULT_FINGERING_TEXT_COLOR } from '../fretboard/constants';
 import { String as GuitarString } from '../fretboard/String';
 import { Fret } from '../fretboard/Fret';
@@ -83,12 +83,19 @@ export class SvgRenderer {
       height += topMarkerOffset;
     }
 
-    // Additional adjustment for title
+    // Additional adjustment for title or zone labels/braces
+    const hasBraces = Boolean(this.options.zones && this.options.zones.some(z => z.type === 'brace'));
+    const hasZoneLabels = Boolean(this.options.zones && this.options.zones.some(z => z.label && z.label.trim().length > 0));
     const hasTitle = Boolean(this.options.title && this.options.title.trim().length > 0);
-    const titleSpace = TITLE_FONT_SIZE + TITLE_PADDING;
-    if (hasTitle) {
-      viewBoxY -= titleSpace;
-      height += titleSpace;
+    
+    let extraTopSpace = 0;
+    if (hasTitle) extraTopSpace += TITLE_FONT_SIZE + TITLE_PADDING + 8;
+    if (hasBraces) extraTopSpace += 26; // Dedicated vertical clearance for curly brace accolade & label
+    else if (hasZoneLabels && isHorizontal) extraTopSpace += 16;
+
+    if (extraTopSpace > 0) {
+      viewBoxY -= extraTopSpace;
+      height += extraTopSpace;
     }
     
     // Additional adjustments for inlays
@@ -96,6 +103,9 @@ export class SvgRenderer {
       const extraThickness = this.options.stringThickness * (this.options.stringCount - 1);
       viewBoxX -= inlayOffset + extraThickness; // Extend left for inlays + thickness
       width += inlayOffset + extraThickness; // Space for text
+    }
+    if (!isHorizontal && hasBraces) {
+      width += 30; // Extra right side padding for curly brace accolade in vertical mode
     }
     if (isHorizontal && this.options.showInlays) {
       const extraThickness = this.options.stringThickness * (this.options.stringCount - 1);
@@ -185,6 +195,11 @@ export class SvgRenderer {
       svg.appendChild(markersGroup);
     }
 
+    // Render zones (underneath fingerings)
+    if (this.options.zones && this.options.zones.length > 0) {
+      this.renderZonesGroup(this.options.zones, svg);
+    }
+
     // Render fingerings
     if (fingerings.length > 0) {
       this.renderFingeringsGroup(fingerings, svg);
@@ -244,6 +259,11 @@ export class SvgRenderer {
         this.renderMarker(marker, markersGroup);
       }
       svg.appendChild(markersGroup);
+    }
+
+    // Render zones (underneath fingerings)
+    if (this.options.zones && this.options.zones.length > 0) {
+      this.renderZonesGroup(this.options.zones, svg);
     }
 
     // Render fingerings
@@ -371,8 +391,10 @@ export class SvgRenderer {
       }
     }
 
-    // Y position is above the fretboard area and any top string/nut markers
-    const yPosition = -(TITLE_PADDING + topOffset);
+    // Y position is above the fretboard area, top string/nut markers, and any zone labels/braces
+    const hasZoneOverlay = Boolean(this.options.zones && this.options.zones.some(z => (z.type === 'brace') || (z.label && z.label.trim().length > 0)));
+    const zoneOffset = hasZoneOverlay ? 22 : 0;
+    const yPosition = -(TITLE_PADDING + topOffset + zoneOffset);
 
     text.setAttribute('x', String(xPosition));
     text.setAttribute('y', String(yPosition));
@@ -392,7 +414,17 @@ export class SvgRenderer {
     line.setAttribute('y1', String(str.y + str.thickness / 2));
     line.setAttribute('x2', String(width));
     line.setAttribute('y2', String(str.y + str.thickness / 2));
-    line.setAttribute('stroke', '#000000');
+    
+    // Determine stroke color (global string or per-string array)
+    const colorOpt = this.options.stringColor ?? '#6b7280';
+    let strokeColor = '#6b7280';
+    if (Array.isArray(colorOpt)) {
+      strokeColor = colorOpt[str.index] ?? colorOpt[colorOpt.length - 1] ?? '#6b7280';
+    } else if (typeof colorOpt === 'string') {
+      strokeColor = colorOpt;
+    }
+
+    line.setAttribute('stroke', strokeColor);
     line.setAttribute('stroke-width', String(str.thickness));
     line.setAttribute('class', CSS_CLASSES.string(str.index));
     group.appendChild(line);
@@ -544,7 +576,17 @@ export class SvgRenderer {
     line.setAttribute('y1', String(y1));
     line.setAttribute('x2', String(str.x + str.thickness / 2));
     line.setAttribute('y2', String(height));
-    line.setAttribute('stroke', '#000000');
+    
+    // Determine stroke color (global string or per-string array)
+    const colorOpt = this.options.stringColor ?? '#6b7280';
+    let strokeColor = '#6b7280';
+    if (Array.isArray(colorOpt)) {
+      strokeColor = colorOpt[str.index] ?? colorOpt[colorOpt.length - 1] ?? '#6b7280';
+    } else if (typeof colorOpt === 'string') {
+      strokeColor = colorOpt;
+    }
+
+    line.setAttribute('stroke', strokeColor);
     line.setAttribute('stroke-width', String(str.thickness));
     line.setAttribute('class', CSS_CLASSES.string(str.index));
     group.appendChild(line);
@@ -652,6 +694,281 @@ export class SvgRenderer {
     line.setAttribute('class', CSS_CLASSES.fret(fret.index));
     
     return line;
+  }
+
+  /**
+   * Renders group of zones / highlighted regions
+   */
+  private renderZonesGroup(zones: Zone[], svg: SVGSVGElement): void {
+    const zonesGroup = this.createGroup(CSS_CLASSES.zones);
+
+    for (const zone of zones) {
+      this.renderZone(zone, zonesGroup);
+    }
+
+    svg.appendChild(zonesGroup);
+  }
+
+  /**
+   * Renders an individual highlighted zone
+   */
+  /**
+   * Renders an individual highlighted zone (box, hull, or path shape)
+   */
+  private renderZone(zone: Zone, group: SVGElement): void {
+    const startFret = this.options.startFret;
+    const endFret = startFret + this.options.fretCount - 1;
+    const isHorizontal = this.options.orientation === 'horizontal';
+    const zoneType = zone.type ?? 'box';
+
+    const radius = calculateFingeringRadius(this.options.stringSpacing, this.options.fretSpacing);
+    const padding = radius + 6;
+    const zoneG = this.createGroup(CSS_CLASSES.zone);
+
+    let minX = Infinity;
+    let maxX = -Infinity;
+    let minY = Infinity;
+    let maxY = -Infinity;
+
+    // Helper to resolve stroke dash array based on strokeDashArray or strokeStyle preset
+    const resolveStrokeDashArray = (z: Zone): string | null => {
+      if (z.strokeDashArray) return z.strokeDashArray;
+      if (z.strokeStyle === 'dashed') return '4 4';
+      if (z.strokeStyle === 'dotted') return '2 2';
+      return null;
+    };
+
+    const strokeDash = resolveStrokeDashArray(zone);
+
+    if (zoneType === 'hull' || zoneType === 'path') {
+      const points = zone.points || [];
+      if (points.length === 0) return;
+
+      const screenCoords = points.map(pt => getFingeringPosition(
+        pt.string,
+        pt.fret,
+        this.options.orientation,
+        this.options.stringSpacing,
+        this.options.fretSpacing,
+        this.options.stringCount,
+        this.options.stringThickness,
+        this.options.fretThickness,
+        startFret
+      ));
+
+      screenCoords.forEach(c => {
+        if (c.x < minX) minX = c.x;
+        if (c.x > maxX) maxX = c.x;
+        if (c.y < minY) minY = c.y;
+        if (c.y > maxY) maxY = c.y;
+      });
+
+      if (zoneType === 'hull') {
+        // Render convex polygon hull wrapping the given points
+        const polygon = document.createElementNS(SVG_NS, 'polygon');
+        const pointsString = screenCoords.map(c => `${c.x},${c.y}`).join(' ');
+        polygon.setAttribute('points', pointsString);
+        polygon.setAttribute('fill', zone.fillColor ?? 'rgba(56, 189, 248, 0.15)');
+        polygon.setAttribute('stroke', zone.strokeColor ?? '#38bdf8');
+        polygon.setAttribute('stroke-width', String(zone.strokeWidth ?? (padding * 1.2)));
+        polygon.setAttribute('stroke-linejoin', 'round');
+        polygon.setAttribute('stroke-linecap', 'round');
+        if (strokeDash) {
+          polygon.setAttribute('stroke-dasharray', strokeDash);
+        }
+        polygon.setAttribute('class', CSS_CLASSES.zoneRect);
+        zoneG.appendChild(polygon);
+      } else if (zoneType === 'path') {
+        // Render connected path (e.g. scale run or arpeggio sequence line)
+        const path = document.createElementNS(SVG_NS, 'path');
+        const d = screenCoords.map((c, i) => `${i === 0 ? 'M' : 'L'} ${c.x} ${c.y}`).join(' ');
+        path.setAttribute('d', d);
+        path.setAttribute('fill', 'none');
+        path.setAttribute('stroke', zone.strokeColor ?? '#38bdf8');
+        path.setAttribute('stroke-width', String(zone.strokeWidth ?? 4));
+        path.setAttribute('stroke-linecap', 'round');
+        path.setAttribute('stroke-linejoin', 'round');
+        if (strokeDash) {
+          path.setAttribute('stroke-dasharray', strokeDash);
+        }
+        path.setAttribute('class', CSS_CLASSES.zoneRect);
+        zoneG.appendChild(path);
+      }
+    } else if (zoneType === 'brace') {
+      // Render curly brace / accolade spanning frets at top (or side)
+      const zStartFret = zone.startFret ?? 1;
+      const zEndFret = zone.endFret ?? zStartFret;
+
+      const effectiveStartFret = Math.max(zStartFret, startFret);
+      const effectiveEndFret = Math.min(zEndFret, endFret);
+
+      if (effectiveStartFret > effectiveEndFret) return;
+
+      const pos1 = getFingeringPosition(1, effectiveStartFret, this.options.orientation, this.options.stringSpacing, this.options.fretSpacing, this.options.stringCount, this.options.stringThickness, this.options.fretThickness, startFret);
+      const pos2 = getFingeringPosition(1, effectiveEndFret, this.options.orientation, this.options.stringSpacing, this.options.fretSpacing, this.options.stringCount, this.options.stringThickness, this.options.fretThickness, startFret);
+
+      if (isHorizontal) {
+        const x1 = Math.min(pos1.x, pos2.x) - radius;
+        const x2 = Math.max(pos1.x, pos2.x) + radius;
+        const y = -14;
+        const midX = (x1 + x2) / 2;
+
+        // Authentic mathematical curly brace accolade:
+        // Left curve ({), central peak (v), right curve (})
+        const braceHeight = 12;
+        const r = 6; // Corner radius for curves
+        const pathD = `
+          M ${x1} ${y} 
+          Q ${x1} ${y - r} ${x1 + r} ${y - r} 
+          H ${midX - r} 
+          Q ${midX} ${y - r} ${midX} ${y - braceHeight} 
+          Q ${midX} ${y - r} ${midX + r} ${y - r} 
+          H ${x2 - r} 
+          Q ${x2} ${y - r} ${x2} ${y}
+        `.replace(/\s+/g, ' ').trim();
+
+        const bracePath = document.createElementNS(SVG_NS, 'path');
+        bracePath.setAttribute('d', pathD);
+        bracePath.setAttribute('fill', 'none');
+        bracePath.setAttribute('stroke', zone.strokeColor ?? '#38bdf8');
+        bracePath.setAttribute('stroke-width', String(zone.strokeWidth ?? 2));
+        bracePath.setAttribute('stroke-linecap', 'round');
+        bracePath.setAttribute('stroke-linejoin', 'round');
+        if (strokeDash) {
+          bracePath.setAttribute('stroke-dasharray', strokeDash);
+        }
+        bracePath.setAttribute('class', CSS_CLASSES.zoneRect);
+        zoneG.appendChild(bracePath);
+      } else {
+        // Vertical orientation: curly brace spanning frets vertically along right edge
+        const y1 = Math.min(pos1.y, pos2.y) - radius;
+        const y2 = Math.max(pos1.y, pos2.y) + radius;
+        const widthVal = calculateVerticalWidth(this.options.stringCount, this.options.stringSpacing, this.options.stringThickness);
+        const x = widthVal + 14;
+        const midY = (y1 + y2) / 2;
+        const braceWidth = 12;
+        const r = 6;
+
+        minX = x; maxX = x + braceWidth; minY = y1; maxY = y2;
+
+        const pathD = `
+          M ${x} ${y1} 
+          Q ${x + r} ${y1} ${x + r} ${y1 + r} 
+          V ${midY - r} 
+          Q ${x + r} ${midY} ${x + braceWidth} ${midY} 
+          Q ${x + r} ${midY} ${x + r} ${midY + r} 
+          V ${y2 - r} 
+          Q ${x + r} ${y2} ${x} ${y2}
+        `.replace(/\s+/g, ' ').trim();
+
+        const bracePath = document.createElementNS(SVG_NS, 'path');
+        bracePath.setAttribute('d', pathD);
+        bracePath.setAttribute('fill', 'none');
+        bracePath.setAttribute('stroke', zone.strokeColor ?? '#38bdf8');
+        bracePath.setAttribute('stroke-width', String(zone.strokeWidth ?? 2));
+        bracePath.setAttribute('stroke-linecap', 'round');
+        bracePath.setAttribute('stroke-linejoin', 'round');
+        if (strokeDash) {
+          bracePath.setAttribute('stroke-dasharray', strokeDash);
+        }
+        bracePath.setAttribute('class', CSS_CLASSES.zoneRect);
+        zoneG.appendChild(bracePath);
+      }
+    } else {
+      // Box / Bounding rectangle mode
+      const zStartFret = zone.startFret ?? 1;
+      const zEndFret = zone.endFret ?? zStartFret;
+      const zStartString = zone.startString ?? 1;
+      const zEndString = zone.endString ?? zStartString;
+
+      const effectiveStartFret = Math.max(zStartFret, startFret);
+      const effectiveEndFret = Math.min(zEndFret, endFret);
+
+      if (effectiveStartFret > effectiveEndFret) {
+        return;
+      }
+
+      const posStart = getFingeringPosition(
+        zStartString,
+        effectiveStartFret,
+        this.options.orientation,
+        this.options.stringSpacing,
+        this.options.fretSpacing,
+        this.options.stringCount,
+        this.options.stringThickness,
+        this.options.fretThickness,
+        startFret
+      );
+
+      const posEnd = getFingeringPosition(
+        zEndString,
+        effectiveEndFret,
+        this.options.orientation,
+        this.options.stringSpacing,
+        this.options.fretSpacing,
+        this.options.stringCount,
+        this.options.stringThickness,
+        this.options.fretThickness,
+        startFret
+      );
+
+      minX = Math.min(posStart.x, posEnd.x) - padding;
+      maxX = Math.max(posStart.x, posEnd.x) + padding;
+      minY = Math.min(posStart.y, posEnd.y) - padding;
+      maxY = Math.max(posStart.y, posEnd.y) + padding;
+
+      const width = maxX - minX;
+      const height = maxY - minY;
+
+      const rect = document.createElementNS(SVG_NS, 'rect');
+      rect.setAttribute('x', String(minX));
+      rect.setAttribute('y', String(minY));
+      rect.setAttribute('width', String(width));
+      rect.setAttribute('height', String(height));
+      rect.setAttribute('rx', String(zone.borderRadius ?? 8));
+      rect.setAttribute('ry', String(zone.borderRadius ?? 8));
+      rect.setAttribute('fill', zone.fillColor ?? 'rgba(56, 189, 248, 0.15)');
+      rect.setAttribute('stroke', zone.strokeColor ?? '#38bdf8');
+      rect.setAttribute('stroke-width', String(zone.strokeWidth ?? 2));
+      if (strokeDash) {
+        rect.setAttribute('stroke-dasharray', strokeDash);
+      }
+      rect.setAttribute('class', CSS_CLASSES.zoneRect);
+      zoneG.appendChild(rect);
+    }
+
+    // Optional label rendering
+    if (zone.label && zone.label.trim() !== '' && isFinite(minX) && isFinite(minY)) {
+      const text = document.createElementNS(SVG_NS, 'text');
+      const labelColor = zone.strokeColor ?? '#38bdf8';
+      text.setAttribute('fill', labelColor);
+      text.setAttribute('font-family', 'sans-serif');
+      text.setAttribute('font-size', String(zone.labelFontSize ?? 11));
+      text.setAttribute('font-weight', 'bold');
+      text.setAttribute('class', CSS_CLASSES.zoneLabel);
+
+      if (zoneType === 'brace' && !isHorizontal) {
+        text.setAttribute('writing-mode', 'tb');
+        text.setAttribute('glyph-orientation-vertical', '0');
+        text.setAttribute('x', String(maxX + 6));
+        text.setAttribute('y', String((minY + maxY) / 2));
+        text.setAttribute('text-anchor', 'middle');
+        text.setAttribute('dominant-baseline', 'central');
+      } else if (isHorizontal) {
+        text.setAttribute('x', String(minX + 8));
+        text.setAttribute('y', String(minY - 6));
+        text.setAttribute('text-anchor', 'start');
+      } else {
+        text.setAttribute('x', String((minX + maxX) / 2));
+        text.setAttribute('y', String(minY - 6));
+        text.setAttribute('text-anchor', 'middle');
+      }
+
+      text.textContent = zone.label;
+      zoneG.appendChild(text);
+    }
+
+    group.appendChild(zoneG);
   }
 
   /**

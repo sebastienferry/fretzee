@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Fretzee Zones & Instructional Features Showcase - Demonstration of highlighted fretboard regions, D Form triads, convex hulls, paths, and range braces.">
+  <title>Advanced Customization - Fretzee Core</title>
+
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-dark: #0f172a;
+      --panel-bg: #1e293b;
+      --panel-border: #334155;
+      --accent-blue: #38bdf8;
+      --accent-indigo: #6366f1;
+      --accent-purple: #a855f7;
+      --accent-green: #22c55e;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.6;
+    }
+
+    /* Navbar */
+    header {
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--panel-border);
+      padding: 0 32px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .brand-logo {
+      font-size: 20px;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: -0.5px;
+    }
+
+    .brand-tag {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent-blue);
+      padding: 2px 8px;
+      border-radius: 12px;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .nav-link {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 8px 14px;
+      border-radius: 8px;
+      transition: all 0.15s ease;
+    }
+
+    .nav-link:hover {
+      color: var(--text-main);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .nav-link.active {
+      color: #ffffff;
+      background: var(--panel-bg);
+      font-weight: 600;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-github {
+      color: var(--text-muted);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px;
+      border-radius: 8px;
+      transition: all 0.15s ease;
+      text-decoration: none;
+    }
+
+    .btn-github:hover {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .btn-studio {
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-indigo));
+      color: #ffffff;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: 8px;
+      transition: opacity 0.15s ease, transform 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .btn-studio:hover {
+      opacity: 0.92;
+      transform: translateY(-1px);
+    }
+
+    /* Container & Layout */
+    .main-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 24px;
+      width: 100%;
+    }
+
+    .page-title {
+      font-size: 36px;
+      font-weight: 800;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, #ffffff, #94a3b8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .page-subtitle {
+      color: var(--text-muted);
+      font-size: 16px;
+      margin-bottom: 40px;
+    }
+
+    .demo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+      gap: 24px;
+      margin-bottom: 40px;
+    }
+
+    .demo-card {
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .demo-card-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--panel-border);
+    }
+
+    .demo-card-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 4px;
+    }
+
+    .demo-card-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .demo-card-body {
+      padding: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #ffffff;
+      flex: 1;
+      min-height: 280px;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--panel-border);
+      padding: 24px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 14px;
+      margin-top: auto;
+    }
+
+    footer a {
+      color: var(--accent-blue);
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="index.html" class="brand">
+      <span class="brand-logo">Fretzee</span>
+      <span class="brand-tag">Core</span>
+    </a>
+    <nav class="nav-links">
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="editor.html" class="nav-link">Editor</a>
+      <a href="demo.html" class="nav-link">Demos</a>
+      <a href="advanced.html" class="nav-link active">Advanced Customization</a>
+    </nav>
+    <div class="header-actions">
+      <a href="https://github.com/sebastienferry/fretzee" target="_blank" rel="noopener" class="btn-github" title="GitHub Repository">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+      </a>
+      <a href="https://www.fretzee.com" target="_blank" rel="noopener" class="btn-studio">Studio ↗</a>
+    </div>
+  </header>
+
+  <main class="main-container">
+    <h1 class="page-title">Advanced Customization</h1>
+    <p class="page-subtitle">Visual showcase of highlighted fretboard regions, D Form triads, convex hulls, sequence paths, and range braces for guitar instructors.</p>
+
+    <div class="demo-grid">
+      <!-- Demo 1: D Form Triad Box -->
+      <div class="demo-card">
+        <div class="demo-card-header">
+          <h2 class="demo-card-title">1. CAGED D Form Triad (Box Zone)</h2>
+          <p class="demo-card-desc">Highlighting the D Major triad block on strings 1..3 with a translucent box zone.</p>
+        </div>
+        <div class="demo-card-body" id="demo-d-triad"></div>
+      </div>
+
+      <!-- Demo 2: Free-form Convex Hull -->
+      <div class="demo-card">
+        <div class="demo-card-header">
+          <h2 class="demo-card-title">2. Free-Form Convex Hull (Custom Points)</h2>
+          <p class="demo-card-desc">Wrapping discrete fingering points with a smooth rounded polygon hull (type: 'hull').</p>
+        </div>
+        <div class="demo-card-body" id="demo-hull"></div>
+      </div>
+
+      <!-- Demo 3: Arpeggio Sequence Line Path -->
+      <div class="demo-card">
+        <div class="demo-card-header">
+          <h2 class="demo-card-title">3. Arpeggio Sequence Line Path</h2>
+          <p class="demo-card-desc">Connecting sequential note markers with a directional line path (type: 'path').</p>
+        </div>
+        <div class="demo-card-body" id="demo-path"></div>
+      </div>
+
+      <!-- Demo 4: Fret Range Accolade (Brace) -->
+      <div class="demo-card">
+        <div class="demo-card-header">
+          <h2 class="demo-card-title">4. Fret Position Accolade (Horizontal Brace)</h2>
+          <p class="demo-card-desc">Top curly brace accolade over frets 5 to 8 for scale position bounds (type: 'brace').</p>
+        </div>
+        <div class="demo-card-body" id="demo-brace"></div>
+      </div>
+
+      <!-- Demo 5: Vertical Orientation Barre & Triad -->
+      <div class="demo-card">
+        <div class="demo-card-header">
+          <h2 class="demo-card-title">5. Vertical Barre Chord Zone (Am Fret 5)</h2>
+          <p class="demo-card-desc">Vertical neck view with highlighted barre zone across strings 1 to 6.</p>
+        </div>
+        <div class="demo-card-body" id="demo-vertical-barre"></div>
+      </div>
+
+      <!-- Demo 6: Vertical Orientation Accolade (Right Bracket) -->
+      <div class="demo-card">
+        <div class="demo-card-header">
+          <h2 class="demo-card-title">6. Vertical Position Accolade (Side Brace)</h2>
+          <p class="demo-card-desc">Vertical accolade brace spanning along the right side of frets 5 to 8.</p>
+        </div>
+        <div class="demo-card-body" id="demo-vertical-brace"></div>
+      </div>
+
+      <!-- Demo 7: Advanced Zone Options & Custom Strings -->
+      <div class="demo-card">
+        <div class="demo-card-header">
+          <h2 class="demo-card-title">7. Advanced Styling (Stroke Styles, Custom Width & String Colors)</h2>
+          <p class="demo-card-desc">Demonstrating strokeStyle ('dashed' / 'dotted'), custom strokeWidth, labelFontSize, and per-string colors.</p>
+        </div>
+        <div class="demo-card-body" id="demo-advanced-options"></div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>Fretzee Core Open Source Library &nbsp;•&nbsp; <a href="https://www.fretzee.com">Fretzee Studio</a> &nbsp;•&nbsp; <a href="https://ko-fi.com/sebastienferry" target="_blank" rel="noopener">Support on Ko-fi</a></p>
+  </footer>
+
+  <script src="./dist/index.umd.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const Fretboard = fretzee.Fretboard;
+
+      // Demo 1: D Form Triad (Box)
+      const dTriad = new Fretboard({
+        title: 'D Major Triad (CAGED D Form)',
+        stringCount: 6,
+        fretCount: 5,
+        orientation: 'horizontal',
+        tuning: ['E', 'A', 'D', 'G', 'B', 'E'],
+        fingerings: [
+          { string: 1, fret: 2, text: '3' },
+          { string: 2, fret: 3, text: 'R', color: '#00f5d4', textColor: '#090d16' },
+          { string: 3, fret: 2, text: '5' },
+          { string: 4, fret: 0, text: 'O' },
+          { string: 5, fret: -1, text: 'X' },
+          { string: 6, fret: -1, text: 'X' }
+        ],
+        zones: [
+          {
+            type: 'box',
+            startString: 1,
+            endString: 3,
+            startFret: 2,
+            endFret: 3,
+            label: 'D Form Triad',
+            fillColor: 'rgba(56, 189, 248, 0.15)',
+            strokeColor: '#38bdf8'
+          }
+        ]
+      });
+      document.getElementById('demo-d-triad').appendChild(dTriad.render());
+
+      // Demo 2: Free-Form Convex Hull
+      const hull = new Fretboard({
+        title: 'Pentatonic Box (Convex Hull)',
+        stringCount: 6,
+        fretCount: 5,
+        startFret: 5,
+        orientation: 'horizontal',
+        fingerings: [
+          { string: 6, fret: 5, text: 'R', color: '#00f5d4', textColor: '#090d16' },
+          { string: 6, fret: 8, text: 'b3' },
+          { string: 5, fret: 5, text: '4' },
+          { string: 5, fret: 7, text: '5' },
+          { string: 4, fret: 5, text: 'b7' }
+        ],
+        zones: [
+          {
+            type: 'hull',
+            points: [
+              { string: 6, fret: 5 },
+              { string: 6, fret: 8 },
+              { string: 5, fret: 7 },
+              { string: 4, fret: 5 }
+            ],
+            label: 'Lower Shape',
+            fillColor: 'rgba(168, 85, 247, 0.18)',
+            strokeColor: '#a855f7'
+          }
+        ]
+      });
+      document.getElementById('demo-hull').appendChild(hull.render());
+
+      // Demo 3: Arpeggio Sequence Line Path
+      const path = new Fretboard({
+        title: 'Arpeggio Sequence Line Path',
+        stringCount: 6,
+        fretCount: 6,
+        startFret: 5,
+        orientation: 'horizontal',
+        fingerings: [
+          { string: 6, fret: 5, text: 'R', color: '#00f5d4', textColor: '#090d16' },
+          { string: 5, fret: 7, text: '5' },
+          { string: 4, fret: 7, text: 'R', color: '#00f5d4', textColor: '#090d16' },
+          { string: 3, fret: 5, text: 'b3' }
+        ],
+        zones: [
+          {
+            type: 'path',
+            points: [
+              { string: 6, fret: 5 },
+              { string: 5, fret: 7 },
+              { string: 4, fret: 7 },
+              { string: 3, fret: 5 }
+            ],
+            label: 'Sweeping Sequence',
+            strokeColor: '#f59e0b',
+            strokeDashArray: '4 4'
+          }
+        ]
+      });
+      document.getElementById('demo-path').appendChild(path.render());
+
+      // Demo 4: Fret Range Accolade (Brace)
+      const brace = new Fretboard({
+        title: 'Position 1 Range Accolade',
+        stringCount: 6,
+        fretCount: 5,
+        startFret: 5,
+        orientation: 'horizontal',
+        fingerings: [
+          { string: 6, fret: 5, text: '1' },
+          { string: 6, fret: 8, text: '4' },
+          { string: 1, fret: 5, text: '1' },
+          { string: 1, fret: 8, text: '4' }
+        ],
+        zones: [
+          {
+            type: 'brace',
+            startFret: 5,
+            endFret: 8,
+            label: 'Position 1 (Frets 5-8)',
+            strokeColor: '#22c55e'
+          }
+        ]
+      });
+      document.getElementById('demo-brace').appendChild(brace.render());
+
+      // Demo 5: Vertical Orientation Barre Zone
+      const vBarre = new Fretboard({
+        title: 'Am Barre Chord (Fret 5)',
+        stringCount: 6,
+        fretCount: 4,
+        startFret: 5,
+        orientation: 'vertical',
+        tuning: ['E', 'A', 'D', 'G', 'B', 'E'],
+        fingerings: [
+          { string: 6, fret: 5, text: '1' },
+          { string: 5, fret: 7, text: '3', color: '#e74c3c' },
+          { string: 4, fret: 7, text: '4' },
+          { string: 3, fret: 5, text: '1' },
+          { string: 2, fret: 5, text: '1' },
+          { string: 1, fret: 5, text: '1' }
+        ],
+        zones: [
+          {
+            type: 'box',
+            startString: 1,
+            endString: 6,
+            startFret: 5,
+            endFret: 5,
+            label: 'Barre Fret 5',
+            fillColor: 'rgba(239, 68, 68, 0.15)',
+            strokeColor: '#ef4444'
+          }
+        ]
+      });
+      document.getElementById('demo-vertical-barre').appendChild(vBarre.render());
+
+      // Demo 6: Vertical Orientation Side Brace
+      const vBrace = new Fretboard({
+        title: 'Vertical Position 1 (A Minor Pentatonic)',
+        stringCount: 6,
+        fretCount: 5,
+        startFret: 5,
+        orientation: 'vertical',
+        tuning: ['E', 'A', 'D', 'G', 'B', 'E'],
+        fingerings: [
+          { string: 6, fret: 5, text: 'R', color: '#00f5d4', textColor: '#090d16' },
+          { string: 6, fret: 8, text: 'b3' },
+          { string: 1, fret: 5, text: 'R', color: '#00f5d4', textColor: '#090d16' },
+          { string: 1, fret: 8, text: 'b3' }
+        ],
+        zones: [
+          {
+            type: 'brace',
+            startFret: 5,
+            endFret: 8,
+            label: 'Box 1 Range (Frets 5-8)',
+            strokeColor: '#6366f1'
+          }
+        ]
+      });
+      document.getElementById('demo-vertical-brace').appendChild(vBrace.render());
+
+      // Demo 7: Advanced Zone Options & Custom Strings
+      const advOptions = new Fretboard({
+        title: 'Advanced Customization Options',
+        stringCount: 6,
+        fretCount: 5,
+        startFret: 1,
+        orientation: 'horizontal',
+        stringColor: ['#ef4444', '#f59e0b', '#10b981', '#06b6d4', '#6366f1', '#8b5cf6'],
+        tuning: ['E', 'A', 'D', 'G', 'B', 'E'],
+        fingerings: [
+          { string: 1, fret: 3, text: 'G', color: '#38bdf8' },
+          { string: 2, fret: 1, text: 'C', color: '#38bdf8' },
+          { string: 3, fret: 2, text: 'A', color: '#a855f7' },
+          { string: 4, fret: 3, text: 'F', color: '#a855f7' }
+        ],
+        zones: [
+          {
+            type: 'box',
+            startString: 1,
+            endString: 2,
+            startFret: 1,
+            endFret: 3,
+            label: 'Dashed Box (Size 13)',
+            strokeColor: '#38bdf8',
+            strokeStyle: 'dashed',
+            strokeWidth: 2.5,
+            labelFontSize: 13
+          },
+          {
+            type: 'hull',
+            points: [{ string: 3, fret: 2 }, { string: 4, fret: 3 }],
+            label: 'Dotted Hull',
+            strokeColor: '#a855f7',
+            strokeStyle: 'dotted',
+            strokeWidth: 3,
+            labelFontSize: 11
+          }
+        ]
+      });
+      document.getElementById('demo-advanced-options').appendChild(advOptions.render());
+    });
+  </script>
+</body>
+</html>
