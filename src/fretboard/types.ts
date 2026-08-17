@@ -45,6 +45,9 @@ export interface FretboardOptions {
   /** Title alignment: 'center' or 'left' (default: 'center') */
   titleAlignment?: 'center' | 'left';
 
+  /** Optional vertical offset in pixels to shift title higher/lower (e.g. -10 for higher) */
+  titleOffsetY?: number;
+
   /** Optional tuning note labels ordered from lowest string (6th string) to highest (1st string) */
   tuning?: string[];
 
@@ -86,6 +89,12 @@ export interface Zone {
   /** Stroke style preset: 'solid' (default), 'dashed', or 'dotted' */
   strokeStyle?: 'solid' | 'dashed' | 'dotted';
 
+  /** Optional vertical offset in pixels to slide/stack the zone or brace higher or lower (e.g. 0, 15, 30) */
+  offsetY?: number;
+
+  /** Placement side for brace/accolade: 'top' (default: top in horizontal, right in vertical) or 'bottom' (bottom in horizontal, left in vertical) */
+  position?: 'top' | 'bottom';
+
   /** Stroke dash pattern (e.g. '4 4' for custom dashed outline) */
   strokeDashArray?: string;
 
@@ -100,6 +109,9 @@ export interface Zone {
 
   /** Font size in pixels for the zone label (default: 11) */
   labelFontSize?: number;
+
+  /** Font weight for the zone label (e.g. 'normal', 'bold', '600', '800', default: 'bold') */
+  labelFontWeight?: string;
 }
 
 /**
