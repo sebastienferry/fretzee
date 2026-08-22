@@ -411,7 +411,7 @@ export class SvgRenderer {
     const uniformOffset = reserveClearance ? -60 : -20;
 
     const radius = calculateFingeringRadius(this.options.stringSpacing, this.options.fretSpacing);
-    const fontSize = Math.round(radius * 1.5);
+    const fontSize = Math.round(radius * 1.2);
 
     // tuning is provided 6th string to 1st string (lowest string to highest string)
     for (let i = 0; i < stringCount; i++) {
@@ -1236,7 +1236,7 @@ export class SvgRenderer {
       text.setAttribute('fill', fill);
       text.setAttribute('text-anchor', 'middle');
       text.setAttribute('dominant-baseline', 'central');
-      const fontSize = isNutMarker ? Math.round(radius * 1.5) : Math.round(radius * 1.2);
+      const fontSize = Math.round(radius * 1.2);
       text.setAttribute('font-size', String(fontSize));
       text.setAttribute('font-family', 'sans-serif');
       text.setAttribute('font-weight', 'bold');
