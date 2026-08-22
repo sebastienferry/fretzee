@@ -181,6 +181,8 @@ document.body.appendChild(barreChord.render());
 | `label` | `string` | `undefined` | Optional text label for the zone (supports `\n` linebreaks) |
 | `labelFontSize` | `number` | `11` | Font size in pixels for the zone label |
 | `labelFontWeight` | `string` | `'bold'` | Font weight for zone label (e.g. `'normal'`, `'bold'`, `'600'`) |
+| `labelOffsetX` | `number` | `0` | Horizontal offset in pixels to adjust label X position |
+| `labelOffsetY` | `number` | `0` | Vertical offset in pixels to adjust label Y position |
 
 ### Fingering Object Options
 

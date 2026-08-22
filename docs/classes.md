@@ -44,3 +44,29 @@ new Fingering(options: FingeringInterface)
 - `text: string` - Display text (defaults to 'X' for `fret: -1`).
 - `color: string` - HTML fill color for marker circle.
 - `textColor: string` - HTML font color for text.
+
+## `Zone`
+
+Interface defining highlighted regions (triads, scale boxes, hulls, paths, and curly braces).
+
+### Properties
+- `type?: 'box' | 'hull' | 'path' | 'brace'` - Shape type (default: `'box'`).
+- `startString?: number` - Starting string (1-based) for `'box'` shape.
+- `endString?: number` - Ending string (1-based) for `'box'` shape.
+- `startFret?: number` - Starting fret for `'box'` or `'brace'`.
+- `endFret?: number` - Ending fret for `'box'` or `'brace'`.
+- `points?: Array<{ string: number; fret: number }>` - Sequence of points for `'hull'` or `'path'`.
+- `fillColor?: string` - Background fill color.
+- `strokeColor?: string` - Outline stroke color.
+- `strokeWidth?: number` - Outline stroke width.
+- `strokeStyle?: 'solid' | 'dashed' | 'dotted'` - Preset stroke line style.
+- `strokeDashArray?: string` - Custom SVG stroke-dasharray (e.g. `'4 4'`).
+- `borderRadius?: number` - Corner radius for `'box'` rectangles.
+- `label?: string` - Text label/title (supports `\n` linebreaks).
+- `labelFontSize?: number` - Font size in pixels for the label (default: 11).
+- `labelFontWeight?: string` - Font weight for the label (default: `'bold'`).
+- `labelOffsetX?: number` - Horizontal offset in pixels for label position.
+- `labelOffsetY?: number` - Vertical offset in pixels for label position.
+- `offsetY?: number` - Vertical offset in pixels for the entire zone or brace.
+- `position?: 'top' | 'bottom'` - Placement side for curly braces.
+

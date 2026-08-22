@@ -1018,43 +1018,52 @@ export class SvgRenderer {
       text.setAttribute('stroke-linejoin', 'round');
       text.setAttribute('class', CSS_CLASSES.zoneLabel);
 
+      const labelOffsetX = zone.labelOffsetX ?? zone.titleOffsetX ?? 0;
+      const labelOffsetY = zone.labelOffsetY ?? zone.titleOffsetY ?? 0;
+
+      let labelX: number;
+      let labelY: number;
+
       if (zoneType === 'brace' && isHorizontal) {
-        text.setAttribute('x', String((minX + maxX) / 2));
+        labelX = (minX + maxX) / 2 + labelOffsetX;
         if (zone.position === 'bottom') {
-          text.setAttribute('y', String(maxY + (zone.labelFontSize ?? 11) + 2));
+          labelY = maxY + (zone.labelFontSize ?? 11) + 2 + labelOffsetY;
         } else {
-          text.setAttribute('y', String(minY - 4));
+          labelY = minY - 4 + labelOffsetY;
         }
         text.setAttribute('text-anchor', 'middle');
       } else if (zoneType === 'brace' && !isHorizontal) {
         text.setAttribute('writing-mode', 'tb');
         text.setAttribute('glyph-orientation-vertical', '0');
         if (zone.position === 'bottom') {
-          text.setAttribute('x', String(minX - 6));
+          labelX = minX - 6 + labelOffsetX;
         } else {
-          text.setAttribute('x', String(maxX + 6));
+          labelX = maxX + 6 + labelOffsetX;
         }
-        text.setAttribute('y', String((minY + maxY) / 2));
+        labelY = (minY + maxY) / 2 + labelOffsetY;
         text.setAttribute('text-anchor', 'middle');
         text.setAttribute('dominant-baseline', 'central');
       } else if (isHorizontal) {
-        text.setAttribute('x', String(minX + 8));
-        text.setAttribute('y', String(minY + (zone.labelFontSize ?? 11) + 2));
+        labelX = minX + 8 + labelOffsetX;
+        labelY = minY + (zone.labelFontSize ?? 11) + 2 + labelOffsetY;
         text.setAttribute('text-anchor', 'start');
       } else {
-        text.setAttribute('x', String((minX + maxX) / 2));
-        text.setAttribute('y', String(minY + (zone.labelFontSize ?? 11) + 2));
+        labelX = (minX + maxX) / 2 + labelOffsetX;
+        labelY = minY + (zone.labelFontSize ?? 11) + 2 + labelOffsetY;
         text.setAttribute('text-anchor', 'middle');
       }
+
+      text.setAttribute('x', String(labelX));
+      text.setAttribute('y', String(labelY));
 
       const labelLines = (zone.label || '').replace(/\\n/g, '\n').split(/\r?\n/);
       if (labelLines.length === 1) {
         text.textContent = labelLines[0];
       } else {
-        const labelX = text.getAttribute('x') || '0';
+        const lineX = String(labelX);
         labelLines.forEach((lineText, i) => {
           const tspan = document.createElementNS(SVG_NS, 'tspan');
-          tspan.setAttribute('x', labelX);
+          tspan.setAttribute('x', lineX);
           if (i > 0) {
             tspan.setAttribute('dy', '1.2em');
           }
