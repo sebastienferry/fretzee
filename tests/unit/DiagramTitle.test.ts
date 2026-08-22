@@ -83,7 +83,7 @@ describe('Diagram Title', () => {
   });
 
   describe('Title Offset with Top String Fingerings', () => {
-    it('offsets title y position when fingerings are placed on string 1 in horizontal mode', () => {
+    it('stably positions title y position consistently with top string clearance in horizontal mode', () => {
       const fretboardNormal = new Fretboard({
         title: 'Normal Title',
         orientation: 'horizontal',
@@ -102,10 +102,10 @@ describe('Diagram Title', () => {
       const titleTop = svgTop.querySelector(`.${CSS_CLASSES.title}`);
       const yTop = parseFloat(titleTop?.getAttribute('y') || '0');
 
-      expect(yTop).toBeLessThan(yNormal);
+      expect(yTop).toBe(yNormal);
     });
 
-    it('offsets title y position when open/muted string fingerings exist in vertical mode', () => {
+    it('stably positions title y position with reserved clearance in vertical mode', () => {
       const fretboardNormal = new Fretboard({
         title: 'Vertical Normal',
         orientation: 'vertical',
@@ -124,7 +124,7 @@ describe('Diagram Title', () => {
       const titleOpen = svgOpen.querySelector(`.${CSS_CLASSES.title}`);
       const yOpen = parseFloat(titleOpen?.getAttribute('y') || '0');
 
-      expect(yOpen).toBeLessThan(yNormal);
+      expect(yOpen).toBe(yNormal);
     });
   });
 

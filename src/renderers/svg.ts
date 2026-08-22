@@ -76,9 +76,8 @@ export class SvgRenderer {
 
     // Reserved top clearance for fingerings on string 1 (top string in horizontal mode)
     const radius = calculateFingeringRadius(this.options.stringSpacing, this.options.fretSpacing);
-    const hasTopStringFingerings = isHorizontal && fingerings.some(f => f.string === 1);
-    const topMarkerOffset = hasTopStringFingerings ? radius + 5 : 0;
-    if (hasTopStringFingerings) {
+    const topMarkerOffset = isHorizontal ? radius + 5 : 0;
+    if (topMarkerOffset > 0) {
       viewBoxY -= topMarkerOffset;
       height += topMarkerOffset;
     }
@@ -168,8 +167,7 @@ export class SvgRenderer {
     if (isHorizontal) {
       this.renderHorizontal(strings, frets, inlays, markers, fingerings, svg, width, height, topMarkerOffset);
     } else {
-      const hasOpenFingerings = fingerings.some(f => f.fret <= 0 || f.text === 'X');
-      const verticalTopOffset = (hasOpenFingerings ? openOffset : 0) + tuningOffset;
+      const verticalTopOffset = (reserveClearance ? openOffset : 0) + tuningOffset;
       this.renderVertical(strings, frets, inlays, markers, fingerings, svg, width, height, verticalTopOffset);
     }
 
