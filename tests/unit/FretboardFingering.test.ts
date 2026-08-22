@@ -148,6 +148,8 @@ describe('Fretboard Fingering Rendering', () => {
     expect(viewBox).toBeDefined();
     // Without nut clearance, viewBoxX starts directly at standard padding (-13)
     expect(viewBox![0]).toBe(-13);
+    // Nut markers are omitted when clearance is false
+    expect(svg.querySelector('.fretzee-open-marker')).toBeNull();
   });
 
   it('should align fingering circle centers with string visual centers in horizontal mode', () => {

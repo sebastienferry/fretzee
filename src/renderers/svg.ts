@@ -1191,7 +1191,12 @@ export class SvgRenderer {
     const startFret = this.options.startFret;
     const endFret = startFret + this.options.fretCount - 1;
 
-    // Filter out fingerings outside the visible range (open/muted markers fret 0 or -1 are always allowed)
+    // Filter out nut markers (fret 0 or -1) if nut clearance is disabled
+    if ((fingering.fret === 0 || fingering.fret === -1) && this.options.reserveNutClearance === false) {
+      return;
+    }
+
+    // Filter out fingerings outside the visible range (open/muted markers fret 0 or -1 are allowed only if clearance is active)
     if (fingering.fret !== 0 && fingering.fret !== -1) {
       if (fingering.fret < startFret || fingering.fret > endFret) {
         return;
