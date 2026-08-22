@@ -60,9 +60,9 @@ export class SvgRenderer {
     width += padding * 2;
     height += padding * 2;
 
-    // Headstock clearance for open strings (fret 0), muted strings (fret -1), and breathing room (44px)
+    // Headstock clearance for open strings (fret 0), muted strings (fret -1), and breathing room (40px)
     const reserveClearance = this.options.reserveNutClearance !== false;
-    const openOffset = reserveClearance ? 44 : 0;
+    const openOffset = reserveClearance ? 40 : 0;
 
     if (openOffset > 0) {
       if (isHorizontal) {
@@ -143,9 +143,9 @@ export class SvgRenderer {
       width += 15; // Extra right side padding for box/hull/path zones in horizontal mode
     }
 
-    // Additional adjustment for tuning labels (32px)
+    // Additional adjustment for tuning labels (identical 40px)
     const hasTuning = this.options.showTuning !== false && Boolean(this.options.tuning && Array.isArray(this.options.tuning) && this.options.tuning.length > 0);
-    const tuningOffset = hasTuning ? 32 : 0;
+    const tuningOffset = hasTuning ? 40 : 0;
     if (hasTuning) {
       if (isHorizontal) {
         viewBoxX -= tuningOffset;
@@ -331,19 +331,19 @@ export class SvgRenderer {
     const reserveClearance = this.options.reserveNutClearance !== false;
     const hasTuning = this.options.showTuning !== false && Boolean(this.options.tuning && Array.isArray(this.options.tuning) && this.options.tuning.length > 0);
 
-    // 1. Blue overlay for Fret 0 / X zone (44px)
+    // 1. Blue overlay for Fret 0 / X zone (40px)
     if (reserveClearance) {
       const fret0Rect = document.createElementNS(SVG_NS, 'rect');
       if (isHorizontal) {
-        fret0Rect.setAttribute('x', '-44');
-        fret0Rect.setAttribute('y', '0');
-        fret0Rect.setAttribute('width', '44');
-        fret0Rect.setAttribute('height', String(neckSpan));
+        fret0Rect.setAttribute('x', '-40');
+        fret0Rect.setAttribute('y', '-10');
+        fret0Rect.setAttribute('width', '40');
+        fret0Rect.setAttribute('height', String(neckSpan + 20));
       } else {
-        fret0Rect.setAttribute('x', '0');
-        fret0Rect.setAttribute('y', '-44');
-        fret0Rect.setAttribute('width', String(neckSpan));
-        fret0Rect.setAttribute('height', '44');
+        fret0Rect.setAttribute('x', '-10');
+        fret0Rect.setAttribute('y', '-40');
+        fret0Rect.setAttribute('width', String(neckSpan + 20));
+        fret0Rect.setAttribute('height', '40');
       }
       fret0Rect.setAttribute('fill', 'rgba(59, 130, 246, 0.35)'); // Blue 35%
       fret0Rect.setAttribute('stroke', '#2563eb');
@@ -352,20 +352,20 @@ export class SvgRenderer {
       debugGroup.appendChild(fret0Rect);
     }
 
-    // 2. Red overlay for Tuning zone (32px)
+    // 2. Red overlay for Tuning zone (40px)
     if (hasTuning) {
       const tuningRect = document.createElementNS(SVG_NS, 'rect');
-      const startOffset = reserveClearance ? -76 : -32;
+      const startOffset = reserveClearance ? -80 : -40;
       if (isHorizontal) {
         tuningRect.setAttribute('x', String(startOffset));
-        tuningRect.setAttribute('y', '0');
-        tuningRect.setAttribute('width', '32');
-        tuningRect.setAttribute('height', String(neckSpan));
+        tuningRect.setAttribute('y', '-10');
+        tuningRect.setAttribute('width', '40');
+        tuningRect.setAttribute('height', String(neckSpan + 20));
       } else {
-        tuningRect.setAttribute('x', '0');
+        tuningRect.setAttribute('x', '-10');
         tuningRect.setAttribute('y', String(startOffset));
-        tuningRect.setAttribute('width', String(neckSpan));
-        tuningRect.setAttribute('height', '32');
+        tuningRect.setAttribute('width', String(neckSpan + 20));
+        tuningRect.setAttribute('height', '40');
       }
       tuningRect.setAttribute('fill', 'rgba(239, 68, 68, 0.35)'); // Red 35%
       tuningRect.setAttribute('stroke', '#dc2626');
@@ -402,9 +402,9 @@ export class SvgRenderer {
     const tuning = this.options.tuning;
 
     const reserveClearance = this.options.reserveNutClearance !== false;
-    // When Fret 0 is active (zone [0, -44px]), tuning labels are placed at -60px (in zone [-44px, -76px]).
-    // When Fret 0 is inactive (zone [0, -32px]), tuning labels are placed at -16px.
-    const uniformOffset = reserveClearance ? -60 : -16;
+    // When Fret 0 is active (zone [0, -40px]), tuning labels are placed at -60px (in zone [-40px, -80px]).
+    // When Fret 0 is inactive (zone [0, -40px]), tuning labels are placed at -20px.
+    const uniformOffset = reserveClearance ? -60 : -20;
 
     // tuning is provided 6th string to 1st string (lowest string to highest string)
     for (let i = 0; i < stringCount; i++) {
