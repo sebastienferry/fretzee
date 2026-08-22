@@ -153,6 +153,11 @@ export class SvgRenderer {
       }
     }
 
+    // Symmetrical right-side balancing in horizontal mode for centered visual alignment
+    if (isHorizontal) {
+      width += (openOffset + tuningOffset);
+    }
+
     // Create SVG element with adjusted viewBox
     const svg = document.createElementNS(SVG_NS, 'svg');
     svg.setAttribute('viewBox', `${viewBoxX} ${viewBoxY} ${width} ${height}`);
