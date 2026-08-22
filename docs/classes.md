@@ -100,6 +100,7 @@ const hullZone: Zone = {
   label: 'Triad Triangle',
   fillColor: 'rgba(168, 85, 247, 0.15)',
   strokeColor: '#a855f7',
+  strokeWidth: 2,
   labelOffsetX: 10,
   labelOffsetY: -6
 };

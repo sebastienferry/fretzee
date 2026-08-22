@@ -802,7 +802,7 @@ export class SvgRenderer {
         polygon.setAttribute('points', pointsString);
         polygon.setAttribute('fill', zone.fillColor ?? 'rgba(56, 189, 248, 0.15)');
         polygon.setAttribute('stroke', zone.strokeColor ?? '#38bdf8');
-        polygon.setAttribute('stroke-width', String(zone.strokeWidth ?? (padding * 1.2)));
+        polygon.setAttribute('stroke-width', String(zone.strokeWidth ?? 2));
         polygon.setAttribute('stroke-linejoin', 'round');
         polygon.setAttribute('stroke-linecap', 'round');
         if (strokeDash) {

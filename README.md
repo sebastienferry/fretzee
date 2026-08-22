@@ -212,7 +212,7 @@ document.body.appendChild(zoneDiagram.render());
 | `points` | `Array<{ string, fret }>` | `[]` | Sequence of points for `'hull'` or `'path'` shapes |
 | `fillColor` | `string` | `'rgba(56, 189, 248, 0.15)'` | Background fill color |
 | `strokeColor` | `string` | `'#38bdf8'` | Outline / line stroke color |
-| `strokeWidth` | `number` | *dynamic* | Stroke width in pixels (defaults: hull: dynamic, path: 4, box/brace: 2) |
+| `strokeWidth` | `number` | `2` | Stroke width in pixels (defaults: box/hull/brace: 2, path: 4) |
 | `strokeStyle` | `'solid' \| 'dashed' \| 'dotted'` | `'solid'` | Preset stroke line style |
 | `strokeDashArray` | `string` | `undefined` | Custom SVG stroke-dasharray (e.g. `'4 4'`) |
 | `borderRadius` | `number` | `8` | Corner radius for `'box'` rectangle |
