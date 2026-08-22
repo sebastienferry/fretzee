@@ -372,12 +372,11 @@ export function getFingeringPosition(
 
   if (orientation === 'horizontal') {
     const y = getHorizontalStringY(stringIndex, stringSpacing) + thicknessOffset;
-    const x = relativeFret === 0 ? -fretSpacing * 0.50 : (relativeFret - 0.5) * fretSpacing + fretThicknessOffset;
+    const x = relativeFret === 0 ? -22 : (relativeFret - 0.5) * fretSpacing + fretThicknessOffset;
     return { x, y };
   } else {
     const x = getVerticalStringX(stringIndex, stringSpacing, stringCount) + thicknessOffset;
-    const y = relativeFret === 0 ? -fretSpacing * 0.50 : (relativeFret - 0.5) * fretSpacing + fretThicknessOffset;
+    const y = relativeFret === 0 ? -22 : (relativeFret - 0.5) * fretSpacing + fretThicknessOffset;
     return { x, y };
   }
 }
-
