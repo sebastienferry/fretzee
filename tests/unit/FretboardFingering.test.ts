@@ -134,6 +134,22 @@ describe('Fretboard Fingering Rendering', () => {
     expect(viewBoxV![1]).toBeLessThan(-30);
   });
 
+  it('should support reserveNutClearance: false for tight balanced margins', () => {
+    const fretboard = new Fretboard({
+      stringCount: 6,
+      fretCount: 4,
+      orientation: 'horizontal',
+      reserveNutClearance: false,
+      fingerings: [{ string: 1, fret: 0, text: 'O' }]
+    });
+
+    const svg = fretboard.render();
+    const viewBox = svg.getAttribute('viewBox')?.split(' ').map(Number);
+    expect(viewBox).toBeDefined();
+    // Without nut clearance, viewBoxX starts directly at standard padding (-13)
+    expect(viewBox![0]).toBe(-13);
+  });
+
   it('should align fingering circle centers with string visual centers in horizontal mode', () => {
     const stringSpacing = 30;
     const stringThickness = 1;

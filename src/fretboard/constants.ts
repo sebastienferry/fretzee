@@ -15,6 +15,7 @@ export const DEFAULT_SHOW_INLAYS = true;
 export const DEFAULT_START_FRET = 1;
 export const DEFAULT_TITLE = '';
 export const DEFAULT_TITLE_ALIGNMENT: 'center' | 'left' = 'center';
+export const DEFAULT_RESERVE_NUT_CLEARANCE = true;
 export const TITLE_FONT_SIZE = 16;
 export const TITLE_PADDING = 8;
 

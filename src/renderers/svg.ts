@@ -60,8 +60,9 @@ export class SvgRenderer {
     width += padding * 2;
     height += padding * 2;
 
-    // Reserve clearance for open string / muted string fingerings (fret 0 or fret -1) ONLY if present
-    const hasOpenOrMutedFingerings = fingerings.some(f => f.fret <= 0 || f.text === 'X');
+    // Reserve clearance for open string / muted string fingerings (fret 0 or fret -1) ONLY if present and enabled
+    const reserveClearance = this.options.reserveNutClearance !== false;
+    const hasOpenOrMutedFingerings = reserveClearance && fingerings.some(f => f.fret <= 0 || f.text === 'X');
     const radius = calculateFingeringRadius(this.options.stringSpacing, this.options.fretSpacing);
     const openOffset = hasOpenOrMutedFingerings ? (this.options.fretSpacing * 0.50) + radius + 5 : 0;
 
@@ -144,7 +145,7 @@ export class SvgRenderer {
     }
 
     // Additional adjustment for tuning labels
-    const hasTuning = Boolean(this.options.tuning && Array.isArray(this.options.tuning) && this.options.tuning.length > 0);
+    const hasTuning = reserveClearance && Boolean(this.options.tuning && Array.isArray(this.options.tuning) && this.options.tuning.length > 0);
     const tuningOffset = hasTuning ? (isHorizontal ? 25 : 20) : 0;
     if (hasTuning) {
       if (isHorizontal) {
