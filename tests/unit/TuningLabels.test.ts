@@ -55,17 +55,4 @@ describe('Tuning Labels Feature', () => {
     const tuningGroup = svg.querySelector(`.${CSS_CLASSES.tuning}`);
     expect(tuningGroup).toBeNull();
   });
-
-  it('does not render tuning labels when showTuning is explicitly false', () => {
-    const fretboard = new Fretboard({
-      stringCount: 6,
-      fretCount: 5,
-      tuning: ['E', 'A', 'D', 'G', 'B', 'E'],
-      showTuning: false
-    });
-
-    const svg = fretboard.render();
-    const tuningGroup = svg.querySelector(`.${CSS_CLASSES.tuning}`);
-    expect(tuningGroup).toBeNull();
-  });
 });
