@@ -112,6 +112,18 @@ export interface Zone {
 
   /** Font weight for the zone label (e.g. 'normal', 'bold', '600', '800', default: 'bold') */
   labelFontWeight?: string;
+
+  /** Optional horizontal offset in pixels to adjust the zone label/title X position (e.g. -10, 15) */
+  labelOffsetX?: number;
+
+  /** Optional vertical offset in pixels to adjust the zone label/title Y position (e.g. -5, 20) */
+  labelOffsetY?: number;
+
+  /** Alias for labelOffsetX */
+  titleOffsetX?: number;
+
+  /** Alias for labelOffsetY */
+  titleOffsetY?: number;
 }
 
 /**

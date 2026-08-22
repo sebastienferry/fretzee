@@ -5,6 +5,11 @@ All notable changes to the **Fretzee** core library will be documented in this f
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Next]
+
+### Added
+- Add `labelOffsetX` and `labelOffsetY` (with `titleOffsetX` and `titleOffsetY` aliases) to `Zone` interface to customize zone label positioning on `box`, `hull`, `path`, and `brace` shapes (FRE-73).
+
 ## [0.3.2] - 2026-08-17
 
 ### Added

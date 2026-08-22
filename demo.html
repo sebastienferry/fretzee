@@ -400,6 +400,37 @@
         </div>
       </div>
     </div>
+
+    <!-- Example 6: Fretboard Zones & Region Highlights (Box, Hull, Path, Brace) -->
+    <div class="demo-card">
+      <div class="demo-card-header">
+        <div class="demo-card-info">
+          <h2 class="demo-card-title">6. Fretboard Zones & Highlights (Box, Hull, Path, Brace)</h2>
+          <p class="demo-card-desc">Highlight triads, scale shapes, sequences, and fret ranges with configurable borders, fills, stroke styles, and custom label offsets (labelOffsetX / labelOffsetY).</p>
+        </div>
+        <button class="copy-btn" onclick="copySnippet('ex6', this)">📋 Copy JS</button>
+      </div>
+      <div class="demo-card-body">
+        <div class="vertical-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
+          <div class="vertical-card">
+            <span class="vertical-card-title">Box Shape (Triad)</span>
+            <div id="demo-zone-box"></div>
+          </div>
+          <div class="vertical-card">
+            <span class="vertical-card-title">Hull Shape (Polygon)</span>
+            <div id="demo-zone-hull"></div>
+          </div>
+          <div class="vertical-card">
+            <span class="vertical-card-title">Path Shape (Sequence)</span>
+            <div id="demo-zone-path"></div>
+          </div>
+          <div class="vertical-card">
+            <span class="vertical-card-title">Brace Shape (Accolade)</span>
+            <div id="demo-zone-brace"></div>
+          </div>
+        </div>
+      </div>
+    </div>
   </main>
 
   <footer>
@@ -553,6 +584,117 @@
         ]
       });
       document.getElementById('demo-title-left').appendChild(titleLeft.render());
+
+      // 6. Fretboard Zones (Box, Hull, Path, Brace)
+      const zoneBox = new fretzeeLib.Fretboard({
+        stringCount: 6,
+        fretCount: 4,
+        startFret: 1,
+        orientation: 'vertical',
+        tuning: ['E', 'A', 'D', 'G', 'B', 'E'],
+        fingerings: [
+          { string: 1, fret: 2, text: '3' },
+          { string: 2, fret: 3, text: 'R', color: '#00f5d4', textColor: '#090d16' },
+          { string: 3, fret: 2, text: '5' }
+        ],
+        zones: [
+          {
+            type: 'box',
+            startString: 1,
+            endString: 3,
+            startFret: 2,
+            endFret: 3,
+            label: 'D Triad Box',
+            fillColor: 'rgba(56, 189, 248, 0.15)',
+            strokeColor: '#38bdf8',
+            strokeStyle: 'dashed',
+            labelOffsetY: -4
+          }
+        ]
+      });
+      document.getElementById('demo-zone-box').appendChild(zoneBox.render());
+
+      const zoneHull = new fretzeeLib.Fretboard({
+        stringCount: 6,
+        fretCount: 5,
+        startFret: 5,
+        orientation: 'vertical',
+        tuning: ['E', 'A', 'D', 'G', 'B', 'E'],
+        fingerings: [
+          { string: 5, fret: 7, text: '5' },
+          { string: 4, fret: 7, text: 'R', color: '#00f5d4', textColor: '#090d16' },
+          { string: 3, fret: 6, text: '3' }
+        ],
+        zones: [
+          {
+            type: 'hull',
+            points: [
+              { string: 5, fret: 7 },
+              { string: 4, fret: 7 },
+              { string: 3, fret: 6 }
+            ],
+            label: 'Triad Triangle',
+            fillColor: 'rgba(168, 85, 247, 0.15)',
+            strokeColor: '#a855f7',
+            strokeWidth: 2,
+            labelOffsetY: -6
+          }
+        ]
+      });
+      document.getElementById('demo-zone-hull').appendChild(zoneHull.render());
+
+      const zonePath = new fretzeeLib.Fretboard({
+        stringCount: 6,
+        fretCount: 4,
+        startFret: 5,
+        orientation: 'vertical',
+        tuning: ['E', 'A', 'D', 'G', 'B', 'E'],
+        fingerings: [
+          { string: 6, fret: 5, text: '1' },
+          { string: 5, fret: 7, text: '3' },
+          { string: 4, fret: 7, text: '4' }
+        ],
+        zones: [
+          {
+            type: 'path',
+            points: [
+              { string: 6, fret: 5 },
+              { string: 5, fret: 7 },
+              { string: 4, fret: 7 }
+            ],
+            label: 'Sequence',
+            strokeColor: '#f59e0b',
+            strokeWidth: 3,
+            strokeStyle: 'dotted',
+            labelOffsetY: 8
+          }
+        ]
+      });
+      document.getElementById('demo-zone-path').appendChild(zonePath.render());
+
+      const zoneBrace = new fretzeeLib.Fretboard({
+        stringCount: 6,
+        fretCount: 5,
+        startFret: 5,
+        orientation: 'vertical',
+        tuning: ['E', 'A', 'D', 'G', 'B', 'E'],
+        fingerings: [
+          { string: 6, fret: 5, text: 'R', color: '#00f5d4', textColor: '#090d16' },
+          { string: 6, fret: 8, text: 'b3' },
+          { string: 1, fret: 5, text: 'R', color: '#00f5d4', textColor: '#090d16' },
+          { string: 1, fret: 8, text: 'b3' }
+        ],
+        zones: [
+          {
+            type: 'brace',
+            startFret: 5,
+            endFret: 8,
+            label: 'Frets 5-8 Range',
+            strokeColor: '#22c55e'
+          }
+        ]
+      });
+      document.getElementById('demo-zone-brace').appendChild(zoneBrace.render());
     });
 
     // Snippets for copying
@@ -631,7 +773,35 @@ document.body.appendChild(startingFretAm.render());`,
     { string: 6, fret: -1 }
   ]
 });
-document.body.appendChild(titleCentered.render());`
+document.body.appendChild(titleCentered.render());`,
+
+      ex6: `// Fretboard Zones: Box, Hull, Path, and Brace
+const chordWithZone = new fretzee.Fretboard({
+  title: 'D Triad with Box Zone',
+  stringCount: 6,
+  fretCount: 4,
+  startFret: 1,
+  orientation: 'vertical',
+  fingerings: [
+    { string: 1, fret: 2, text: '3' },
+    { string: 2, fret: 3, text: 'R', color: '#00f5d4', textColor: '#090d16' },
+    { string: 3, fret: 2, text: '5' }
+  ],
+  zones: [
+    {
+      type: 'box',
+      startString: 1,
+      endString: 3,
+      startFret: 2,
+      endFret: 3,
+      label: 'D Triad Box',
+      strokeColor: '#38bdf8',
+      strokeStyle: 'dashed',
+      labelOffsetY: -4
+    }
+  ]
+});
+document.body.appendChild(chordWithZone.render());`
     };
 
     function copySnippet(key, btn) {

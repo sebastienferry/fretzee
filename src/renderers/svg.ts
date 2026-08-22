@@ -103,15 +103,22 @@ export class SvgRenderer {
       height += extraTopSpace;
     }
 
+    const hasNonBraceZones = Boolean(this.options.zones && this.options.zones.some(z => z.type !== 'brace'));
+
     if (isHorizontal && hasBottomBraces) {
       const extraBottomSpace = 26 + maxBottomOffset;
       height += extraBottomSpace;
+    } else if (isHorizontal && !this.options.showInlays && hasNonBraceZones) {
+      height += 15;
     }
 
     if (!isHorizontal && hasBottomBraces) {
       const extraLeftSpace = 30 + maxBottomOffset;
       viewBoxX -= extraLeftSpace;
       width += extraLeftSpace;
+    } else if (!isHorizontal && !this.options.showInlays && hasNonBraceZones) {
+      viewBoxX -= 15;
+      width += 15;
     }
     
     // Additional adjustments for inlays
@@ -122,10 +129,15 @@ export class SvgRenderer {
     }
     if (!isHorizontal && hasTopBraces) {
       width += 30; // Extra right side padding for curly brace accolade in vertical mode
+    } else if (!isHorizontal && hasNonBraceZones) {
+      width += 15; // Extra right side padding for box/hull/path zones in vertical mode
     }
     if (isHorizontal && this.options.showInlays) {
       const extraThickness = this.options.stringThickness * (this.options.stringCount - 1);
       height += inlayOffset + extraThickness; // Space for text below + thickness
+    }
+    if (isHorizontal && hasNonBraceZones) {
+      width += 15; // Extra right side padding for box/hull/path zones in horizontal mode
     }
 
     // Additional adjustment for tuning labels
@@ -802,7 +814,7 @@ export class SvgRenderer {
         polygon.setAttribute('points', pointsString);
         polygon.setAttribute('fill', zone.fillColor ?? 'rgba(56, 189, 248, 0.15)');
         polygon.setAttribute('stroke', zone.strokeColor ?? '#38bdf8');
-        polygon.setAttribute('stroke-width', String(zone.strokeWidth ?? (padding * 1.2)));
+        polygon.setAttribute('stroke-width', String(zone.strokeWidth ?? 2));
         polygon.setAttribute('stroke-linejoin', 'round');
         polygon.setAttribute('stroke-linecap', 'round');
         if (strokeDash) {
@@ -1018,43 +1030,52 @@ export class SvgRenderer {
       text.setAttribute('stroke-linejoin', 'round');
       text.setAttribute('class', CSS_CLASSES.zoneLabel);
 
+      const labelOffsetX = zone.labelOffsetX ?? zone.titleOffsetX ?? 0;
+      const labelOffsetY = zone.labelOffsetY ?? zone.titleOffsetY ?? 0;
+
+      let labelX: number;
+      let labelY: number;
+
       if (zoneType === 'brace' && isHorizontal) {
-        text.setAttribute('x', String((minX + maxX) / 2));
+        labelX = (minX + maxX) / 2 + labelOffsetX;
         if (zone.position === 'bottom') {
-          text.setAttribute('y', String(maxY + (zone.labelFontSize ?? 11) + 2));
+          labelY = maxY + (zone.labelFontSize ?? 11) + 2 + labelOffsetY;
         } else {
-          text.setAttribute('y', String(minY - 4));
+          labelY = minY - 4 + labelOffsetY;
         }
         text.setAttribute('text-anchor', 'middle');
       } else if (zoneType === 'brace' && !isHorizontal) {
         text.setAttribute('writing-mode', 'tb');
         text.setAttribute('glyph-orientation-vertical', '0');
         if (zone.position === 'bottom') {
-          text.setAttribute('x', String(minX - 6));
+          labelX = minX - 6 + labelOffsetX;
         } else {
-          text.setAttribute('x', String(maxX + 6));
+          labelX = maxX + 6 + labelOffsetX;
         }
-        text.setAttribute('y', String((minY + maxY) / 2));
+        labelY = (minY + maxY) / 2 + labelOffsetY;
         text.setAttribute('text-anchor', 'middle');
         text.setAttribute('dominant-baseline', 'central');
       } else if (isHorizontal) {
-        text.setAttribute('x', String(minX + 8));
-        text.setAttribute('y', String(minY + (zone.labelFontSize ?? 11) + 2));
+        labelX = minX + 8 + labelOffsetX;
+        labelY = minY + (zone.labelFontSize ?? 11) + 2 + labelOffsetY;
         text.setAttribute('text-anchor', 'start');
       } else {
-        text.setAttribute('x', String((minX + maxX) / 2));
-        text.setAttribute('y', String(minY + (zone.labelFontSize ?? 11) + 2));
+        labelX = (minX + maxX) / 2 + labelOffsetX;
+        labelY = minY + (zone.labelFontSize ?? 11) + 2 + labelOffsetY;
         text.setAttribute('text-anchor', 'middle');
       }
+
+      text.setAttribute('x', String(labelX));
+      text.setAttribute('y', String(labelY));
 
       const labelLines = (zone.label || '').replace(/\\n/g, '\n').split(/\r?\n/);
       if (labelLines.length === 1) {
         text.textContent = labelLines[0];
       } else {
-        const labelX = text.getAttribute('x') || '0';
+        const lineX = String(labelX);
         labelLines.forEach((lineText, i) => {
           const tspan = document.createElementNS(SVG_NS, 'tspan');
-          tspan.setAttribute('x', labelX);
+          tspan.setAttribute('x', lineX);
           if (i > 0) {
             tspan.setAttribute('dy', '1.2em');
           }
