@@ -621,19 +621,23 @@
         orientation: 'vertical',
         tuning: ['E', 'A', 'D', 'G', 'B', 'E'],
         fingerings: [
+          { string: 5, fret: 7, text: '5' },
           { string: 4, fret: 7, text: 'R', color: '#00f5d4', textColor: '#090d16' },
           { string: 3, fret: 6, text: '3' },
-          { string: 2, fret: 5, text: '5' }
+          { string: 2, fret: 5, text: '5' },
+          { string: 1, fret: 5, text: 'R', color: '#00f5d4', textColor: '#090d16' }
         ],
         zones: [
           {
             type: 'hull',
             points: [
-              { string: 4, fret: 7 },
+              { string: 5, fret: 7 },
               { string: 3, fret: 6 },
-              { string: 2, fret: 5 }
+              { string: 1, fret: 5 },
+              { string: 2, fret: 5 },
+              { string: 4, fret: 7 }
             ],
-            label: 'A Triad Hull',
+            label: 'A Major Form',
             fillColor: 'rgba(168, 85, 247, 0.15)',
             strokeColor: '#a855f7',
             labelOffsetY: -6
