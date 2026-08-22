@@ -52,8 +52,15 @@ export interface FretboardOptions {
   tuning?: string[];
 
   /**
+   * Whether to display tuning note labels before/above the nut.
+   * - `true`: Displays tuning labels (defaults to standard tuning if `tuning` is omitted).
+   * - `false` (default): Omits tuning labels unless `tuning` array is explicitly provided.
+   */
+  showTuning?: boolean;
+
+  /**
    * Whether to reserve headstock clearance before the nut for open strings, muted strings, and tuning labels.
-   * - `true` (default): Automatically expands the headstock clearance when open/muted strings or tuning labels exist.
+   * - `true` (default): Reserves a fixed +30px headstock clearance balanced symmetrically on both sides (+30px left, +30px right).
    * - `false`: Tight and balanced margins on both sides (left margin strictly equals right margin at fretboard edges).
    */
   reserveNutClearance?: boolean;
