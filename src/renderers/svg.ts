@@ -60,22 +60,36 @@ export class SvgRenderer {
     width += padding * 2;
     height += padding * 2;
 
-    // Headstock clearance for open strings (fret 0), muted strings (fret -1), and breathing room
+    // Headstock clearance (open strings, muted strings, and tuning labels)
     const reserveClearance = this.options.reserveNutClearance !== false;
-    const radius = calculateFingeringRadius(this.options.stringSpacing, this.options.fretSpacing);
-    const openOffset = reserveClearance ? (this.options.fretSpacing * 0.50) + radius + 5 : 0;
+    const hasTuning = Boolean(this.options.tuning && Array.isArray(this.options.tuning) && this.options.tuning.length > 0);
+    const hasOpenOrMuted = Boolean(fingerings && fingerings.some(f => f.fret <= 0 || f.text === 'X'));
 
-    if (openOffset > 0) {
-      if (isHorizontal) {
-        viewBoxX -= openOffset;
-        width += openOffset;
+    let headstockOffset = 0;
+    if (reserveClearance) {
+      if (hasOpenOrMuted && hasTuning) {
+        headstockOffset = 24; // ~37px total left margin
+      } else if (hasOpenOrMuted) {
+        headstockOffset = 18; // ~31px total left margin
+      } else if (hasTuning) {
+        headstockOffset = 14; // ~27px total left margin
       } else {
-        viewBoxY -= openOffset;
-        height += openOffset;
+        headstockOffset = 18; // ~31px default headstock margin
+      }
+    }
+
+    if (headstockOffset > 0) {
+      if (isHorizontal) {
+        viewBoxX -= headstockOffset;
+        width += headstockOffset;
+      } else {
+        viewBoxY -= headstockOffset;
+        height += headstockOffset;
       }
     }
 
     // Reserved top clearance for fingerings on string 1 (top string in horizontal mode)
+    const radius = calculateFingeringRadius(this.options.stringSpacing, this.options.fretSpacing);
     const hasTopStringFingerings = isHorizontal && fingerings.some(f => f.string === 1);
     const topMarkerOffset = hasTopStringFingerings ? radius + 5 : 0;
     if (hasTopStringFingerings) {
@@ -143,19 +157,6 @@ export class SvgRenderer {
       width += 15; // Extra right side padding for box/hull/path zones in horizontal mode
     }
 
-    // Additional adjustment for tuning labels
-    const hasTuning = reserveClearance && Boolean(this.options.tuning && Array.isArray(this.options.tuning) && this.options.tuning.length > 0);
-    const tuningOffset = hasTuning ? (isHorizontal ? 25 : 20) : 0;
-    if (hasTuning) {
-      if (isHorizontal) {
-        viewBoxX -= tuningOffset;
-        width += tuningOffset;
-      } else {
-        viewBoxY -= tuningOffset;
-        height += tuningOffset;
-      }
-    }
-
     // Create SVG element with adjusted viewBox
     const svg = document.createElementNS(SVG_NS, 'svg');
     svg.setAttribute('viewBox', `${viewBoxX} ${viewBoxY} ${width} ${height}`);
@@ -169,7 +170,7 @@ export class SvgRenderer {
       this.renderHorizontal(strings, frets, inlays, markers, fingerings, svg, width, height, topMarkerOffset);
     } else {
       const hasOpenFingerings = fingerings.some(f => f.fret <= 0 || f.text === 'X');
-      const verticalTopOffset = (hasOpenFingerings ? openOffset : 0) + tuningOffset;
+      const verticalTopOffset = (hasOpenFingerings ? 18 : 0) + (hasTuning ? 12 : 0);
       this.renderVertical(strings, frets, inlays, markers, fingerings, svg, width, height, verticalTopOffset);
     }
 
@@ -330,11 +331,7 @@ export class SvgRenderer {
     const tuningGroup = this.createGroup(CSS_CLASSES.tuning);
     const stringCount = this.options.stringCount;
     const tuning = this.options.tuning;
-
-    const radius = calculateFingeringRadius(this.options.stringSpacing, this.options.fretSpacing);
-    // Uniform offset across all strings to keep labels aligned in a straight line
-    const openOffset = (this.options.fretSpacing * 0.50) + radius;
-    const uniformOffset = -(openOffset + 14);
+    const fingerings = this.options.fingerings || [];
 
     // tuning is provided 6th string to 1st string (lowest string to highest string)
     for (let i = 0; i < stringCount; i++) {
@@ -350,10 +347,14 @@ export class SvgRenderer {
       text.setAttribute('font-family', 'sans-serif');
       text.setAttribute('font-weight', 'bold');
 
+      const stringNum = i + 1;
+      const hasOpenOnString = fingerings.some(f => f.string === stringNum && (f.fret <= 0 || f.text === 'X'));
+      // Snug position: -8px from nut if no open note, -22px if open note circle exists on this string
+      const offset = hasOpenOnString ? -22 : -8;
+
       if (isHorizontal) {
-        // Positioned left of nut & open markers in a straight vertical column
         const stringPos = getFingeringPosition(
-          i + 1,
+          stringNum,
           0,
           'horizontal',
           this.options.stringSpacing,
@@ -364,14 +365,13 @@ export class SvgRenderer {
           this.options.startFret
         );
 
-        text.setAttribute('x', String(uniformOffset));
+        text.setAttribute('x', String(offset));
         text.setAttribute('y', String(stringPos.y));
         text.setAttribute('text-anchor', 'end');
         text.setAttribute('dominant-baseline', 'central');
       } else {
-        // Positioned above nut & open markers in a straight horizontal row
         const stringPos = getFingeringPosition(
-          i + 1,
+          stringNum,
           0,
           'vertical',
           this.options.stringSpacing,
@@ -383,7 +383,7 @@ export class SvgRenderer {
         );
 
         text.setAttribute('x', String(stringPos.x));
-        text.setAttribute('y', String(uniformOffset));
+        text.setAttribute('y', String(offset));
         text.setAttribute('text-anchor', 'middle');
         text.setAttribute('dominant-baseline', 'auto');
       }
