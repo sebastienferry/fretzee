@@ -1,6 +1,6 @@
 {
   "name": "fretzee",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "A lightweight library to render guitar fretboards as SVG with configurable frets, strings, and orientation.",
   "type": "module",
   "main": "dist/index.umd.js",

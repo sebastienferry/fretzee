@@ -7,8 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Next]
 
+## [0.3.3] - 2026-08-22
+
 ### Added
 - Add `labelOffsetX` and `labelOffsetY` (with `titleOffsetX` and `titleOffsetY` aliases) to `Zone` interface to customize zone label positioning on `box`, `hull`, `path`, and `brace` shapes (FRE-73).
+
+### Fixed
+- Fix viewBox clipping on the right and bottom boundaries for `box`, `hull`, and `path` zones.
+
+### Changed
+- Refine default `hull` stroke width to `2px`.
 
 ## [0.3.2] - 2026-08-17
 
