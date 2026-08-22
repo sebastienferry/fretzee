@@ -430,5 +430,35 @@ describe('Highlighted Fretboard Zones', () => {
         expect(tspan.getAttribute('x')).toBe(textX);
       });
     });
+
+    it('should expand viewBox so vertical box zone covering string 1 is not clipped on the right', () => {
+      const fretboard = new Fretboard({
+        stringCount: 6,
+        fretCount: 4,
+        orientation: 'vertical',
+        zones: [
+          {
+            type: 'box',
+            startString: 1,
+            endString: 3,
+            startFret: 1,
+            endFret: 3,
+            label: 'Right Box'
+          }
+        ]
+      });
+
+      const svg = fretboard.render();
+      const viewBox = svg.getAttribute('viewBox')?.split(' ').map(Number) || [0, 0, 0, 0];
+      const [vx, , vw] = viewBox;
+      const rightEdge = vx + vw;
+
+      const rect = svg.querySelector('rect.fretzee-zone-rect');
+      const rectX = parseFloat(rect?.getAttribute('x') || '0');
+      const rectW = parseFloat(rect?.getAttribute('width') || '0');
+      const rectRight = rectX + rectW;
+
+      expect(rightEdge).toBeGreaterThanOrEqual(rectRight);
+    });
   });
 });

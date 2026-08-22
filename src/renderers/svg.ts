@@ -103,15 +103,22 @@ export class SvgRenderer {
       height += extraTopSpace;
     }
 
+    const hasNonBraceZones = Boolean(this.options.zones && this.options.zones.some(z => z.type !== 'brace'));
+
     if (isHorizontal && hasBottomBraces) {
       const extraBottomSpace = 26 + maxBottomOffset;
       height += extraBottomSpace;
+    } else if (isHorizontal && !this.options.showInlays && hasNonBraceZones) {
+      height += 15;
     }
 
     if (!isHorizontal && hasBottomBraces) {
       const extraLeftSpace = 30 + maxBottomOffset;
       viewBoxX -= extraLeftSpace;
       width += extraLeftSpace;
+    } else if (!isHorizontal && !this.options.showInlays && hasNonBraceZones) {
+      viewBoxX -= 15;
+      width += 15;
     }
     
     // Additional adjustments for inlays
@@ -122,10 +129,15 @@ export class SvgRenderer {
     }
     if (!isHorizontal && hasTopBraces) {
       width += 30; // Extra right side padding for curly brace accolade in vertical mode
+    } else if (!isHorizontal && hasNonBraceZones) {
+      width += 15; // Extra right side padding for box/hull/path zones in vertical mode
     }
     if (isHorizontal && this.options.showInlays) {
       const extraThickness = this.options.stringThickness * (this.options.stringCount - 1);
       height += inlayOffset + extraThickness; // Space for text below + thickness
+    }
+    if (isHorizontal && hasNonBraceZones) {
+      width += 15; // Extra right side padding for box/hull/path zones in horizontal mode
     }
 
     // Additional adjustment for tuning labels
