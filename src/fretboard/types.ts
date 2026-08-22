@@ -51,10 +51,13 @@ export interface FretboardOptions {
   /** Optional tuning note labels ordered from lowest string (6th string) to highest (1st string) */
   tuning?: string[];
 
+  /** Whether to render tuning note labels (default: true if tuning is provided) */
+  showTuning?: boolean;
+
   /**
-   * Whether to reserve headstock clearance before the nut for open strings, muted strings, and tuning labels.
-   * - `true` (default): Automatically expands the headstock clearance when open/muted strings or tuning labels exist.
-   * - `false`: Tight and balanced margins on both sides (left margin strictly equals right margin at fretboard edges).
+   * Whether to reserve headstock clearance before the nut for open strings (fret 0) and muted strings (fret -1).
+   * - `true` (default): Expands the headstock clearance for fret 0 / X markers.
+   * - `false`: Tight margins at the nut edge.
    */
   reserveNutClearance?: boolean;
 

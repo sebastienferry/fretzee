@@ -143,8 +143,8 @@ export class SvgRenderer {
       width += 15; // Extra right side padding for box/hull/path zones in horizontal mode
     }
 
-    // Additional adjustment for tuning labels
-    const hasTuning = reserveClearance && Boolean(this.options.tuning && Array.isArray(this.options.tuning) && this.options.tuning.length > 0);
+    // Additional adjustment for tuning labels (independent option from reserveNutClearance)
+    const hasTuning = this.options.showTuning !== false && Boolean(this.options.tuning && Array.isArray(this.options.tuning) && this.options.tuning.length > 0);
     const tuningOffset = hasTuning ? (isHorizontal ? 25 : 20) : 0;
     if (hasTuning) {
       if (isHorizontal) {
@@ -323,7 +323,7 @@ export class SvgRenderer {
    * In vertical mode: rendered above the nut, aligned horizontally with strings
    */
   private renderTuningLabels(svg: SVGSVGElement, isHorizontal: boolean): void {
-    if (!this.options.tuning || !Array.isArray(this.options.tuning) || this.options.tuning.length === 0) {
+    if (this.options.showTuning === false || !this.options.tuning || !Array.isArray(this.options.tuning) || this.options.tuning.length === 0) {
       return;
     }
 
@@ -331,10 +331,12 @@ export class SvgRenderer {
     const stringCount = this.options.stringCount;
     const tuning = this.options.tuning;
 
+    const reserveClearance = this.options.reserveNutClearance !== false;
     const radius = calculateFingeringRadius(this.options.stringSpacing, this.options.fretSpacing);
-    // Uniform offset across all strings to keep labels aligned in a straight line
-    const openOffset = (this.options.fretSpacing * 0.50) + radius;
-    const uniformOffset = -(openOffset + 14);
+    // If open string clearance (reserveNutClearance) is active, offset tuning labels beyond open string markers (-openOffset - 14).
+    // If reserveNutClearance is false, place tuning labels directly next to the nut (-14px).
+    const openOffset = reserveClearance ? (this.options.fretSpacing * 0.50) + radius : 0;
+    const uniformOffset = openOffset > 0 ? -(openOffset + 14) : -14;
 
     // tuning is provided 6th string to 1st string (lowest string to highest string)
     for (let i = 0; i < stringCount; i++) {

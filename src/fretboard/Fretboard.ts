@@ -120,6 +120,7 @@ export class Fretboard {
       titleAlignment: DEFAULT_TITLE_ALIGNMENT,
       titleOffsetY: options.titleOffsetY ?? 0,
       reserveNutClearance: options.reserveNutClearance ?? true,
+      showTuning: options.showTuning ?? Boolean(options.tuning && options.tuning.length > 0),
       tuning: options.tuning ?? [],
       fingerings: [],
       zones: [],
