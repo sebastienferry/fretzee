@@ -139,6 +139,44 @@ const barreChord = new Fretboard({
 });
 
 document.body.appendChild(barreChord.render());
+
+// Fretboard with Highlighted Zones (Triad Box & Fret Accolade)
+const zoneDiagram = new Fretboard({
+  title: 'D Triad & Position 1',
+  stringCount: 6,
+  fretCount: 5,
+  startFret: 1,
+  orientation: 'horizontal',
+  fingerings: [
+    { string: 1, fret: 2, text: '3' },
+    { string: 2, fret: 3, text: 'R', color: '#00f5d4', textColor: '#090d16' },
+    { string: 3, fret: 2, text: '5' }
+  ],
+  zones: [
+    {
+      type: 'box',
+      startString: 1,
+      endString: 3,
+      startFret: 2,
+      endFret: 3,
+      label: 'D Triad',
+      strokeStyle: 'dashed',
+      strokeColor: '#38bdf8',
+      labelOffsetX: 10,
+      labelOffsetY: -5
+    },
+    {
+      type: 'brace',
+      startFret: 1,
+      endFret: 4,
+      position: 'top',
+      label: 'Open Position',
+      strokeColor: '#22c55e'
+    }
+  ]
+});
+
+document.body.appendChild(zoneDiagram.render());
 ```
 
 ## Configuration Reference

@@ -70,3 +70,69 @@ Interface defining highlighted regions (triads, scale boxes, hulls, paths, and c
 - `offsetY?: number` - Vertical offset in pixels for the entire zone or brace.
 - `position?: 'top' | 'bottom'` - Placement side for curly braces.
 
+### Zone Examples
+
+#### Box Zone (Bounding Rect)
+```typescript
+const boxZone: Zone = {
+  type: 'box',
+  startString: 1,
+  endString: 3,
+  startFret: 2,
+  endFret: 3,
+  label: 'D Form Triad',
+  fillColor: 'rgba(56, 189, 248, 0.15)',
+  strokeColor: '#38bdf8',
+  strokeStyle: 'dashed',
+  labelOffsetY: -4
+};
+```
+
+#### Hull Zone (Convex Polygon)
+```typescript
+const hullZone: Zone = {
+  type: 'hull',
+  points: [
+    { string: 4, fret: 7 },
+    { string: 3, fret: 6 },
+    { string: 2, fret: 5 }
+  ],
+  label: 'A Triad Hull',
+  fillColor: 'rgba(168, 85, 247, 0.15)',
+  strokeColor: '#a855f7',
+  labelOffsetX: 10,
+  labelOffsetY: -6
+};
+```
+
+#### Path Zone (Connected Sequence)
+```typescript
+const pathZone: Zone = {
+  type: 'path',
+  points: [
+    { string: 6, fret: 5 },
+    { string: 5, fret: 7 },
+    { string: 4, fret: 7 }
+  ],
+  label: 'Sweeping Sequence',
+  strokeColor: '#f59e0b',
+  strokeWidth: 3,
+  strokeStyle: 'dotted',
+  labelOffsetY: 8
+};
+```
+
+#### Brace Zone (Fret Range Accolade)
+```typescript
+const braceZone: Zone = {
+  type: 'brace',
+  startFret: 5,
+  endFret: 8,
+  position: 'top',
+  label: 'Position 1 Range',
+  strokeColor: '#22c55e',
+  labelOffsetY: -2
+};
+```
+
+
