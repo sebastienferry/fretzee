@@ -60,9 +60,10 @@ export class SvgRenderer {
     width += padding * 2;
     height += padding * 2;
 
-    // Headstock clearance for open strings (fret 0), muted strings (fret -1), and breathing room (standard 30px)
+    // Headstock clearance for open strings (fret 0), muted strings (fret -1), and breathing room
     const reserveClearance = this.options.reserveNutClearance !== false;
-    const openOffset = reserveClearance ? 30 : 0;
+    const radius = calculateFingeringRadius(this.options.stringSpacing, this.options.fretSpacing);
+    const openOffset = reserveClearance ? (this.options.fretSpacing * 0.50) + radius + 5 : 0;
 
     if (openOffset > 0) {
       if (isHorizontal) {
@@ -75,7 +76,6 @@ export class SvgRenderer {
     }
 
     // Reserved top clearance for fingerings on string 1 (top string in horizontal mode)
-    const radius = calculateFingeringRadius(this.options.stringSpacing, this.options.fretSpacing);
     const hasTopStringFingerings = isHorizontal && fingerings.some(f => f.string === 1);
     const topMarkerOffset = hasTopStringFingerings ? radius + 5 : 0;
     if (hasTopStringFingerings) {
@@ -143,9 +143,9 @@ export class SvgRenderer {
       width += 15; // Extra right side padding for box/hull/path zones in horizontal mode
     }
 
-    // Additional adjustment for tuning labels (standard 30px)
+    // Additional adjustment for tuning labels (independent option from reserveNutClearance)
     const hasTuning = this.options.showTuning !== false && Boolean(this.options.tuning && Array.isArray(this.options.tuning) && this.options.tuning.length > 0);
-    const tuningOffset = hasTuning ? 30 : 0;
+    const tuningOffset = hasTuning ? (isHorizontal ? 25 : 20) : 0;
     if (hasTuning) {
       if (isHorizontal) {
         viewBoxX -= tuningOffset;
@@ -332,10 +332,11 @@ export class SvgRenderer {
     const tuning = this.options.tuning;
 
     const reserveClearance = this.options.reserveNutClearance !== false;
-    // Standardized 30px zones:
-    // If reserveNutClearance is active (zone [0, -30]), tuning labels are placed at -45px (in zone [-30, -60]).
-    // If reserveNutClearance is false, tuning labels are placed at -15px (in zone [0, -30]).
-    const uniformOffset = reserveClearance ? -45 : -15;
+    const radius = calculateFingeringRadius(this.options.stringSpacing, this.options.fretSpacing);
+    // If open string clearance (reserveNutClearance) is active, offset tuning labels beyond open string markers (-openOffset - 14).
+    // If reserveNutClearance is false, place tuning labels directly next to the nut (-14px).
+    const openOffset = reserveClearance ? (this.options.fretSpacing * 0.50) + radius : 0;
+    const uniformOffset = openOffset > 0 ? -(openOffset + 14) : -14;
 
     // tuning is provided 6th string to 1st string (lowest string to highest string)
     for (let i = 0; i < stringCount; i++) {
@@ -367,7 +368,7 @@ export class SvgRenderer {
 
         text.setAttribute('x', String(uniformOffset));
         text.setAttribute('y', String(stringPos.y));
-        text.setAttribute('text-anchor', 'middle');
+        text.setAttribute('text-anchor', 'end');
         text.setAttribute('dominant-baseline', 'central');
       } else {
         // Positioned above nut & open markers in a straight horizontal row
@@ -386,7 +387,7 @@ export class SvgRenderer {
         text.setAttribute('x', String(stringPos.x));
         text.setAttribute('y', String(uniformOffset));
         text.setAttribute('text-anchor', 'middle');
-        text.setAttribute('dominant-baseline', 'central');
+        text.setAttribute('dominant-baseline', 'auto');
       }
 
       text.textContent = noteLabel;
