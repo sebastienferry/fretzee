@@ -410,6 +410,9 @@ export class SvgRenderer {
     // When Fret 0 is inactive (zone [0, -40px]), tuning labels are placed at -20px.
     const uniformOffset = reserveClearance ? -60 : -20;
 
+    const radius = calculateFingeringRadius(this.options.stringSpacing, this.options.fretSpacing);
+    const fontSize = Math.round(radius * 1.5);
+
     // tuning is provided 6th string to 1st string (lowest string to highest string)
     for (let i = 0; i < stringCount; i++) {
       // Map stringIndex (0 = highest/1st string, N-1 = lowest/Nth string)
@@ -420,7 +423,7 @@ export class SvgRenderer {
       const text = document.createElementNS(SVG_NS, 'text');
       text.setAttribute('class', `${CSS_CLASSES.tuningLabel} fretzee-tuning-s${i + 1}`);
       text.setAttribute('fill', '#000000');
-      text.setAttribute('font-size', '10');
+      text.setAttribute('font-size', String(fontSize));
       text.setAttribute('font-family', 'sans-serif');
       text.setAttribute('font-weight', 'bold');
 
