@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Next]
 
+## [0.3.4] - 2026-08-22
+
+### Added
+- Add `debugZones?: boolean` option to render transparent visual debug overlays for Fret 0 and Tuning clearance zones.
+- Add `reserveNutClearance?: boolean` option to control headstock clearance for open and muted string markers.
+
+### Fixed
+- Statically reserve top string clearance in horizontal mode to eliminate SVG jumping and resizing when adding or removing fingerings on string 1.
+- Stabilize vertical title positioning when open string fingerings are placed.
+
 ## [0.3.3] - 2026-08-22
 
 ### Added
