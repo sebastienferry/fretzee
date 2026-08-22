@@ -60,16 +60,19 @@ export class SvgRenderer {
     width += padding * 2;
     height += padding * 2;
 
-    // Always reserve clearance for open string / muted string fingerings (fret 0 or fret -1)
+    // Reserve clearance for open string / muted string fingerings (fret 0 or fret -1) ONLY if present
+    const hasOpenOrMutedFingerings = fingerings.some(f => f.fret <= 0 || f.text === 'X');
     const radius = calculateFingeringRadius(this.options.stringSpacing, this.options.fretSpacing);
-    const openOffset = (this.options.fretSpacing * 0.50) + radius + 5;
+    const openOffset = hasOpenOrMutedFingerings ? (this.options.fretSpacing * 0.50) + radius + 5 : 0;
 
-    if (isHorizontal) {
-      viewBoxX -= openOffset;
-      width += openOffset;
-    } else {
-      viewBoxY -= openOffset;
-      height += openOffset;
+    if (hasOpenOrMutedFingerings) {
+      if (isHorizontal) {
+        viewBoxX -= openOffset;
+        width += openOffset;
+      } else {
+        viewBoxY -= openOffset;
+        height += openOffset;
+      }
     }
 
     // Reserved top clearance for fingerings on string 1 (top string in horizontal mode)
@@ -154,7 +157,7 @@ export class SvgRenderer {
     }
 
     // Symmetrical right-side balancing in horizontal mode for centered visual alignment
-    if (isHorizontal) {
+    if (isHorizontal && (openOffset > 0 || tuningOffset > 0)) {
       width += (openOffset + tuningOffset);
     }
 
@@ -170,8 +173,7 @@ export class SvgRenderer {
     if (isHorizontal) {
       this.renderHorizontal(strings, frets, inlays, markers, fingerings, svg, width, height, topMarkerOffset);
     } else {
-      const hasOpenFingerings = fingerings.some(f => f.fret <= 0);
-      const verticalTopOffset = (hasOpenFingerings ? openOffset : 0) + tuningOffset;
+      const verticalTopOffset = (hasOpenOrMutedFingerings ? openOffset : 0) + tuningOffset;
       this.renderVertical(strings, frets, inlays, markers, fingerings, svg, width, height, verticalTopOffset);
     }
 
