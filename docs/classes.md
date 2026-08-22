@@ -88,18 +88,16 @@ const boxZone: Zone = {
 };
 ```
 
-#### Hull Zone (Convex Polygon)
+#### Hull Zone (Convex Polygon / Triangle)
 ```typescript
 const hullZone: Zone = {
   type: 'hull',
   points: [
     { string: 5, fret: 7 },
-    { string: 3, fret: 6 },
-    { string: 1, fret: 5 },
-    { string: 2, fret: 5 },
-    { string: 4, fret: 7 }
+    { string: 4, fret: 7 },
+    { string: 3, fret: 6 }
   ],
-  label: 'A Major Form',
+  label: 'Triad Triangle',
   fillColor: 'rgba(168, 85, 247, 0.15)',
   strokeColor: '#a855f7',
   labelOffsetX: 10,
