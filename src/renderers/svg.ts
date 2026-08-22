@@ -60,13 +60,12 @@ export class SvgRenderer {
     width += padding * 2;
     height += padding * 2;
 
-    // Reserve clearance for open string / muted string fingerings (fret 0 or fret -1) ONLY if present and enabled
+    // Headstock clearance for open strings (fret 0), muted strings (fret -1), and breathing room
     const reserveClearance = this.options.reserveNutClearance !== false;
-    const hasOpenOrMutedFingerings = reserveClearance && fingerings.some(f => f.fret <= 0 || f.text === 'X');
     const radius = calculateFingeringRadius(this.options.stringSpacing, this.options.fretSpacing);
-    const openOffset = hasOpenOrMutedFingerings ? (this.options.fretSpacing * 0.50) + radius + 5 : 0;
+    const openOffset = reserveClearance ? (this.options.fretSpacing * 0.50) + radius + 5 : 0;
 
-    if (hasOpenOrMutedFingerings) {
+    if (openOffset > 0) {
       if (isHorizontal) {
         viewBoxX -= openOffset;
         width += openOffset;
@@ -174,7 +173,8 @@ export class SvgRenderer {
     if (isHorizontal) {
       this.renderHorizontal(strings, frets, inlays, markers, fingerings, svg, width, height, topMarkerOffset);
     } else {
-      const verticalTopOffset = (hasOpenOrMutedFingerings ? openOffset : 0) + tuningOffset;
+      const hasOpenFingerings = fingerings.some(f => f.fret <= 0 || f.text === 'X');
+      const verticalTopOffset = (hasOpenFingerings ? openOffset : 0) + tuningOffset;
       this.renderVertical(strings, frets, inlays, markers, fingerings, svg, width, height, verticalTopOffset);
     }
 
