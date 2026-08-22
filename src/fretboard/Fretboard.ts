@@ -121,6 +121,7 @@ export class Fretboard {
       titleOffsetY: options.titleOffsetY ?? 0,
       reserveNutClearance: options.reserveNutClearance ?? true,
       showTuning: options.showTuning ?? Boolean(options.tuning && options.tuning.length > 0),
+      debugZones: options.debugZones ?? false,
       tuning: options.tuning ?? [],
       fingerings: [],
       zones: [],

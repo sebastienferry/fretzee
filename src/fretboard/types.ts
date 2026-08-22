@@ -61,6 +61,9 @@ export interface FretboardOptions {
    */
   reserveNutClearance?: boolean;
 
+  /** Whether to render transparent color-coded debug bounding boxes for Fret 0 (Blue) and Tuning (Red) zones */
+  debugZones?: boolean;
+
   /** Fingering markers to render on the fretboard */
   fingerings?: Fingering[];
 

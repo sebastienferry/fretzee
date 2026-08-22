@@ -55,4 +55,20 @@ describe('Tuning Labels Feature', () => {
     const tuningGroup = svg.querySelector(`.${CSS_CLASSES.tuning}`);
     expect(tuningGroup).toBeNull();
   });
+
+  it('renders debug overlays when debugZones is true', () => {
+    const fretboard = new Fretboard({
+      stringCount: 6,
+      fretCount: 5,
+      tuning: ['E', 'A', 'D', 'G', 'B', 'E'],
+      reserveNutClearance: true,
+      debugZones: true
+    });
+
+    const svg = fretboard.render();
+    const debugGroup = svg.querySelector('.fretzee-debug-zones');
+    expect(debugGroup).not.toBeNull();
+    const rects = debugGroup?.querySelectorAll('rect');
+    expect(rects?.length).toBe(2); // 1 for Fret 0, 1 for Tuning
+  });
 });
