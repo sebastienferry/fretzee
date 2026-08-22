@@ -240,9 +240,6 @@ export class SvgRenderer {
 
     // Render tuning labels if specified
     this.renderTuningLabels(svg, true);
-
-    // Render transparent debug overlays (Blue for Fret 0, Red for Tuning)
-    this.renderDebugZones(svg, true);
   }
 
   /**
@@ -309,73 +306,6 @@ export class SvgRenderer {
 
     // Render tuning labels if specified
     this.renderTuningLabels(svg, false);
-
-    // Render transparent debug overlays (Blue for Fret 0, Red for Tuning)
-    this.renderDebugZones(svg, false);
-  }
-
-  /**
-   * Renders transparent debug overlays:
-   * - Transparent Blue (#3b82f6) for Fret 0 / X zone
-   * - Transparent Red (#ef4444) for Tuning zone
-   */
-  private renderDebugZones(svg: SVGSVGElement, isHorizontal: boolean): void {
-    const debugGroup = document.createElementNS(SVG_NS, 'g');
-    debugGroup.setAttribute('class', 'fretzee-debug-zones');
-
-    const stringCount = this.options.stringCount;
-    const stringSpacing = this.options.stringSpacing;
-    const stringThickness = this.options.stringThickness;
-    const neckSpan = (stringCount - 1) * stringSpacing + (stringThickness * stringCount);
-
-    const reserveClearance = this.options.reserveNutClearance !== false;
-    const hasTuning = this.options.showTuning !== false && Boolean(this.options.tuning && Array.isArray(this.options.tuning) && this.options.tuning.length > 0);
-
-    // 1. Blue overlay for Fret 0 / X zone (40px)
-    if (reserveClearance) {
-      const fret0Rect = document.createElementNS(SVG_NS, 'rect');
-      if (isHorizontal) {
-        fret0Rect.setAttribute('x', '-40');
-        fret0Rect.setAttribute('y', '-10');
-        fret0Rect.setAttribute('width', '40');
-        fret0Rect.setAttribute('height', String(neckSpan + 20));
-      } else {
-        fret0Rect.setAttribute('x', '-10');
-        fret0Rect.setAttribute('y', '-40');
-        fret0Rect.setAttribute('width', String(neckSpan + 20));
-        fret0Rect.setAttribute('height', '40');
-      }
-      fret0Rect.setAttribute('fill', 'rgba(59, 130, 246, 0.35)'); // Blue 35%
-      fret0Rect.setAttribute('stroke', '#2563eb');
-      fret0Rect.setAttribute('stroke-width', '1.5');
-      fret0Rect.setAttribute('stroke-dasharray', '4 4');
-      debugGroup.appendChild(fret0Rect);
-    }
-
-    // 2. Red overlay for Tuning zone (40px)
-    if (hasTuning) {
-      const tuningRect = document.createElementNS(SVG_NS, 'rect');
-      const startOffset = reserveClearance ? -80 : -40;
-      if (isHorizontal) {
-        tuningRect.setAttribute('x', String(startOffset));
-        tuningRect.setAttribute('y', '-10');
-        tuningRect.setAttribute('width', '40');
-        tuningRect.setAttribute('height', String(neckSpan + 20));
-      } else {
-        tuningRect.setAttribute('x', '-10');
-        tuningRect.setAttribute('y', String(startOffset));
-        tuningRect.setAttribute('width', String(neckSpan + 20));
-        tuningRect.setAttribute('height', '40');
-      }
-      tuningRect.setAttribute('fill', 'rgba(239, 68, 68, 0.35)'); // Red 35%
-      tuningRect.setAttribute('stroke', '#dc2626');
-      tuningRect.setAttribute('stroke-width', '1.5');
-      tuningRect.setAttribute('stroke-dasharray', '4 4');
-      debugGroup.appendChild(tuningRect);
-    }
-
-    // Insert as background underneath elements
-    svg.insertBefore(debugGroup, svg.firstChild);
   }
 
   /**
