@@ -15,7 +15,7 @@ new Fretboard(options?: Partial<FretboardOptions>)
 - `titleOffsetY?: number` - Optional vertical offset in pixels to adjust title position.
 - `subtitleOffsetY?: number` - Optional vertical offset in pixels to adjust subtitle position.
 - `startFret?: number` - Starting fret position (0-24).
-- `fretCount?: number` - Number of frets (4-16).
+- `fretCount?: number` - Number of frets (3-24).
 - `stringCount?: number` - Number of strings (4-8).
 - `orientation?: 'horizontal' | 'vertical'` - Fretboard orientation.
 - `tuning?: string[]` - Optional tuning note labels (lowest string to highest string).

@@ -192,7 +192,7 @@ document.body.appendChild(zoneDiagram.render());
 | `titleOffsetY` | `number` | `0` | Vertical offset in pixels to shift title higher/lower |
 | `subtitleOffsetY` | `number` | `0` | Vertical offset in pixels to shift subtitle higher/lower |
 | `stringCount` | `number` | `6` | Number of strings (4 for bass, 6 for guitar, up to 8) |
-| `fretCount` | `number` | `12` | Number of frets displayed (4 to 24) |
+| `fretCount` | `number` | `12` | Number of frets displayed (3 to 24) |
 | `startFret` | `number` | `1` | Starting fret position (1 to 24) |
 | `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` | Layout orientation |
 | `showInlays` | `boolean` | `true` | Show fret number inlays and position markers |

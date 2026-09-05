@@ -30,6 +30,19 @@ describe('Configurable Starting Fret', () => {
     it('should throw TypeError for non-integer startFret', () => {
       expect(() => new Fretboard({ startFret: 2.5 })).toThrow(TypeError);
     });
+
+    it('should accept valid fretCount values within range 3..24', () => {
+      const fb3 = new Fretboard({ fretCount: 3 });
+      expect(fb3.fretCount).toBe(3);
+
+      const fb24 = new Fretboard({ fretCount: 24 });
+      expect(fb24.fretCount).toBe(24);
+    });
+
+    it('should throw RangeError for fretCount out of bounds', () => {
+      expect(() => new Fretboard({ fretCount: 2 })).toThrow(RangeError);
+      expect(() => new Fretboard({ fretCount: 25 })).toThrow(RangeError);
+    });
   });
 
   describe('Inlay Filtering and Absolute Numbering', () => {
