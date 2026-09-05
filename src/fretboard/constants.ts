@@ -29,8 +29,8 @@ export const DEFAULT_FINGERING_COLOR = '#000000';
 export const DEFAULT_FINGERING_TEXT_COLOR = '#ffffff';
 
 // Validation ranges
-export const MIN_FRET_COUNT = 4;
-export const MAX_FRET_COUNT = 16;
+export const MIN_FRET_COUNT = 3;
+export const MAX_FRET_COUNT = 24;
 export const MIN_STRING_COUNT = 4;
 export const MAX_STRING_COUNT = 8;
 export const MIN_START_FRET = 0;
