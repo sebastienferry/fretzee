@@ -128,6 +128,54 @@ describe('Diagram Title', () => {
     });
   });
 
+  describe('Subtitle rendering', () => {
+    it('renders a subtitle as an SVG text element with class fretzee-subtitle', () => {
+      const fretboard = new Fretboard({ title: 'Am Chord', subtitle: 'Open Position' });
+      const svg = fretboard.render();
+      const titleEl = svg.querySelector(`.${CSS_CLASSES.title}`);
+      const subtitleEl = svg.querySelector(`.${CSS_CLASSES.subtitle}`);
+
+      expect(titleEl).not.toBeNull();
+      expect(titleEl?.textContent).toBe('Am Chord');
+      expect(subtitleEl).not.toBeNull();
+      expect(subtitleEl?.tagName.toLowerCase()).toBe('text');
+      expect(subtitleEl?.textContent).toBe('Open Position');
+      expect(subtitleEl?.getAttribute('fill')).toBe('#666666');
+    });
+
+    it('positions subtitle below title (title is higher/more negative Y)', () => {
+      const fretboard = new Fretboard({ title: 'Am Chord', subtitle: 'Open Position' });
+      const svg = fretboard.render();
+      const titleEl = svg.querySelector(`.${CSS_CLASSES.title}`);
+      const subtitleEl = svg.querySelector(`.${CSS_CLASSES.subtitle}`);
+
+      const yTitle = parseFloat(titleEl?.getAttribute('y') || '0');
+      const ySubtitle = parseFloat(subtitleEl?.getAttribute('y') || '0');
+
+      expect(yTitle).toBeLessThan(ySubtitle);
+    });
+
+    it('renders subtitle alone without title', () => {
+      const fretboard = new Fretboard({ subtitle: 'Standalone Subtitle' });
+      const svg = fretboard.render();
+      const titleEl = svg.querySelector(`.${CSS_CLASSES.title}`);
+      const subtitleEl = svg.querySelector(`.${CSS_CLASSES.subtitle}`);
+
+      expect(titleEl).toBeNull();
+      expect(subtitleEl).not.toBeNull();
+      expect(subtitleEl?.textContent).toBe('Standalone Subtitle');
+    });
+
+    it('left-aligned subtitle matches left-aligned title anchor and x position', () => {
+      const fretboard = new Fretboard({ title: 'Title', subtitle: 'Subtitle', titleAlignment: 'left' });
+      const svg = fretboard.render();
+      const subtitleEl = svg.querySelector(`.${CSS_CLASSES.subtitle}`);
+
+      expect(subtitleEl?.getAttribute('text-anchor')).toBe('start');
+      expect(subtitleEl?.getAttribute('x')).toBe('0');
+    });
+  });
+
   describe('Validation', () => {
     it('throws TypeError if invalid titleAlignment is provided', () => {
       expect(() => new Fretboard({ title: 'Test', titleAlignment: 'right' as any })).toThrow(TypeError);
