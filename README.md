@@ -100,6 +100,7 @@ import { Fretboard } from 'fretzee';
 // C Major Chord Diagram (Vertical)
 const chord = new Fretboard({
   title: 'C Major',
+  subtitle: 'Open Position',
   stringCount: 6,
   fretCount: 4,
   orientation: 'vertical',
@@ -186,8 +187,10 @@ document.body.appendChild(zoneDiagram.render());
 | Option | Type | Default | Description |
 | :--- | :--- | :--- | :--- |
 | `title` | `string` | `undefined` | Optional title header displayed above the fretboard |
-| `titleAlignment` | `'center' \| 'left'` | `'center'` | Title alignment relative to width |
+| `subtitle` | `string` | `undefined` | Optional subtitle displayed below title and above the fretboard |
+| `titleAlignment` | `'center' \| 'left'` | `'center'` | Title & subtitle alignment relative to width |
 | `titleOffsetY` | `number` | `0` | Vertical offset in pixels to shift title higher/lower |
+| `subtitleOffsetY` | `number` | `0` | Vertical offset in pixels to shift subtitle higher/lower |
 | `stringCount` | `number` | `6` | Number of strings (4 for bass, 6 for guitar, up to 8) |
 | `fretCount` | `number` | `12` | Number of frets displayed (4 to 24) |
 | `startFret` | `number` | `1` | Starting fret position (1 to 24) |

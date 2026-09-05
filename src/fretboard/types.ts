@@ -42,11 +42,17 @@ export interface FretboardOptions {
   /** Optional diagram title displayed above the fretboard */
   title?: string;
 
-  /** Title alignment: 'center' or 'left' (default: 'center') */
+  /** Optional diagram subtitle displayed below the title / above the fretboard */
+  subtitle?: string;
+
+  /** Title & subtitle alignment: 'center' or 'left' (default: 'center') */
   titleAlignment?: 'center' | 'left';
 
   /** Optional vertical offset in pixels to shift title higher/lower (e.g. -10 for higher) */
   titleOffsetY?: number;
+
+  /** Optional vertical offset in pixels to shift subtitle higher/lower */
+  subtitleOffsetY?: number;
 
   /** Optional tuning note labels ordered from lowest string (6th string) to highest (1st string) */
   tuning?: string[];

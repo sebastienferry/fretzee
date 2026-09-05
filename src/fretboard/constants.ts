@@ -14,9 +14,11 @@ export const DEFAULT_FRET_THICKNESS = 3;
 export const DEFAULT_SHOW_INLAYS = true;
 export const DEFAULT_START_FRET = 1;
 export const DEFAULT_TITLE = '';
+export const DEFAULT_SUBTITLE = '';
 export const DEFAULT_TITLE_ALIGNMENT: 'center' | 'left' = 'center';
 export const DEFAULT_RESERVE_NUT_CLEARANCE = true;
 export const TITLE_FONT_SIZE = 16;
+export const SUBTITLE_FONT_SIZE = 12;
 export const TITLE_PADDING = 8;
 
 // Standard guitar inlay positions
@@ -44,6 +46,7 @@ export const SVG_NS = 'http://www.w3.org/2000/svg';
 export const CSS_CLASSES = {
   root: 'fretzee',
   title: 'fretzee-title',
+  subtitle: 'fretzee-subtitle',
   frets: 'fretzee-frets',
   strings: 'fretzee-strings',
   inlays: 'fretzee-inlays',

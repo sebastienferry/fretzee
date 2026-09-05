@@ -34,8 +34,9 @@ Fretzee is designed as a zero-dependency SVG renderer for guitar and bass fretbo
 - **Absolute Inlay Labels**: Inlay numbers show actual physical fret numbers (e.g. 5, 7) rather than relative positions.
 - **Starting Fret Indicator**: When `startFret > 1`, a starting fret indicator text element (`.fretzee-start-fret`) is rendered at the top/left of the first fret line.
 
-## Diagram Title Rendering
+## Diagram Title & Subtitle Rendering
 
-- **Positioning**: The title string is rendered as an SVG `<text>` element with CSS class `.fretzee-title` above the top edge of the fretboard diagram.
-- **Alignment**: Supports `'center'` (`text-anchor: middle`, positioned at fretboard midpoint) and `'left'` (`text-anchor: start`, positioned at 0).
-- **Dynamic ViewBox Adjustment**: When a title is specified (`title` non-empty string), `viewBoxY` is reduced by `TITLE_FONT_SIZE + TITLE_PADDING` (16 + 8 = 24px) and SVG total height is expanded accordingly, preserving diagram geometry without clipping text.
+- **Positioning**: The title string is rendered as an SVG `<text>` element with CSS class `.fretzee-title` above the top edge of the fretboard diagram. When present, the subtitle string is rendered below the title with CSS class `.fretzee-subtitle` (font size 12px, fill `#666666`, normal weight).
+- **Alignment**: Both title and subtitle inherit `titleAlignment`, supporting `'center'` (`text-anchor: middle`, positioned at fretboard midpoint) and `'left'` (`text-anchor: start`, positioned at 0).
+- **Offsets**: `titleOffsetY` and `subtitleOffsetY` allow fine-grained vertical adjustment of the title and subtitle independently.
+- **Dynamic ViewBox Adjustment**: When a title or subtitle is specified, `viewBoxY` and diagram height are expanded accordingly based on line counts and padding, preserving fretboard geometry without clipping text.

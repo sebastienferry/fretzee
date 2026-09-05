@@ -42,6 +42,7 @@ import {
   DEFAULT_INLAY_POSITIONS,
   DEFAULT_START_FRET,
   DEFAULT_TITLE,
+  DEFAULT_SUBTITLE,
   DEFAULT_TITLE_ALIGNMENT
 } from './constants';
 import { validateOptions } from '../utils/validation';
@@ -117,8 +118,10 @@ export class Fretboard {
       inlayPositions: [...DEFAULT_INLAY_POSITIONS],
       showInlays: DEFAULT_SHOW_INLAYS,
       title: options.title ?? DEFAULT_TITLE,
+      subtitle: options.subtitle ?? DEFAULT_SUBTITLE,
       titleAlignment: DEFAULT_TITLE_ALIGNMENT,
       titleOffsetY: options.titleOffsetY ?? 0,
+      subtitleOffsetY: options.subtitleOffsetY ?? 0,
       reserveNutClearance: options.reserveNutClearance ?? true,
       showTuning: options.showTuning ?? Boolean(options.tuning && options.tuning.length > 0),
       debugZones: options.debugZones ?? false,

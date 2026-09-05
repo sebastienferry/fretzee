@@ -3,7 +3,7 @@
  */
 
 import type { FretboardOptions, Marker as MarkerInterface, Zone } from '../fretboard/types';
-import { SVG_NS, CSS_CLASSES, TITLE_FONT_SIZE, TITLE_PADDING, DEFAULT_FINGERING_TEXT_COLOR } from '../fretboard/constants';
+import { SVG_NS, CSS_CLASSES, TITLE_FONT_SIZE, SUBTITLE_FONT_SIZE, TITLE_PADDING, DEFAULT_FINGERING_TEXT_COLOR } from '../fretboard/constants';
 import { String as GuitarString } from '../fretboard/String';
 import { Fret } from '../fretboard/Fret';
 import { Inlay } from '../fretboard/Inlay';
@@ -82,14 +82,22 @@ export class SvgRenderer {
       height += topMarkerOffset;
     }
 
-    // Additional adjustment for title or zone labels/braces
+    // Additional adjustment for title, subtitle, or zone labels/braces
     const hasZoneLabels = Boolean(this.options.zones && this.options.zones.some(z => z.label && z.label.trim().length > 0));
     const titleLines = (this.options.title || '').replace(/\\n/g, '\n').split(/\r?\n/);
     const hasTitle = Boolean(this.options.title && this.options.title.trim().length > 0);
     const titleLineCount = hasTitle ? titleLines.length : 0;
+
+    const subtitleLines = (this.options.subtitle || '').replace(/\\n/g, '\n').split(/\r?\n/);
+    const hasSubtitle = Boolean(this.options.subtitle && this.options.subtitle.trim().length > 0);
+    const subtitleLineCount = hasSubtitle ? subtitleLines.length : 0;
+
     let extraTopSpace = 0;
     if (hasTitle) {
       extraTopSpace += (TITLE_FONT_SIZE * 1.2 * titleLineCount) + TITLE_PADDING + 16;
+    }
+    if (hasSubtitle) {
+      extraTopSpace += (SUBTITLE_FONT_SIZE * 1.2 * subtitleLineCount) + (hasTitle ? 4 : (TITLE_PADDING + 16));
     }
 
     const hasTopBraces = Boolean(this.options.zones && this.options.zones.some(z => z.type === 'brace' && (z.position !== 'bottom')));
@@ -188,8 +196,8 @@ export class SvgRenderer {
     _height: number,
     topOffset = 0
   ): void {
-    // Render title if specified
-    if (this.options.title && this.options.title.trim().length > 0) {
+    // Render title and subtitle if specified
+    if ((this.options.title && this.options.title.trim().length > 0) || (this.options.subtitle && this.options.subtitle.trim().length > 0)) {
       this.renderTitle(svg, true, topOffset);
     }
 
@@ -259,8 +267,8 @@ export class SvgRenderer {
     height: number,
     topOffset = 0
   ): void {
-    // Render title if specified
-    if (this.options.title && this.options.title.trim().length > 0) {
+    // Render title and subtitle if specified
+    if ((this.options.title && this.options.title.trim().length > 0) || (this.options.subtitle && this.options.subtitle.trim().length > 0)) {
       this.renderTitle(svg, false, topOffset);
     }
 
@@ -471,25 +479,15 @@ export class SvgRenderer {
   }
 
   /**
-   * Renders the diagram title text above the fretboard
+   * Renders the diagram title and subtitle text above the fretboard
    */
   private renderTitle(svg: SVGSVGElement, isHorizontal: boolean, topOffset = 0): void {
-    const text = document.createElementNS(SVG_NS, 'text');
-    text.setAttribute('class', CSS_CLASSES.title);
-    text.setAttribute('fill', '#000000');
-    text.setAttribute('font-size', String(TITLE_FONT_SIZE));
-    text.setAttribute('font-family', 'sans-serif');
-    text.setAttribute('font-weight', 'bold');
-    text.setAttribute('dominant-baseline', 'auto');
-
     const alignment = this.options.titleAlignment || 'center';
     let xPosition = 0;
 
     if (alignment === 'left') {
-      text.setAttribute('text-anchor', 'start');
       xPosition = 0;
     } else {
-      text.setAttribute('text-anchor', 'middle');
       if (isHorizontal) {
         xPosition = calculateHorizontalWidth(this.options.fretCount, this.options.fretSpacing) / 2;
       } else {
@@ -501,28 +499,77 @@ export class SvgRenderer {
     const zoneOffset = hasZoneOverlay ? 22 : 0;
 
     const titleLines = (this.options.title || '').replace(/\\n/g, '\n').split(/\r?\n/);
+    const hasTitle = Boolean(this.options.title && this.options.title.trim().length > 0);
     const titleOffset = this.options.titleOffsetY ?? 0;
-    const multiLineOffset = (titleLines.length - 1) * (TITLE_FONT_SIZE * 1.1);
-    const yPosition = -(TITLE_PADDING + topOffset + zoneOffset + multiLineOffset) + titleOffset;
+    const titleMultiLineOffset = (titleLines.length - 1) * (TITLE_FONT_SIZE * 1.1);
 
-    text.setAttribute('x', String(xPosition));
-    text.setAttribute('y', String(yPosition));
+    const subtitleLines = (this.options.subtitle || '').replace(/\\n/g, '\n').split(/\r?\n/);
+    const hasSubtitle = Boolean(this.options.subtitle && this.options.subtitle.trim().length > 0);
+    const subtitleOffset = this.options.subtitleOffsetY ?? 0;
+    const subtitleMultiLineOffset = (subtitleLines.length - 1) * (SUBTITLE_FONT_SIZE * 1.1);
+    const subtitleHeight = hasSubtitle ? (SUBTITLE_FONT_SIZE * 1.2 * subtitleLines.length) + 4 : 0;
 
-    if (titleLines.length === 1) {
-      text.textContent = titleLines[0];
-    } else {
-      titleLines.forEach((lineText, i) => {
-        const tspan = document.createElementNS(SVG_NS, 'tspan');
-        tspan.setAttribute('x', String(xPosition));
-        if (i > 0) {
-          tspan.setAttribute('dy', '1.2em');
-        }
-        tspan.textContent = lineText;
-        text.appendChild(tspan);
-      });
+    // 1. Render Title (if present)
+    if (hasTitle) {
+      const text = document.createElementNS(SVG_NS, 'text');
+      text.setAttribute('class', CSS_CLASSES.title);
+      text.setAttribute('fill', '#000000');
+      text.setAttribute('font-size', String(TITLE_FONT_SIZE));
+      text.setAttribute('font-family', 'sans-serif');
+      text.setAttribute('font-weight', 'bold');
+      text.setAttribute('dominant-baseline', 'auto');
+      text.setAttribute('text-anchor', alignment === 'left' ? 'start' : 'middle');
+
+      const yTitlePosition = -(TITLE_PADDING + topOffset + zoneOffset + subtitleHeight + titleMultiLineOffset) + titleOffset;
+      text.setAttribute('x', String(xPosition));
+      text.setAttribute('y', String(yTitlePosition));
+
+      if (titleLines.length === 1) {
+        text.textContent = titleLines[0];
+      } else {
+        titleLines.forEach((lineText, i) => {
+          const tspan = document.createElementNS(SVG_NS, 'tspan');
+          tspan.setAttribute('x', String(xPosition));
+          if (i > 0) {
+            tspan.setAttribute('dy', '1.2em');
+          }
+          tspan.textContent = lineText;
+          text.appendChild(tspan);
+        });
+      }
+      svg.appendChild(text);
     }
 
-    svg.appendChild(text);
+    // 2. Render Subtitle (if present)
+    if (hasSubtitle) {
+      const subText = document.createElementNS(SVG_NS, 'text');
+      subText.setAttribute('class', CSS_CLASSES.subtitle);
+      subText.setAttribute('fill', '#666666');
+      subText.setAttribute('font-size', String(SUBTITLE_FONT_SIZE));
+      subText.setAttribute('font-family', 'sans-serif');
+      subText.setAttribute('font-weight', 'normal');
+      subText.setAttribute('dominant-baseline', 'auto');
+      subText.setAttribute('text-anchor', alignment === 'left' ? 'start' : 'middle');
+
+      const ySubtitlePosition = -(TITLE_PADDING + topOffset + zoneOffset + subtitleMultiLineOffset) + subtitleOffset;
+      subText.setAttribute('x', String(xPosition));
+      subText.setAttribute('y', String(ySubtitlePosition));
+
+      if (subtitleLines.length === 1) {
+        subText.textContent = subtitleLines[0];
+      } else {
+        subtitleLines.forEach((lineText, i) => {
+          const tspan = document.createElementNS(SVG_NS, 'tspan');
+          tspan.setAttribute('x', String(xPosition));
+          if (i > 0) {
+            tspan.setAttribute('dy', '1.2em');
+          }
+          tspan.textContent = lineText;
+          subText.appendChild(tspan);
+        });
+      }
+      svg.appendChild(subText);
+    }
   }
 
   /**
