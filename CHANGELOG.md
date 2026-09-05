@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Next]
 
+## [0.3.6] - 2026-09-05
+
+### Changed
+- Expand allowed `fretCount` range from `4..16` to `3..24` frets (#56).
+
 ## [0.3.5] - 2026-09-05
 
 ### Added
