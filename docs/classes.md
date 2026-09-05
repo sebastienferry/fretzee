@@ -9,9 +9,11 @@ Main class for managing and rendering fretboard diagrams.
 new Fretboard(options?: Partial<FretboardOptions>)
 ```
 
-### FretboardOptions
 - `title?: string` - Optional title text rendered above the fretboard.
-- `titleAlignment?: 'center' | 'left'` - Alignment of title text (default: `'center'`).
+- `subtitle?: string` - Optional subtitle text rendered below title and above the fretboard.
+- `titleAlignment?: 'center' | 'left'` - Alignment of title and subtitle text (default: `'center'`).
+- `titleOffsetY?: number` - Optional vertical offset in pixels to adjust title position.
+- `subtitleOffsetY?: number` - Optional vertical offset in pixels to adjust subtitle position.
 - `startFret?: number` - Starting fret position (0-24).
 - `fretCount?: number` - Number of frets (4-16).
 - `stringCount?: number` - Number of strings (4-8).
