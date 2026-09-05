@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Next]
 
+## [0.3.5] - 2026-09-05
+
+### Added
+- Add diagram `subtitle?: string` and independent `subtitleOffsetY?: number` options (#55).
+- Add CSS class `.fretzee-subtitle` with dedicated styling (12px, `#666666`, normal weight).
+- Support multi-line diagram subtitles using `\n` linebreaks and `<tspan>` positioning.
+
 ## [0.3.4] - 2026-08-22
 
 ### Added
